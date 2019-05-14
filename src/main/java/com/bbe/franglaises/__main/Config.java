@@ -34,6 +34,8 @@ public class Config {
 	public String[] line;
 	public File[] listOfFiles = f.listFiles();	
 	public Map<Personnage, HashSet<Personne>> listePersonnes = new HashMap<>();
+	public Map<Integer,Map<Personnage, HashSet<Personne>>> listePersonnesCombi = new HashMap<>();
+	
 	public Map<Integer, Team> listeTeam = new HashMap<>();
 	public Map<AssoDispoPersonnage, HashSet<Personne>> assoDispoPersonnage = new HashMap<>();
 	protected Map<Integer, Spectacle> listeSpectacles = new HashMap<>();
@@ -45,6 +47,7 @@ public class Config {
 	public Properties prop = new Properties();;
 	public CSVReader reader;
 	public StringBuilder sb;
+	public String[] personnages;
 	
 	public String getFileName2() {
 		return "src\\main\\resources\\dates\\"+id+".csv";

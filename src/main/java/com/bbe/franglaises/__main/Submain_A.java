@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -15,7 +14,6 @@ import com.bbe.franglaises.personne.Personne;
 import com.bbe.franglaises.spectacle.AssoDispoPersonnage;
 import com.bbe.franglaises.spectacle.Disponibilite;
 import com.bbe.franglaises.spectacle.Spectacle;
-import com.bbe.franglaises.spectacle.Team;
 
 import au.com.bytecode.opencsv.CSVReader;
 
@@ -88,10 +86,11 @@ public class Submain_A {
 		c.prop.load(new FileInputStream(c.f1));
 
 		int effectifComediensFranglaises = Integer.parseInt(c.prop.getProperty("effectifComediens").trim());
-		String[] personnages = c.prop.getProperty("listePersonnage").trim().split(",");
+		c.personnages = c.prop.getProperty("listePersonnage").trim().split(",");
+		int nbPersonnages = c.personnages.length;
 
-		for (int i = 0; i < personnages.length; i++) {
-			Personnage p = new Personnage(i,personnages[i]);
+		for (int i = 0; i < c.personnages.length; i++) {
+			Personnage p = new Personnage(i,c.personnages[i]);
 			c.listePersonnes.put(p, new HashSet<>());
 		}
 
@@ -175,12 +174,12 @@ public class Submain_A {
 				}
 			}
 		}
-		
+
 		calculTeams();
-//		affichagePersonnes();
-//		affichageDispos();
+		//		affichagePersonnes();
+		//		affichageDispos();
 		affichageTeams();
-		
+
 	}
 
 	private void affichageTeams() {
@@ -209,23 +208,33 @@ public class Submain_A {
 	}
 	private void calculTeams() {
 		logger.info("Calcul des permutations d'equipes");
-		c.listePersonnes.forEach((personnage, mapPersonnes) -> {
-			System.out.println(personnage);
-			c.listePersonnes.forEach((personnage2, mapPersonnes2) -> {
-				System.out.println("--"+personnage2);
-				System.out.println("--"+mapPersonnes2);
 
-				
-			});
-//			Map<Personnage, Personne> teamPourLeSpectacle = new HashMap<>();
-//			for (Personne personne : mapPersonnes) {
-//				teamPourLeSpectacle.put(personnage, personne);
-//			}
-//			
-//			c.listeTeam.put(c.idTeam, new Team(c.idTeam, teamPourLeSpectacle));
-//			c.idTeam++;
+		c.listePersonnes.forEach((personnage, mapPersonnes) -> {
+			toto(personnage, mapPersonnes);
 		});		
+		
+		for (int i = 0; i < c.personnages.length; i++) {
+			
+		}
+		
+		
+		c.listePersonnesCombi.forEach((personnage, mapPersonnes) -> {
+			System.out.println(personnage);
+			
+			
+			System.out.println(mapPersonnes);
+			System.out.println("-------------------------------------------");
+		});		
+
+
+
+
 	}
+
+	private void toto(Personnage personnage, HashSet<Personne> mapPersonnes) {
+		
+	}
+
 }
 
 
