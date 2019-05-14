@@ -7,7 +7,7 @@ public class Personnage {
 	
 	@Override
 	public String toString() {
-		return "Personnage [ nom=" + nom + ", id=" + id + ", personnageFacultatif=" + personnageFacultatif + " ]";
+		return "Personnage [nom=" + nom+"]";
 	}
 
 	public Personnage(int id,String nom) {

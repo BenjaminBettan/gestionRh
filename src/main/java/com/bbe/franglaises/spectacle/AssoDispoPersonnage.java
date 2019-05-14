@@ -18,4 +18,9 @@ public class AssoDispoPersonnage {
 		return d;
 	}
 	
+	@Override
+	public String toString() {
+		return "AssoDispoPersonnage [p=" + p + ", d=" + d + "]";
+	}
+	
 }

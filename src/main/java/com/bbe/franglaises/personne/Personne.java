@@ -13,10 +13,8 @@ public class Personne {
 
 	@Override
 	public String toString() {
-		return "Personne [veutJouerLeSamedi=" + Arrays.toString(veutJouerLeSamedi) + ", id=" + id + ", nbDateCourant="
-				+ nbDateCourant + ", nomActeur=" + nomActeur + ", nbDateMin=" + nbDateMin 
-				+ ", personnage=" + personnage
-				+ "]";
+		return "Personne [nomActeur=" + nomActeur + ", personnage=" + personnage +",veutJouerLeSamedi=" + Arrays.toString(veutJouerLeSamedi) + ", id=" + id + ", nbDateCourant="
+				+ nbDateCourant +  ", nbDateMin=" + nbDateMin + "]";
 	}
 	
 	public Personne(){}
