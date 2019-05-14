@@ -12,6 +12,22 @@ public class Team {
 	private String messageNonValide;
 	private Map<Personnage, Personne> teamPourLeSpectacle = new HashMap<>();
 
+	
+	
+	@Override
+	public String toString() {
+		return "Team [teamPourLeSpectacle=" + teamPourLeSpectacle + "]";
+	}
+
+	public Team(int idTeam, Map<Personnage, Personne> teamPourLeSpectacle) {
+		super();
+		this.idTeam = idTeam;
+		this.teamPourLeSpectacle = teamPourLeSpectacle;
+	}
+
+	public Team() {
+	}
+
 	public Map<Personnage, Personne> getTeamPourLeSpectacle() {
 		return teamPourLeSpectacle;
 	}

@@ -11,6 +11,7 @@ import com.bbe.franglaises.personne.Personnage;
 import com.bbe.franglaises.personne.Personne;
 import com.bbe.franglaises.spectacle.AssoDispoPersonnage;
 import com.bbe.franglaises.spectacle.Spectacle;
+import com.bbe.franglaises.spectacle.Team;
 
 import au.com.bytecode.opencsv.CSVReader;
 
@@ -28,9 +29,12 @@ public class Config {
 	public File f = new File(f1);protected int idSpectacle = 0;
 	public String fileName;
 	public int id = 0;
+	public int idTeam = 0;
+	
 	public String[] line;
 	public File[] listOfFiles = f.listFiles();	
 	public Map<Personnage, HashSet<Personne>> listePersonnes = new HashMap<>();
+	public Map<Integer, Team> listeTeam = new HashMap<>();
 	public Map<AssoDispoPersonnage, HashSet<Personne>> assoDispoPersonnage = new HashMap<>();
 	protected Map<Integer, Spectacle> listeSpectacles = new HashMap<>();
 	public int nb_spectacle_total = 0;

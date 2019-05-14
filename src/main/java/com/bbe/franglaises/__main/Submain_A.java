@@ -4,7 +4,9 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -13,6 +15,7 @@ import com.bbe.franglaises.personne.Personne;
 import com.bbe.franglaises.spectacle.AssoDispoPersonnage;
 import com.bbe.franglaises.spectacle.Disponibilite;
 import com.bbe.franglaises.spectacle.Spectacle;
+import com.bbe.franglaises.spectacle.Team;
 
 import au.com.bytecode.opencsv.CSVReader;
 
@@ -172,8 +175,20 @@ public class Submain_A {
 				}
 			}
 		}
-		affichagePersonnes();
-		affichageDispos();
+		
+		calculTeams();
+//		affichagePersonnes();
+//		affichageDispos();
+		affichageTeams();
+		
+	}
+
+	private void affichageTeams() {
+		logger.info("Affichage des teams");
+		c.listeTeam.forEach((i, team) -> {
+			System.out.print(i+" ");
+			System.out.println(team);
+		});	
 	}
 
 	private void affichageDispos() {
@@ -187,9 +202,28 @@ public class Submain_A {
 
 	private void affichagePersonnes() {
 		logger.info("Affichage de la fine équipe");
-		c.listePersonnes.forEach((personnage, map) -> {
+		c.listePersonnes.forEach((personnage, mapPersonnes) -> {
 			System.out.print(personnage+" ");
-			System.out.println(map);
+			System.out.println(mapPersonnes);
+		});		
+	}
+	private void calculTeams() {
+		logger.info("Calcul des permutations d'equipes");
+		c.listePersonnes.forEach((personnage, mapPersonnes) -> {
+			System.out.println(personnage);
+			c.listePersonnes.forEach((personnage2, mapPersonnes2) -> {
+				System.out.println("--"+personnage2);
+				System.out.println("--"+mapPersonnes2);
+
+				
+			});
+//			Map<Personnage, Personne> teamPourLeSpectacle = new HashMap<>();
+//			for (Personne personne : mapPersonnes) {
+//				teamPourLeSpectacle.put(personnage, personne);
+//			}
+//			
+//			c.listeTeam.put(c.idTeam, new Team(c.idTeam, teamPourLeSpectacle));
+//			c.idTeam++;
 		});		
 	}
 }
