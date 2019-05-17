@@ -5,37 +5,29 @@ import java.time.LocalDateTime;
 import com.bbe.theatre.personne.Personnage;
 import com.bbe.theatre.personne.Personne;
 
-public class Disponibilite {
+public class DisponibiliteJour {
+	
 	private Personne personne;
-	private LocalDateTime idDate;	
+	private LocalDateTime idDate;
 	private Personnage personnage;
-	private boolean dispoForte;
 
-	public Disponibilite setIdDate(LocalDateTime idDate) {
+	public DisponibiliteJour setIdDate(LocalDateTime idDate) {
 		this.idDate = idDate;
 		return this;
 	}
 
-	public Disponibilite setPersonnage(Personnage personnage) {
+	public DisponibiliteJour setPersonnage(Personnage personnage) {
 		this.personnage = personnage;
 		return this;
 	}
 
-	public Disponibilite(Personne personne, LocalDateTime idDate, Personnage personnage, boolean dispoForte) {
+	public DisponibiliteJour(Personne personne, LocalDateTime idDate, Personnage personnage) {
 		super();
 		this.personne = personne;
 		this.idDate = idDate;
 		this.personnage = personnage;
-		this.dispoForte = dispoForte;
 	}
 	
-	public Disponibilite(Personne personne, LocalDateTime idDate, Personnage personnage) {
-		super();
-		this.personne = personne;
-		this.idDate = idDate;
-		this.personnage = personnage;
-	}
-
 	public Personne getPersonne() {
 		return personne;
 	}
@@ -44,9 +36,6 @@ public class Disponibilite {
 		return idDate;
 	}
 
-	public boolean isDispoForte() {
-		return dispoForte;
-	}
 
 	public Personnage getPersonnage() {
 		return personnage;
@@ -54,8 +43,7 @@ public class Disponibilite {
 
 	@Override
 	public String toString() {
-		return "Disponibilite [personne=" + personne + ", idDate=" + idDate + ", personnage=" + personnage
-				+ ", dispoForte=" + dispoForte + "]";
+		return "Disponibilite [personne=" + personne + ", idDate=" + idDate + ", personnage=" + personnage + "]";
 	}
 
 	@Override
@@ -75,7 +63,7 @@ public class Disponibilite {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Disponibilite other = (Disponibilite) obj;
+		DisponibiliteJour other = (DisponibiliteJour) obj;
 		if (idDate == null) {
 			if (other.idDate != null)
 				return false;
@@ -88,8 +76,5 @@ public class Disponibilite {
 			return false;
 		return true;
 	}
-
-	
-	
 	
 }

@@ -7,12 +7,9 @@ import com.bbe.theatre.personne.Personnage;
 import com.bbe.theatre.personne.Personne;
 
 public class Team {
-	private int idTeam = 0;
-	private boolean estValide = true;
-	private String messageNonValide;
-	private Map<Personnage, Personne> teamPourLeSpectacle = new HashMap<>();
-
 	
+	private int idTeam = 0;
+	private Map<Personnage, Personne> teamPourLeSpectacle = new HashMap<>();
 	
 	@Override
 	public String toString() {
@@ -38,22 +35,6 @@ public class Team {
 
 	public int getIdTeam() {
 		return idTeam;
-	}
-
-	public boolean isEstValide() {
-		return estValide;
-	}
-
-	public void setEstValide(boolean estValide) {
-		this.estValide = estValide;
-	}
-
-	public String getMessageNonValide() {
-		return messageNonValide;
-	}
-
-	public void setMessageNonValide(String messageNonValide) {
-		this.messageNonValide = messageNonValide;
 	}
 
 }

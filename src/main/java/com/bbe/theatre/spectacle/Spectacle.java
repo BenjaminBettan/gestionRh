@@ -5,18 +5,11 @@ import java.time.LocalDateTime;
 public class Spectacle {
 	
 	private final LocalDateTime idDate;
-	private int nbDateCeJour;
-	private Team team;
+	private Team team = new Team();
 
-	public Spectacle(LocalDateTime idDate, int nbDateCeJour) {
+	public Spectacle(LocalDateTime idDate) {
 		super();
 		this.idDate = idDate;
-		this.nbDateCeJour = nbDateCeJour;
-		team = new Team();
-	}
-
-	public int getNbDateCeJour() {
-		return nbDateCeJour;
 	}
 
 	public LocalDateTime getIdDate() {

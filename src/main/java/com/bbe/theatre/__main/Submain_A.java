@@ -11,8 +11,7 @@ import org.apache.log4j.Logger;
 
 import com.bbe.theatre.personne.Personnage;
 import com.bbe.theatre.personne.Personne;
-import com.bbe.theatre.spectacle.AssoDispoPersonnage;
-import com.bbe.theatre.spectacle.Disponibilite;
+import com.bbe.theatre.spectacle.DisponibiliteJour;
 import com.bbe.theatre.spectacle.Spectacle;
 import com.mysql.jdbc.DatabaseMetaData;
 import com.mysql.jdbc.ResultSet;
@@ -23,8 +22,83 @@ public class Submain_A {
 
 	private static Logger logger = Logger.getLogger(Submain_A.class);
 	protected Config c = new Config();
-	private void chargeDate() throws IOException {
-		chargeFichierDate(0);
+
+	protected void init() throws IOException {
+		//lecture de global.properties
+		logger.info("on lit le fichier global.properties");
+
+		c.prop.load(new FileInputStream(c.f1));
+		//creation de la DB
+		c.dataBase.update(c.sqlQueryDatabase);
+		c.dataBase.setBaseName(c.dataBaseName);
+
+		logger.info("on lit 1 fois les dates de l'utilisateur 0");
+		remplirListeSpectacle();
+
+		creationPersonnages();
+
+		for (c.id = 0; c.id < Integer.parseInt(c.prop.getProperty("effectifComediens").trim()); c.id++) {
+
+			int idRole = Integer.parseInt(c.prop.getProperty(c.id+".role").trim());
+
+			c.listePersonnes.forEach((personnage, map) -> {
+				if (personnage.getId()==idRole) {
+					c.cePersonnage = personnage;
+					c.p = new Personne().setNbSpectacleMin(50);//c.id, c.prop.getProperty(c.id+".nom").trim(), 0, null, personnage
+					map.add(c.p);
+				}
+			});
+
+			chargeFichierDate();
+			/*
+			String[] listeDates = c.sb.toString().split("\n");
+			for (String l : listeDates) {
+				String[] listesDates_ = l.split(";");
+
+				for (int j = 0; j < Integer.parseInt(listesDates_[1]); j++) {
+
+					LocalDateTime t = LocalDateTime.of(Integer.parseInt("20"+listesDates_[0].split("/")[2]), 
+							Integer.parseInt(listesDates_[0].split("/")[1]), 
+							Integer.parseInt(listesDates_[0].split("/")[0]), 
+							Integer.parseInt(listesDates_[1]) > 1 ?  (j == 0 ? 16 : 21 ) : 21 , 0);
+
+					boolean dispoForte = listesDates_[2].equals("1");
+					
+					if ( ! listesDates_[2].equals("0")) {
+						DisponibiliteJour d = new DisponibiliteJour(c.p, t,c.cePersonnage,dispoForte);
+						AssoDispoPersonnage asso = new AssoDispoPersonnage(c.cePersonnage,d);
+						HashSet<Personne> listePersonnes = c.assoDispoPersonnage.get(c.cePersonnage);
+						if(listePersonnes==null){
+							listePersonnes = new HashSet<>();
+						}
+						listePersonnes.add(c.p);
+						c.assoDispoPersonnage.put(asso, listePersonnes);
+					}
+				}
+			}
+			*/
+		}
+
+		calculTeams();
+		//		affichagePersonnes();
+		//		affichageDispos();
+		affichageTeams();
+
+	}
+
+	private void creationPersonnages() {
+		c.personnages = c.prop.getProperty("listePersonnage").trim().split(",");
+		for (int i = 0; i < c.personnages.length; i++) {
+			Personnage p = new Personnage(i,c.personnages[i]);
+			c.listePersonnes.put(p, new HashSet<>());
+		}		
+	}
+
+	/** permet de remplir la map listeSpectacle
+	 * @throws IOException
+	 */
+	private void remplirListeSpectacle() throws IOException {
+		chargeFichierDate();
 		String[] listeDates = c.sb.toString().split("\n");
 		for (String l : listeDates) {
 			String[] listesDates_ = l.split(";");
@@ -36,11 +110,15 @@ public class Submain_A {
 						Integer.parseInt(listesDates_[0].split("/")[0]), 
 						Integer.parseInt(listesDates_[1]) > 1 ?  (j == 0 ? 16 : 21 ) : 21 , 0);
 
-				c.listeSpectacles.put(c.idSpectacle++, new Spectacle(t, Integer.parseInt(listesDates_[1])));
+				c.listeSpectacles.put(c.idSpectacle++, new Spectacle(t));
 			}
 
 		}
 	}
+
+	/** vide la DB
+	 * @throws SQLException
+	 */
 	protected void cleanDb() throws SQLException {
 		c.dataBase.connect();
 
@@ -57,9 +135,13 @@ public class Submain_A {
 			}
 		}		
 	}
-	private void chargeFichierDate(int i) throws IOException {
+
+	/** Charge l'utilisateur c.id et 
+	 * @throws IOException
+	 */
+	private void chargeFichierDate() throws IOException {
 		c.sb = new StringBuilder();
-		c.reader = new CSVReader(new FileReader(c.f2 + Integer.toString(i) + ".csv"));
+		c.reader = new CSVReader(new FileReader(c.f2 + Integer.toString(c.id) + ".csv"));
 
 		while (true) {
 			c.line = c.reader.readNext();
@@ -93,72 +175,6 @@ public class Submain_A {
 
 	}
 
-	protected void init() throws IOException {
-		c.dataBase.update(c.sqlQueryDatabase);
-		c.dataBase.setBaseName(c.dataBaseName);
-
-		logger.info("on lit 1 fois les dates de l'utilisateur 0");
-		chargeDate();
-
-		//lecture de global.properties
-		logger.info("on lit le fichier global.properties");
-		c.prop.load(new FileInputStream(c.f1));
-
-		int effectifComediens = Integer.parseInt(c.prop.getProperty("effectifComediens").trim());
-		c.personnages = c.prop.getProperty("listePersonnage").trim().split(",");
-
-		for (int i = 0; i < c.personnages.length; i++) {
-			Personnage p = new Personnage(i,c.personnages[i]);
-			c.listePersonnes.put(p, new HashSet<>());
-		}
-
-		for (c.id = 0; c.id < effectifComediens; c.id++) {
-
-			int idRole = Integer.parseInt(c.prop.getProperty(c.id+".role").trim());
-
-			c.listePersonnes.forEach((personnage, map) -> {
-				if (personnage.getId()==idRole) {
-					c.cePersonnage = personnage;
-					c.p = new Personne(c.id, c.prop.getProperty(c.id+".nom").trim(), 0, null, personnage);
-					map.add(c.p);
-				}
-			});
-
-			chargeFichierDate(c.id);
-
-			String[] listeDates = c.sb.toString().split("\n");
-			for (String l : listeDates) {
-				String[] listesDates_ = l.split(";");
-
-				for (int j = 0; j < Integer.parseInt(listesDates_[1]); j++) {
-
-					LocalDateTime t = LocalDateTime.of(Integer.parseInt("20"+listesDates_[0].split("/")[2]), 
-							Integer.parseInt(listesDates_[0].split("/")[1]), 
-							Integer.parseInt(listesDates_[0].split("/")[0]), 
-							Integer.parseInt(listesDates_[1]) > 1 ?  (j == 0 ? 16 : 21 ) : 21 , 0);
-
-					boolean dispoForte = listesDates_[2].equals("1");
-					if ( ! listesDates_[2].equals("0")) {
-						Disponibilite d = new Disponibilite(c.p, t,c.cePersonnage,dispoForte);
-						AssoDispoPersonnage asso = new AssoDispoPersonnage(c.cePersonnage,d);
-						HashSet<Personne> listePersonnes = c.assoDispoPersonnage.get(c.cePersonnage);
-						if(listePersonnes==null){
-							listePersonnes = new HashSet<>();
-						}
-						listePersonnes.add(c.p);
-						c.assoDispoPersonnage.put(asso, listePersonnes);
-					}
-				}
-			}
-		}
-
-		calculTeams();
-		//		affichagePersonnes();
-		//		affichageDispos();
-		affichageTeams();
-
-	}
-
 	private void affichageTeams() {
 		logger.info("Affichage des teams");
 		c.listeTeam.forEach((i, team) -> {
@@ -167,22 +183,6 @@ public class Submain_A {
 		});	
 	}
 
-	private void affichageDispos() {
-		logger.info("Affichage des dispos");
-		c.assoDispoPersonnage.forEach((asso, mapPersonnes) -> {
-			System.out.println(asso);
-			System.out.println(mapPersonnes);
-			System.out.println();
-		});			
-	}
-
-	private void affichagePersonnes() {
-		logger.info("Affichage de la fine équipe");
-		c.listePersonnes.forEach((personnage, mapPersonnes) -> {
-			System.out.print(personnage+" ");
-			System.out.println(mapPersonnes);
-		});		
-	}
 	private void calculTeams() {
 		logger.info("Calcul des permutations d'equipes");
 
@@ -231,6 +231,39 @@ public class Submain_A {
 				c.sb.append( " CROSS JOIN "+personnage.getNom());	
 			}
 		});		
+		
+		c.id = 0;
+		
+		c.sb.append( " WHERE ");
+		c.listePersonnes.forEach((personnage, mapPersonnes) -> {
+			mapPersonnes.forEach((p) -> {
+				if (p.getPersonneAvecQuiJeDoisJouer()==0) {
+					
+				}
+			});
+		});	
+		
 	}
+
 }
 
+
+
+/*
+private void affichageDispos() {
+	logger.info("Affichage des dispos");
+	c.assoDispoPersonnage.forEach((asso, mapPersonnes) -> {
+		System.out.println(asso);
+		System.out.println(mapPersonnes);
+		System.out.println();
+	});			
+}
+
+private void affichagePersonnes() {
+	logger.info("Affichage de la fine équipe");
+	c.listePersonnes.forEach((personnage, mapPersonnes) -> {
+		System.out.print(personnage+" ");
+		System.out.println(mapPersonnes);
+	});		
+}
+ */

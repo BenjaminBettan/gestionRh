@@ -4,9 +4,9 @@ import com.bbe.theatre.personne.Personnage;
 
 public class AssoDispoPersonnage {
 	private Personnage p;
-	private Disponibilite d;
+	private DisponibiliteSemaine d;
 	
-	public AssoDispoPersonnage(Personnage p, Disponibilite d) {
+	public AssoDispoPersonnage(Personnage p, DisponibiliteSemaine d) {
 		super();
 		this.p = p;
 		this.d = d;
@@ -14,7 +14,7 @@ public class AssoDispoPersonnage {
 	public Personnage getP() {
 		return p;
 	}
-	public Disponibilite getD() {
+	public DisponibiliteSemaine getD() {
 		return d;
 	}
 	
