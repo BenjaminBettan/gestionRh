@@ -1,4 +1,4 @@
-package com.bbe.franglaises.spectacle;
+package com.bbe.theatre.spectacle;
 
 import java.time.LocalDateTime;
 

@@ -1,5 +1,6 @@
-package com.bbe.franglaises.__main;
+package com.bbe.theatre.__main;
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -7,35 +8,32 @@ import java.util.Properties;
 
 import org.apache.log4j.PropertyConfigurator;
 
-import com.bbe.franglaises.personne.Personnage;
-import com.bbe.franglaises.personne.Personne;
-import com.bbe.franglaises.spectacle.AssoDispoPersonnage;
-import com.bbe.franglaises.spectacle.Spectacle;
-import com.bbe.franglaises.spectacle.Team;
+import com.bbe.theatre.DataBase;
+import com.bbe.theatre.personne.Personnage;
+import com.bbe.theatre.personne.Personne;
+import com.bbe.theatre.spectacle.AssoDispoPersonnage;
+import com.bbe.theatre.spectacle.Spectacle;
+import com.bbe.theatre.spectacle.Team;
 
 import au.com.bytecode.opencsv.CSVReader;
 
 public class Config {
-	
+
 	static {PropertyConfigurator.configure("log4j.properties");}
-	
-	public boolean[] b0 = {true,false,false};
-	public boolean[] b1 = {false,true,false};
-	public boolean[] b2 = {false,false,true};
-	public boolean[] b = b0;
-	//	public DataBase dataBase = new DataBase(DATABASE_CONFIG.MYSQL);
+
+	public DataBase dataBase = new DataBase();
 	public String f1 = "src\\main\\resources\\global.properties";
 	public String f2 = "src\\main\\resources\\dates\\";
-	public File f = new File(f1);protected int idSpectacle = 0;
+	public File f = new File(f1);
+	protected int idSpectacle = 0;
 	public String fileName;
 	public int id = 0;
 	public int idTeam = 0;
-	
+
 	public String[] line;
 	public File[] listOfFiles = f.listFiles();	
 	public Map<Personnage, HashSet<Personne>> listePersonnes = new HashMap<>();
-	public Map<Integer,Map<Personnage, HashSet<Personne>>> listePersonnesCombi = new HashMap<>();
-	
+
 	public Map<Integer, Team> listeTeam = new HashMap<>();
 	public Map<AssoDispoPersonnage, HashSet<Personne>> assoDispoPersonnage = new HashMap<>();
 	protected Map<Integer, Spectacle> listeSpectacles = new HashMap<>();
@@ -48,6 +46,18 @@ public class Config {
 	public CSVReader reader;
 	public StringBuilder sb;
 	public String[] personnages;
+	public String dataBaseName = "simulation"+LocalDateTime.now().toString().substring(2, 19).replace("-", "x").replace(":", "x");
+	public String sqlQueryDatabase = 
+			"CREATE DATABASE IF NOT EXISTS `"+dataBaseName+"` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;\n";
+	
+	public String sqlQueryDatabase2(String nomUserTable){
+		String s = "CREATE TABLE IF NOT EXISTS `"+nomUserTable+"` (\n"
+				+"  `id_unique` int(3) NOT NULL AUTO_INCREMENT,\n"
+				+"  `id_personne` varchar(3) NOT NULL,\n"
+				+"  UNIQUE KEY `id_unique` (`id_unique`)\n"
+				+") ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;";
+		return s;
+	} 
 	
 	public String getFileName2() {
 		return "src\\main\\resources\\dates\\"+id+".csv";

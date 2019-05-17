@@ -1,4 +1,4 @@
-package com.bbe.franglaises._enum;
+package com.bbe.theatre._enum;
 
 
 

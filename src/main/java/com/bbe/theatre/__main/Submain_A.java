@@ -1,26 +1,28 @@
-package com.bbe.franglaises.__main;
+package com.bbe.theatre.__main;
 
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.HashSet;
 
 import org.apache.log4j.Logger;
 
-import com.bbe.franglaises.personne.Personnage;
-import com.bbe.franglaises.personne.Personne;
-import com.bbe.franglaises.spectacle.AssoDispoPersonnage;
-import com.bbe.franglaises.spectacle.Disponibilite;
-import com.bbe.franglaises.spectacle.Spectacle;
+import com.bbe.theatre.personne.Personnage;
+import com.bbe.theatre.personne.Personne;
+import com.bbe.theatre.spectacle.AssoDispoPersonnage;
+import com.bbe.theatre.spectacle.Disponibilite;
+import com.bbe.theatre.spectacle.Spectacle;
+import com.mysql.jdbc.DatabaseMetaData;
+import com.mysql.jdbc.ResultSet;
 
 import au.com.bytecode.opencsv.CSVReader;
 
 public class Submain_A {
+
 	private static Logger logger = Logger.getLogger(Submain_A.class);
 	protected Config c = new Config();
-
 	private void chargeDate() throws IOException {
 		chargeFichierDate(0);
 		String[] listeDates = c.sb.toString().split("\n");
@@ -39,7 +41,22 @@ public class Submain_A {
 
 		}
 	}
+	protected void cleanDb() throws SQLException {
+		c.dataBase.connect();
 
+		DatabaseMetaData dbmd = (DatabaseMetaData) c.dataBase.getConnexion().getMetaData();
+
+		ResultSet ctlgs = (ResultSet) dbmd.getCatalogs();
+
+		while (ctlgs.next()){
+			if (ctlgs.getString(1).length()> 5) {
+				if (ctlgs.getString(1).substring(0, 5).equals("simul")) {
+					c.dataBase.update("DROP DATABASE "+ctlgs.getString(1)+";");
+					System.out.println("DROP TABLE '"+ctlgs.getString(1)+"';");
+				}				
+			}
+		}		
+	}
 	private void chargeFichierDate(int i) throws IOException {
 		c.sb = new StringBuilder();
 		c.reader = new CSVReader(new FileReader(c.f2 + Integer.toString(i) + ".csv"));
@@ -77,47 +94,32 @@ public class Submain_A {
 	}
 
 	protected void init() throws IOException {
+		c.dataBase.update(c.sqlQueryDatabase);
+		c.dataBase.setBaseName(c.dataBaseName);
 
-		logger.info("on lit les dates");
+		logger.info("on lit 1 fois les dates de l'utilisateur 0");
 		chargeDate();
 
 		//lecture de global.properties
 		logger.info("on lit le fichier global.properties");
 		c.prop.load(new FileInputStream(c.f1));
 
-		int effectifComediensFranglaises = Integer.parseInt(c.prop.getProperty("effectifComediens").trim());
+		int effectifComediens = Integer.parseInt(c.prop.getProperty("effectifComediens").trim());
 		c.personnages = c.prop.getProperty("listePersonnage").trim().split(",");
-		int nbPersonnages = c.personnages.length;
 
 		for (int i = 0; i < c.personnages.length; i++) {
 			Personnage p = new Personnage(i,c.personnages[i]);
 			c.listePersonnes.put(p, new HashSet<>());
 		}
 
-		for (c.id = 0; c.id < effectifComediensFranglaises; c.id++) {
-
-			switch (c.prop.getProperty(c.id+".peutJouerSamedi").trim()) {
-			case "0":
-				c.b = c.b0;
-				break;
-			case "1":
-				c.b = c.b1;
-				break;
-			case "2":
-				c.b = c.b2;
-				break;
-			default:
-				logger.warn("Erreur pour utilisateur " + c.id + "peutJouerSamedi incorrect 0 ou 1 ou 2");
-				System.exit(0);
-				break;
-			}
+		for (c.id = 0; c.id < effectifComediens; c.id++) {
 
 			int idRole = Integer.parseInt(c.prop.getProperty(c.id+".role").trim());
 
 			c.listePersonnes.forEach((personnage, map) -> {
 				if (personnage.getId()==idRole) {
 					c.cePersonnage = personnage;
-					c.p = new Personne(c.b, c.id, c.prop.getProperty(c.id+".nom").trim(), 0, null, personnage);
+					c.p = new Personne(c.id, c.prop.getProperty(c.id+".nom").trim(), 0, null, personnage);
 					map.add(c.p);
 				}
 			});
@@ -135,34 +137,9 @@ public class Submain_A {
 							Integer.parseInt(listesDates_[0].split("/")[0]), 
 							Integer.parseInt(listesDates_[1]) > 1 ?  (j == 0 ? 16 : 21 ) : 21 , 0);
 
-					Disponibilite d;
 					boolean dispoForte = listesDates_[2].equals("1");
 					if ( ! listesDates_[2].equals("0")) {
-						if (Integer.parseInt(listesDates_[1])==2) {
-							if (j==0) {
-								if (c.p.veutJouerLeSamediTouteLaJournee()) {
-									d = new Disponibilite(c.p, t,c.cePersonnage,dispoForte);
-								}else if (c.p.veutJouerLeSamediAprem()) {
-									d = new Disponibilite(c.p, t,c.cePersonnage,dispoForte);
-								}else{
-									d = new Disponibilite(c.p, t,c.cePersonnage,false);
-								}
-							}
-							else {
-								if (c.p.veutJouerLeSamediTouteLaJournee()) {
-									d = new Disponibilite(c.p, t,c.cePersonnage,dispoForte);
-								}else if (c.p.veutJouerLeSamediAprem()) {
-									d = new Disponibilite(c.p, t,c.cePersonnage,false);
-								}else{
-									d = new Disponibilite(c.p, t,c.cePersonnage,dispoForte);
-								}				
-							}
-						}
-						else {
-							d = new Disponibilite(c.p, t,c.cePersonnage,dispoForte);
-						}
-
-
+						Disponibilite d = new Disponibilite(c.p, t,c.cePersonnage,dispoForte);
 						AssoDispoPersonnage asso = new AssoDispoPersonnage(c.cePersonnage,d);
 						HashSet<Personne> listePersonnes = c.assoDispoPersonnage.get(c.cePersonnage);
 						if(listePersonnes==null){
@@ -210,84 +187,50 @@ public class Submain_A {
 		logger.info("Calcul des permutations d'equipes");
 
 		c.listePersonnes.forEach((personnage, mapPersonnes) -> {
-			toto(personnage, mapPersonnes);
-		});		
-		
-		for (int i = 0; i < c.personnages.length; i++) {
-			
-		}
-		
-		
-		c.listePersonnesCombi.forEach((personnage, mapPersonnes) -> {
-			System.out.println(personnage);
-			
-			
-			System.out.println(mapPersonnes);
-			System.out.println("-------------------------------------------");
-		});		
+			c.dataBase.update(c.sqlQueryDatabase2(personnage.getNom()));
+
+		});
+		c.listePersonnes.forEach((personnage, mapPersonnes) -> {
+
+			for (Personne personne : mapPersonnes) {
+				c.dataBase.update("INSERT INTO `" + personnage.getNom() + "` (`id_unique`, `id_personne`) VALUES (NULL, '"+personne.getId()+"');");
+			}
+		});
+		calculDuCrossJoin();
 
 
+
+
+		System.out.println(c.sb.toString());
+		//		System.out.println(c.dataBase.select(c.sb.toString()));
 
 
 	}
 
-	private void toto(Personnage personnage, HashSet<Personne> mapPersonnes) {
-		
-	}
+	private void calculDuCrossJoin() {
+		c.sb = new StringBuilder("SELECT ");
+		c.id = 0;
 
-}
-
-
-
-
-
-/*
-
-	int nbPersonnage = personnages.length;
-
-
-
-	c.reader = new CSVReader(new FileReader(c.getFileName2()));
-	int nbSpectaclePersonne = 0;
-
-
-		logger.debug(nbSpectaclePersonne + c.b.toString());
-
-		//traitement
-
-
-		if (c.id==0) {
-			c.nb_spectacle_total+=Integer.parseInt(c.line[1].trim());
-			if (Integer.parseInt(c.line[1].trim())>2) {
-				logger.warn("Arret du programme plus de 2 dates detectées dans colone 2 pour l utilisateur 0");
-				logger.warn(new Exception().getStackTrace());
-				System.exit(1);// on lit le fichier excel pour la premiere fois. Il y a plus de 2 date pour une journée. On plante
+		c.listePersonnes.forEach((personnage, mapPersonnes) -> {
+			if (c.id==0) {
+				c.sb.append(personnage.getNom()+".id_personne as "+personnage.getNom());
+				c.id++;
+			}else {
+				c.sb.append(", "+personnage.getNom()+".id_personne as "+personnage.getNom());
 			}
 
+		});
 
-		}
-		if ( ! c.line[2].trim().equals("0") ) {
-			for (int i = 1; i <= Integer.parseInt(c.line[1].trim()); i++) {
+		c.id = 0;
 
-				LocalDateTime t = LocalDateTime.of(Integer.parseInt("20"+c.line[0].trim().split("/")[2]), 
-						Integer.parseInt(c.line[0].trim().split("/")[1]), 
-						Integer.parseInt(c.line[0].trim().split("/")[0]), 
-						Integer.parseInt(c.line[1].trim()) > 1 ?  (i == 0 ? 16 : 21 ) : 21 , 0);
-
-
-				c.dataBase.update("INSERT INTO `listedates` (`id`, `date`, `idPersonne`, `dispoForte`, `numeroSemaine`) VALUES "
-						+ "(NULL, '"+t+"', '"+c.id+"', '"+(c.line[2].trim().equals("0,5") ? "0" : "1")+"', '"+t.toLocalDate().get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear())+"');");
-
-												listeSpectacle.put(line[0].trim()+"_"+i, new Spectacle(line[0].trim()+"_"+i,Integer.parseInt(line[1].trim())));
-
-
-			}								
-		}
+		c.listePersonnes.forEach((personnage, mapPersonnes) -> {
+			if (c.id==0) {
+				c.sb.append(" FROM " + personnage.getNom());	
+				c.id++;
+			}else {
+				c.sb.append( " CROSS JOIN "+personnage.getNom());	
+			}
+		});		
 	}
+}
 
-	if ( ! c.prop.getProperty(c.id+".nbSpectacleSouhaite").trim().equals("0")) {
-		nbSpectaclePersonne = Integer.parseInt(c.prop.getProperty("nbSpectacleSouhaite").trim());
-	}
-	//					HashMap<Personnage,Personne> l = listePersonnes.get(p);
-	//					l.put(p,new Personne(b, id, prop.getProperty("nom").trim(), nbSpectaclePersonne, null, p));
-}*/

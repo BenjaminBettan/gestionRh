@@ -1,4 +1,4 @@
-package com.bbe.franglaises.personne;
+package com.bbe.theatre.personne;
 
 public class Personnage {
 	private String nom;

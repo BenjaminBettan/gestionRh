@@ -1,6 +1,6 @@
-package com.bbe.franglaises.spectacle;
+package com.bbe.theatre.spectacle;
 
-import com.bbe.franglaises.personne.Personnage;
+import com.bbe.theatre.personne.Personnage;
 
 public class AssoDispoPersonnage {
 	private Personnage p;

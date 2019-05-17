@@ -1,4 +1,4 @@
-package com.bbe.franglaises._enum;
+package com.bbe.theatre._enum;
 
 /**
  * Your database config 
@@ -10,7 +10,7 @@ public enum DATABASE_CONFIG
 			 DATABASE_TYPE.MYSQL,	// this is a mysql db 
 			 "localhost",			//install in local you can use WAMP software on Microsoft Windows
 			 3306,					// this is the default port
-			 "dates",				// Name of the data base
+			 "sys",					// Name of the data base
 			 "root",				// name of the user
 			 ""						//password);
 		 ),
@@ -50,7 +50,12 @@ public enum DATABASE_CONFIG
 	public String getBaseName() {
 		return baseName;
 	}
-
+	
+	public DATABASE_CONFIG setBaseName(String s) {
+		baseName = s;
+		return this;
+	}
+	
 	public String getUser() {
 		return user;
 	}

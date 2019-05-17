@@ -1,4 +1,4 @@
-package com.bbe.franglaises;
+package com.bbe.theatre;
 
 
 import java.sql.Connection;
@@ -10,9 +10,9 @@ import java.sql.Statement;
 
 import org.apache.log4j.Logger;
 
-import com.bbe.franglaises._enum.DATABASE_CONFIG;
-import com.bbe.franglaises._enum.DATABASE_TYPE;
-import com.bbe.franglaises._enum.STATUS_DB;
+import com.bbe.theatre._enum.DATABASE_CONFIG;
+import com.bbe.theatre._enum.DATABASE_TYPE;
+import com.bbe.theatre._enum.STATUS_DB;
 
 
 /**
@@ -26,46 +26,37 @@ public class DataBase {
 	private ResultSet result;
 	private ResultSetMetaData resultMeta;
 	private Connection connexion;
+	private DATABASE_CONFIG dataBaseConf;
 	private static Logger logger = Logger.getLogger(DataBase.class);
-	
-	/**
-	 * This constructor create the instance then connects to the dataBase (try to connect 20 times with 5 seconds of pause between connections error)
-	 * @param DATABASE_CONFIG_ the database informations to connect
-	 */
-	
-	public DataBase (DATABASE_CONFIG DATABASE_CONFIG_) 
-	
-	{
-		int maxTime = 20;
-		for (int i = 0; i < maxTime; i++) {
-			this.connect(DATABASE_CONFIG_);
-			
-			if (STATUS_DB_.equals(STATUS_DB.REACHABLE)) 
-			{
-				break;
-			}
-			else 
-			{
-				logger.warn("Error Detected while connecting to DataBase.");
-				System.exit(1);
-			}
-		}
-	}
 	
 	/**
 	 * Connect to the database
 	 * @param DATABASE_CONFIG_ the database informations to connect
 	 */
 	
-	private void connect(DATABASE_CONFIG DATABASE_CONFIG_) 
+	public DataBase setBaseName(String s){
+		dataBaseConf.setBaseName(s);
+		connect(this.dataBaseConf);
+		return this;
+	}
+	
+	public void connect() {
+		dataBaseConf = DATABASE_CONFIG.MYSQL;
+		connect(dataBaseConf);
+		
+	}
+	
+	public void connect(DATABASE_CONFIG DATABASE_CONFIG_) 
 	{
-		
-		
-		String url = "jdbc:" + DATABASE_CONFIG_.getDatabaseType() + "://" + DATABASE_CONFIG_.getIp() + ":" + DATABASE_CONFIG_.getPort() + "/" + DATABASE_CONFIG_.getBaseName();
+		if (DATABASE_CONFIG_==null) {
+			DATABASE_CONFIG_ = DATABASE_CONFIG.MYSQL;
+		}
+		dataBaseConf = DATABASE_CONFIG_;
+		String url = "jdbc:" + dataBaseConf.getDatabaseType() + "://" + dataBaseConf.getIp() + ":" + dataBaseConf.getPort() + "/" + dataBaseConf.getBaseName();
 
 		try 
 		{
-			if (DATABASE_CONFIG_.getDatabaseType().equals(DATABASE_TYPE.MYSQL)) 
+			if (dataBaseConf.getDatabaseType().equals(DATABASE_TYPE.MYSQL)) 
 			{
 				try 
 				{
@@ -74,17 +65,19 @@ public class DataBase {
 				catch (ClassNotFoundException e) 
 				{
 					logger.warn("Class not found exception for this database type : " + DATABASE_TYPE.MYSQL);
+					System.exit(1);
 				}
 			}
 			else 
 			{
 				try 
 				{
-					Class.forName("org." + DATABASE_CONFIG_.getDatabaseType() + ".Driver");	
+					Class.forName("org." + dataBaseConf.getDatabaseType() + ".Driver");	
 				} 
 				catch (ClassNotFoundException e) 
 				{
 					logger.warn("Class not found exception for this database type : "+DATABASE_CONFIG_.getDatabaseType());
+					System.exit(1);
 				}
 			}
 
@@ -102,6 +95,7 @@ public class DataBase {
 			logger.warn(e.getMessage());
 			e.printStackTrace();
 			this.STATUS_DB_ = STATUS_DB.UNREACHABLE;
+			System.exit(1);
 		}		
 	}
 	
@@ -154,9 +148,9 @@ public class DataBase {
 	 * @return The SQL request result
 	 */
 	
-	public String selectAndReturnObject(String request) {
+	public String select(String request) {
 
-		String resultOfRequest = "";
+		StringBuilder resultOfRequest = new StringBuilder("");
 		try 
 		{
 			
@@ -175,9 +169,10 @@ public class DataBase {
 					}																					
 					else 																				
 					{																					
-						resultOfRequest += this.result.getObject(i).toString() +"/";
+						resultOfRequest.append(this.result.getObject(i).toString() +"/");
 					}
 				}
+				resultOfRequest.append("\n");
 			}
 		} 
 		catch (SQLException e) 
@@ -191,7 +186,7 @@ public class DataBase {
 			e.printStackTrace();
 		}   
 
-		return resultOfRequest;
+		return resultOfRequest.toString();
 		
 	}
 	
@@ -201,8 +196,7 @@ public class DataBase {
 	 * @return number of affected rows
 	 */
 	
-	public int update(String string) 
-	{
+	public int update(String string){
 		try 
 		{
 			int status =this.state.executeUpdate(string);
@@ -231,6 +225,10 @@ public class DataBase {
 	
 	public STATUS_DB isConnectionOk() {
 		return this.STATUS_DB_;
+	}
+
+	public Connection getConnexion() {
+		return connexion;
 	}
 
 }

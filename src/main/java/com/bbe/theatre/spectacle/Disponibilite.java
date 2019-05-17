@@ -1,9 +1,9 @@
-package com.bbe.franglaises.spectacle;
+package com.bbe.theatre.spectacle;
 
 import java.time.LocalDateTime;
 
-import com.bbe.franglaises.personne.Personnage;
-import com.bbe.franglaises.personne.Personne;
+import com.bbe.theatre.personne.Personnage;
+import com.bbe.theatre.personne.Personne;
 
 public class Disponibilite {
 	private Personne personne;

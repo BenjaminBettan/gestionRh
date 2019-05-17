@@ -1,10 +1,10 @@
-package com.bbe.franglaises.spectacle;
+package com.bbe.theatre.spectacle;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import com.bbe.franglaises.personne.Personnage;
-import com.bbe.franglaises.personne.Personne;
+import com.bbe.theatre.personne.Personnage;
+import com.bbe.theatre.personne.Personne;
 
 public class Team {
 	private int idTeam = 0;
