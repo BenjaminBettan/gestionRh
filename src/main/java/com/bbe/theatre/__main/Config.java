@@ -3,8 +3,10 @@ import java.io.File;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Queue;
 import java.util.Set;
 
 import org.apache.log4j.PropertyConfigurator;
@@ -37,16 +39,18 @@ public class Config {
 
 	public Map<Integer, Team> listeTeam = new HashMap<>();
 	public Map<AssoDispoPersonnage, HashSet<Personne>> assoDispoPersonnage = new HashMap<>();
-	protected Map<Integer, Spectacle> listeSpectacles = new HashMap<>();
 	public int nb_spectacle_total = 0;
 	public final int nbSpectacleParSemaine = 5;
 	public int nbSpectaclePersonne;
 	public Personne p;
-	public Personnage cePersonnage;
 	public Properties prop = new Properties();;
 	public CSVReader reader;
 	public StringBuilder sb;
 	public String[] personnages;
+	public String[] doitRencontrer;
+	public String[] neDoitPasRencontrer;
+	public Queue<Map<Integer,  Set<Spectacle>>> listeSemaines_ = new LinkedList<>();
+	public Set<Integer> listeSemaines = new HashSet<>();
 	public String dataBaseName = "simulation"+LocalDateTime.now().toString().substring(2, 19).replace("-", "x").replace(":", "x");
 	public String sqlQueryDatabase = 
 			"CREATE DATABASE IF NOT EXISTS `"+dataBaseName+"` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;\n";

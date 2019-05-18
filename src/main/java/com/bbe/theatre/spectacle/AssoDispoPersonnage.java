@@ -3,6 +3,7 @@ package com.bbe.theatre.spectacle;
 import com.bbe.theatre.personne.Personnage;
 
 public class AssoDispoPersonnage {
+	
 	private Personnage p;
 	private DisponibiliteSemaine d;
 	
@@ -11,9 +12,11 @@ public class AssoDispoPersonnage {
 		this.p = p;
 		this.d = d;
 	}
+	
 	public Personnage getP() {
 		return p;
 	}
+	
 	public DisponibiliteSemaine getD() {
 		return d;
 	}

@@ -48,5 +48,41 @@ public class Personne {
 		this.nbSpectacleMin = nbSpectacleMin;
 		return this;
 	}
+
+	public int getNbDateCourant() {
+		return nbDateCourant;
+	}
+
+	public Personne setNbDateCourant(int nbDateCourant) {
+		this.nbDateCourant = nbDateCourant;
+		return this;
+	}
+
+	public String getNomActeur() {
+		return nomActeur;
+	}
+
+	public Personne setNomActeur(String nomActeur) {
+		this.nomActeur = nomActeur;
+		return this;
+	}
+
+	public Personnage getPersonnage() {
+		return personnage;
+	}
+
+	public Personne setPersonnage(Personnage personnage) {
+		this.personnage = personnage;
+		return this;
+	}
+
+	public int getNbSpectacleMin() {
+		return nbSpectacleMin;
+	}
+
+	public Personne setId(int id) {
+		this.id = id;
+		return this;
+	}
 	
 }
