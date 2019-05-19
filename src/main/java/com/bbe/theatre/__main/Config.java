@@ -36,7 +36,6 @@ public class Config {
 	public String[] line;
 	public File[] listOfFiles = f.listFiles();	
 	public Map<Personnage, HashSet<Personne>> listePersonnes = new HashMap<>();
-
 	public Map<Integer, Team> listeTeam = new HashMap<>();
 	public Map<AssoDispoPersonnage, HashSet<Personne>> assoDispoPersonnage = new HashMap<>();
 	public int nb_spectacle_total = 0;
@@ -49,8 +48,9 @@ public class Config {
 	public String[] personnages;
 	public String[] doitRencontrer;
 	public String[] neDoitPasRencontrer;
-	public Queue<Map<Integer,  Set<Spectacle>>> listeSemaines_ = new LinkedList<>();
-	public Set<Integer> listeSemaines = new HashSet<>();
+	public Map<Integer,  Set<Spectacle>> listeSpectacleParSemaine = new HashMap<>();
+	public Map<Integer,  Set<Integer>> mapNumSemaineTeamDispo = new HashMap<>();
+	public Queue<Integer> listeSemaines = new LinkedList<>();
 	public String dataBaseName = "simulation"+LocalDateTime.now().toString().substring(2, 19).replace("-", "x").replace(":", "x");
 	public String sqlQueryDatabase = 
 			"CREATE DATABASE IF NOT EXISTS `"+dataBaseName+"` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;\n";

@@ -6,14 +6,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.temporal.WeekFields;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.log4j.Logger;
-
 import com.bbe.theatre.personne.Personnage;
 import com.bbe.theatre.personne.Personne;
 import com.bbe.theatre.spectacle.Spectacle;
@@ -82,7 +77,7 @@ public class Submain_A {
 		//		affichageDispos();
 		affichageTeams();
 		System.out.println(c.listeSemaines);
-		System.out.println(c.listeSemaines_);
+		System.out.println(c.listeSpectacleParSemaine);
 	}
 
 	private void creationPersonne(int idRole) {
@@ -146,19 +141,12 @@ public class Submain_A {
 				
 				if ( ! c.listeSemaines.contains(numeroSemaine)) {
 					c.listeSemaines.add(numeroSemaine);
+					c.listeSpectacleParSemaine.put(numeroSemaine,new HashSet<>());
 				}
+				c.listeSpectacleParSemaine.get(numeroSemaine).add(new Spectacle(t));
+//				listeSpectacles.put(numeroSemaine, listeSpectacles);
 				
-				Map<Integer, Set<Spectacle>> listeSpectacles = new HashMap<>();
-				Set<Spectacle> s = new HashSet<>();
-				s.add(new Spectacle(t));
-				
-				listeSpectacles.put(numeroSemaine, s);
-				
-				c.listeSemaines_.add(listeSpectacles);
-				
-				c.listeSemaines_.forEach((n) -> {
-					n.get(null);
-				});
+//				c.listeSpectacleParSemaine.add(listeSpectacles);
 				
 			}
 		}
