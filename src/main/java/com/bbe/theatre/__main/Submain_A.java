@@ -30,12 +30,13 @@ public class Submain_A {
 		//creation de la DB
 		c.dataBase.update(c.sqlQueryDatabase);
 		c.dataBase.setBaseName(c.dataBaseName);
+		c.dataBase.update(c.sqlQueryDatabase3());
 
 		logger.info("on lit 1 fois les dates de l'utilisateur 0");
 		remplirListeSsemaines();
 
 
-		chargementContraintesJoueursTandem();
+		chargementContraintesJoueurs();
 
 		creationPersonnages();
 
@@ -73,7 +74,7 @@ public class Submain_A {
 		}
 
 		calculTeams();
-		//		affichagePersonnes();
+		affichagePersonnes();
 		//		affichageDispos();
 		affichageTeams();
 		System.out.println(c.listeSemaines);
@@ -83,33 +84,50 @@ public class Submain_A {
 	private void creationPersonne(int idRole) {
 		c.listePersonnes.forEach((personnage, map) -> {
 			if (personnage.getId()==idRole) {
-				c.p = new Personne().setNbSpectacleMin(50)
+				logger.info("Création de l'utilisateur " + c.id);
+				c.p = new Personne().setNbSpectacleMin(Integer.parseInt(c.prop.getProperty(c.id+".nbSpectacleMin").trim()))
 						.setId(c.id).setNomActeur(c.prop.getProperty(c.id+".nom").trim())
-						.setPersonnage(personnage).setPersonneAvecQuiJeDoisJouer(calculDoitRencontrer(c.doitRencontrer))
+						//.setPersonnage(personnage).setPersonneAvecQuiJeDoisJouer(calculDoitRencontrer(c.doitRencontrer))
 						.setPersonneAvecQuiJeNeDoisPasJouer(calculDoitRencontrer(c.neDoitPasRencontrer));
+				c.listePersonnes2.put(c.id, c.p);
 				map.add(c.p);
 			}
 		});		
 	}
 
-	private int calculDoitRencontrer(String[] doitRencontrer) {
-		int idDoitRencontrer = 0;
+	private String calculDoitRencontrer(String[] doitRencontrer) {
+		StringBuilder idDoitRencontrer = new StringBuilder();
+//		idDoitRencontrer.add(new Integer(1));
 		for (int i = 0; i < doitRencontrer.length; i++) {
 			if (doitRencontrer[i].equals(Integer.toString(c.id))) {
-				if (i%2==0) {
-					idDoitRencontrer = Integer.parseInt(doitRencontrer[i+1]);
-				} else if (i%2==1) {
-					idDoitRencontrer = Integer.parseInt(doitRencontrer[i-1]);
-				}
-				
+				//l'id a été trouvé dans la liste
+				c.neDoitPasRencontrer = c.prop.getProperty("neDoitPasRencontrer").trim().split(",");
+				break;
 			}
 		}
-		return idDoitRencontrer;
+		for (String s0 : doitRencontrer) {
+			String[] s1 = s0.trim().replace("{", "").replace("}", "").split(";");
+			for (String s2 : s1) {
+				if (c.id==Integer.parseInt(s2)) {
+					for (String s3 : s1) {
+						if (c.id!=Integer.parseInt(s3)) {
+							if (idDoitRencontrer.toString().equals("")) {
+								idDoitRencontrer.append(s3);
+							}
+							else {
+								idDoitRencontrer.append(","+s3);
+							}
+						}
+					}
+				}
+			}
+		}
+		return idDoitRencontrer.toString();
 	}
 
-	private void chargementContraintesJoueursTandem() {
-		c.doitRencontrer = c.prop.getProperty("DoitRencontrer").trim().replace("{", "").replace("}", "").replace(";", ",").split(",");
-		c.neDoitPasRencontrer = c.prop.getProperty("neDoitPasRencontrer").trim().split(",");
+	private void chargementContraintesJoueurs() {
+//		c.doitRencontrer = c.prop.getProperty("DoitRencontrer").trim().replace("{", "").replace("}", "").replace(";", ",").split(",");
+		c.neDoitPasRencontrer = c.prop.getProperty("neDoitPasRencontrer").trim().replace("{", "").replace("}", "").replace(";", ",").split(",");
 	}
 
 	private void creationPersonnages() {
@@ -247,8 +265,8 @@ public class Submain_A {
 
 
 
-		System.out.println(c.sb.toString());
-		//		System.out.println(c.dataBase.select(c.sb.toString()));
+//		System.out.println(c.sb.toString());
+				System.out.println(c.dataBase.select(c.sb.toString()));
 
 
 	}
@@ -276,21 +294,18 @@ public class Submain_A {
 			}else {
 				c.sb.append( " CROSS JOIN "+personnage.getNom());	
 			}
-		});		
-
-		c.id = 0;
-
-		c.sb.append( " WHERE ");
-		c.listePersonnes.forEach((personnage, mapPersonnes) -> {
-			mapPersonnes.forEach((p) -> {
-				if (p.getPersonneAvecQuiJeDoisJouer()==0) {
-
-				}
-			});
-		});	
+		});
 
 	}
-
+	
+	private void affichagePersonnes() {
+		logger.info("Affichage de la fine équipe");
+		c.listePersonnes.forEach((personnage, mapPersonnes) -> {
+			System.out.print(personnage+" ");
+			System.out.println(mapPersonnes);
+		});		
+	}
+	
 }
 
 
@@ -304,12 +319,5 @@ private void affichageDispos() {
 		System.out.println();
 	});			
 }
-
-private void affichagePersonnes() {
-	logger.info("Affichage de la fine équipe");
-	c.listePersonnes.forEach((personnage, mapPersonnes) -> {
-		System.out.print(personnage+" ");
-		System.out.println(mapPersonnes);
-	});		
-}
  */
+

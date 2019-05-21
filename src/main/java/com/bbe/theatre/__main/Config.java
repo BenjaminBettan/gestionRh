@@ -36,6 +36,7 @@ public class Config {
 	public String[] line;
 	public File[] listOfFiles = f.listFiles();	
 	public Map<Personnage, HashSet<Personne>> listePersonnes = new HashMap<>();
+	public Map<Integer, Personne> listePersonnes2 = new HashMap<>();
 	public Map<Integer, Team> listeTeam = new HashMap<>();
 	public Map<AssoDispoPersonnage, HashSet<Personne>> assoDispoPersonnage = new HashMap<>();
 	public int nb_spectacle_total = 0;
@@ -46,7 +47,6 @@ public class Config {
 	public CSVReader reader;
 	public StringBuilder sb;
 	public String[] personnages;
-	public String[] doitRencontrer;
 	public String[] neDoitPasRencontrer;
 	public Map<Integer,  Set<Spectacle>> listeSpectacleParSemaine = new HashMap<>();
 	public Map<Integer,  Set<Integer>> mapNumSemaineTeamDispo = new HashMap<>();
@@ -59,6 +59,14 @@ public class Config {
 		String s = "CREATE TABLE IF NOT EXISTS `"+nomUserTable+"` (\n"
 				+"  `id_unique` int(3) NOT NULL AUTO_INCREMENT,\n"
 				+"  `id_personne` varchar(3) NOT NULL,\n"
+				+"  UNIQUE KEY `id_unique` (`id_unique`)\n"
+				+") ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;";
+		return s;
+	} 
+	
+	public String sqlQueryDatabase3(){
+		String s = "CREATE TABLE IF NOT EXISTS `listeEquipe` (\n"
+				+"  `id_unique` int(3) NOT NULL AUTO_INCREMENT,\n"
 				+"  UNIQUE KEY `id_unique` (`id_unique`)\n"
 				+") ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;";
 		return s;

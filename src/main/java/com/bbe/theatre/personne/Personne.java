@@ -9,23 +9,23 @@ public class Personne {
 	private String nomActeur;
 	private Personnage personnage;
 	
-	private int personneAvecQuiJeDoisJouer = 0;
-	private int personneAvecQuiJeNeDoisPasJouer = 0;
+	private String personneAvecQuiJeDoisJouer ="";
+	private String personneAvecQuiJeNeDoisPasJouer ="";
 
-	public int getPersonneAvecQuiJeDoisJouer() {
+	public String getPersonneAvecQuiJeDoisJouer() {
 		return personneAvecQuiJeDoisJouer;
 	}
 
-	public Personne setPersonneAvecQuiJeDoisJouer(int personneAvecQuiJeDoisJouer) {
+	public Personne setPersonneAvecQuiJeDoisJouer(String personneAvecQuiJeDoisJouer) {
 		this.personneAvecQuiJeDoisJouer = personneAvecQuiJeDoisJouer;
 		return this;
 	}
 
-	public int getPersonneAvecQuiJeNeDoisPasJouer() {
+	public String getPersonneAvecQuiJeNeDoisPasJouer() {
 		return personneAvecQuiJeNeDoisPasJouer;
 	}
 
-	public Personne setPersonneAvecQuiJeNeDoisPasJouer(int personneAvecQuiJeNeDoisPasJouer) {
+	public Personne setPersonneAvecQuiJeNeDoisPasJouer(String personneAvecQuiJeNeDoisPasJouer) {
 		this.personneAvecQuiJeNeDoisPasJouer = personneAvecQuiJeNeDoisPasJouer;
 		return this;
 	}
