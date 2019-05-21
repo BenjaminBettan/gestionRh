@@ -30,7 +30,7 @@ public class Submain_A {
 		//creation de la DB
 		c.dataBase.update(c.sqlQueryDatabase);
 		c.dataBase.setBaseName(c.dataBaseName);
-		c.dataBase.update(c.sqlQueryDatabase3());
+		c.dataBase.update(c.sqlQuery3());
 
 		logger.info("on lit 1 fois les dates de l'utilisateur 0");
 		remplirListeSsemaines();
@@ -85,7 +85,7 @@ public class Submain_A {
 		c.listePersonnes.forEach((personnage, map) -> {
 			if (personnage.getId()==idRole) {
 				logger.info("Création de l'utilisateur " + c.id);
-				c.p = new Personne().setNbSpectacleMin(Integer.parseInt(c.prop.getProperty(c.id+".nbSpectacleMin").trim()))
+				c.p = new Personne().setNbSpectacleMin(Integer.parseInt(c.prop.getProperty(c.id+".nbSpectacle").trim()))
 						.setId(c.id).setNomActeur(c.prop.getProperty(c.id+".nom").trim())
 						//.setPersonnage(personnage).setPersonneAvecQuiJeDoisJouer(calculDoitRencontrer(c.doitRencontrer))
 						.setPersonneAvecQuiJeNeDoisPasJouer(calculDoitRencontrer(c.neDoitPasRencontrer));
@@ -97,7 +97,6 @@ public class Submain_A {
 
 	private String calculDoitRencontrer(String[] doitRencontrer) {
 		StringBuilder idDoitRencontrer = new StringBuilder();
-//		idDoitRencontrer.add(new Integer(1));
 		for (int i = 0; i < doitRencontrer.length; i++) {
 			if (doitRencontrer[i].equals(Integer.toString(c.id))) {
 				//l'id a été trouvé dans la liste
@@ -126,7 +125,7 @@ public class Submain_A {
 	}
 
 	private void chargementContraintesJoueurs() {
-//		c.doitRencontrer = c.prop.getProperty("DoitRencontrer").trim().replace("{", "").replace("}", "").replace(";", ",").split(",");
+//		c.doitRencontrer =
 		c.neDoitPasRencontrer = c.prop.getProperty("neDoitPasRencontrer").trim().replace("{", "").replace("}", "").replace(";", ",").split(",");
 	}
 
@@ -251,7 +250,7 @@ public class Submain_A {
 		logger.info("Calcul des permutations d'equipes");
 
 		c.listePersonnes.forEach((personnage, mapPersonnes) -> {
-			c.dataBase.update(c.sqlQueryDatabase2(personnage.getNom()));
+			c.dataBase.update(c.sqlQuery2(personnage.getNom()));
 
 		});
 		c.listePersonnes.forEach((personnage, mapPersonnes) -> {

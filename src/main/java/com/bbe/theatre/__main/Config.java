@@ -55,7 +55,7 @@ public class Config {
 	public String sqlQueryDatabase = 
 			"CREATE DATABASE IF NOT EXISTS `"+dataBaseName+"` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;\n";
 	
-	public String sqlQueryDatabase2(String nomUserTable){
+	public String sqlQuery2(String nomUserTable){
 		String s = "CREATE TABLE IF NOT EXISTS `"+nomUserTable+"` (\n"
 				+"  `id_unique` int(3) NOT NULL AUTO_INCREMENT,\n"
 				+"  `id_personne` varchar(3) NOT NULL,\n"
@@ -64,7 +64,7 @@ public class Config {
 		return s;
 	} 
 	
-	public String sqlQueryDatabase3(){
+	public String sqlQuery3(){
 		String s = "CREATE TABLE IF NOT EXISTS `listeEquipe` (\n"
 				+"  `id_unique` int(3) NOT NULL AUTO_INCREMENT,\n"
 				+"  UNIQUE KEY `id_unique` (`id_unique`)\n"
