@@ -48,6 +48,7 @@ public class Config {
 	public StringBuilder sb;
 	public String[] personnages;
 	public String[] neDoitPasRencontrer;
+	public String[] neDoitPasRencontrer2;
 	public Map<Integer,  Set<Spectacle>> listeSpectacleParSemaine = new HashMap<>();
 	public Map<Integer,  Set<Integer>> mapNumSemaineTeamDispo = new HashMap<>();
 	public Queue<Integer> listeSemaines = new LinkedList<>();

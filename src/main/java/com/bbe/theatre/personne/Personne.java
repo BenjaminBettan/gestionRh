@@ -38,10 +38,14 @@ public class Personne {
 		return id;
 	}
 	
+	
+
 	@Override
 	public String toString() {
-		return "Personne [id=" + id + ", nbDateCourant=" + nbDateCourant + ", nomActeur=" + nomActeur + ", nbSpectacleMin="
-				+ nbSpectacleMin + ", personnage=" + personnage + "]";
+		return "Personne [id=" + id + ", nbDateCourant=" + nbDateCourant + ", nbSpectacleMin=" + nbSpectacleMin
+				+ ", nomActeur=" + nomActeur + ", personnage=" + personnage.getNom() + ", personneAvecQuiJeDoisJouer="
+				+ personneAvecQuiJeDoisJouer + ", personneAvecQuiJeNeDoisPasJouer=" + personneAvecQuiJeNeDoisPasJouer
+				+ "]";
 	}
 
 	public Personne setNbSpectacleMin(int nbSpectacleMin) {

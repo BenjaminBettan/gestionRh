@@ -8,7 +8,9 @@ import java.time.LocalDateTime;
 import java.time.temporal.WeekFields;
 import java.util.HashSet;
 import java.util.Locale;
+
 import org.apache.log4j.Logger;
+
 import com.bbe.theatre.personne.Personnage;
 import com.bbe.theatre.personne.Personne;
 import com.bbe.theatre.spectacle.Spectacle;
@@ -34,7 +36,6 @@ public class Submain_A {
 
 		logger.info("on lit 1 fois les dates de l'utilisateur 0");
 		remplirListeSsemaines();
-
 
 		chargementContraintesJoueurs();
 
@@ -74,11 +75,28 @@ public class Submain_A {
 		}
 
 		calculTeams();
+		c.listePersonnes2.forEach((id, personne) -> {
+			if ( ! personne.getPersonneAvecQuiJeNeDoisPasJouer().equals("")) {
+				String[] p = personne.getPersonneAvecQuiJeNeDoisPasJouer().split(",");
+				c.dataBase.update("UPDATE LISTEEQUIPE SET OK='T' WHERE OK='1' AND " + personne.getPersonnage().getNom() +" ='" + personne.getId()+"';");
+				for (String string : p) {
+					c.dataBase.update("UPDATE LISTEEQUIPE SET OK='0' WHERE OK='T' AND " + c.listePersonnes2.get(Integer.parseInt(string)).getPersonnage().getNom() +" ='" + string +"';");
+				}
+				c.dataBase.update("UPDATE LISTEEQUIPE SET OK='1' WHERE OK='T';");
+			}
+		});
+
+		affichage();
+		
+		
+	}
+
+	private void affichage() {
 		affichagePersonnes();
-		//		affichageDispos();
-		affichageTeams();
-		System.out.println(c.listeSemaines);
-		System.out.println(c.listeSpectacleParSemaine);
+//		affichageDispos();
+//		affichageTeams();
+//		System.out.println(c.listeSemaines);
+//		System.out.println(c.listeSpectacleParSemaine);		
 	}
 
 	private void creationPersonne(int idRole) {
@@ -87,6 +105,7 @@ public class Submain_A {
 				logger.info("Création de l'utilisateur " + c.id);
 				c.p = new Personne().setNbSpectacleMin(Integer.parseInt(c.prop.getProperty(c.id+".nbSpectacle").trim()))
 						.setId(c.id).setNomActeur(c.prop.getProperty(c.id+".nom").trim())
+						.setPersonnage(personnage)
 						//.setPersonnage(personnage).setPersonneAvecQuiJeDoisJouer(calculDoitRencontrer(c.doitRencontrer))
 						.setPersonneAvecQuiJeNeDoisPasJouer(calculDoitRencontrer(c.neDoitPasRencontrer));
 				c.listePersonnes2.put(c.id, c.p);
@@ -97,35 +116,40 @@ public class Submain_A {
 
 	private String calculDoitRencontrer(String[] doitRencontrer) {
 		StringBuilder idDoitRencontrer = new StringBuilder();
+		boolean b = false;
 		for (int i = 0; i < doitRencontrer.length; i++) {
 			if (doitRencontrer[i].equals(Integer.toString(c.id))) {
 				//l'id a été trouvé dans la liste
-				c.neDoitPasRencontrer = c.prop.getProperty("neDoitPasRencontrer").trim().split(",");
+				b = true;
+				c.neDoitPasRencontrer2 = c.prop.getProperty("neDoitPasRencontrer").trim().split(",");
 				break;
 			}
 		}
-		for (String s0 : doitRencontrer) {
-			String[] s1 = s0.trim().replace("{", "").replace("}", "").split(";");
-			for (String s2 : s1) {
-				if (c.id==Integer.parseInt(s2)) {
-					for (String s3 : s1) {
-						if (c.id!=Integer.parseInt(s3)) {
-							if (idDoitRencontrer.toString().equals("")) {
-								idDoitRencontrer.append(s3);
-							}
-							else {
-								idDoitRencontrer.append(","+s3);
+		if (b) {
+			for (String s0 : c.neDoitPasRencontrer2) {
+				String[] s1 = s0.trim().replace("{", "").replace("}", "").split(";");
+				for (String s2 : s1) {
+					if (c.id==Integer.parseInt(s2)) {
+						for (String s3 : s1) {
+							if (c.id!=Integer.parseInt(s3)) {
+								if (idDoitRencontrer.toString().equals("")) {
+									idDoitRencontrer.append(s3);
+								}
+								else {
+									idDoitRencontrer.append(","+s3);
+								}
 							}
 						}
 					}
 				}
 			}
 		}
+
 		return idDoitRencontrer.toString();
 	}
 
 	private void chargementContraintesJoueurs() {
-//		c.doitRencontrer =
+		//		c.doitRencontrer =
 		c.neDoitPasRencontrer = c.prop.getProperty("neDoitPasRencontrer").trim().replace("{", "").replace("}", "").replace(";", ",").split(",");
 	}
 
@@ -133,9 +157,20 @@ public class Submain_A {
 		c.personnages = c.prop.getProperty("listePersonnage").trim().split(",");
 
 		for (int i = 0; i < c.personnages.length; i++) {
+			String s;
 			Personnage p = new Personnage(i,c.personnages[i]);
 			c.listePersonnes.put(p, new HashSet<>());
-		}		
+			if (i==0) {
+				s = "id_unique";
+			}
+			else {
+				s = c.personnages[i-1];
+			}
+			c.dataBase.update("ALTER TABLE `listeequipe` ADD `"+c.personnages[i]+"` VARCHAR(2) NOT NULL AFTER `"+s+"`;");
+			//			ALTER TABLE `listeequipe` ADD `jonathan` VARCHAR(2) NOT NULL AFTER `s`;
+
+		}
+		c.dataBase.update("ALTER TABLE `listeequipe` ADD `ok` VARCHAR(1) NOT NULL AFTER `"+c.personnages[c.personnages.length-1]+"`;");
 	}
 
 	/** permet de remplir la map listeSpectacle
@@ -144,7 +179,7 @@ public class Submain_A {
 	private void remplirListeSsemaines() throws IOException {
 		chargeFichierDate();
 		String[] listeDates = c.sb.toString().split("\n");
-		
+
 		for (String l : listeDates) {
 			String[] listesDates_ = l.split(";");
 
@@ -155,27 +190,27 @@ public class Submain_A {
 						Integer.parseInt(listesDates_[0].split("/")[0]), 
 						Integer.parseInt(listesDates_[1]) > 1 ?  (j == 0 ? 16 : 21 ) : 21 , 0);
 				int numeroSemaine = t.get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
-				
+
 				if ( ! c.listeSemaines.contains(numeroSemaine)) {
 					c.listeSemaines.add(numeroSemaine);
 					c.listeSpectacleParSemaine.put(numeroSemaine,new HashSet<>());
 				}
 				c.listeSpectacleParSemaine.get(numeroSemaine).add(new Spectacle(t));
-//				listeSpectacles.put(numeroSemaine, listeSpectacles);
-				
-//				c.listeSpectacleParSemaine.add(listeSpectacles);
-				
+				//				listeSpectacles.put(numeroSemaine, listeSpectacles);
+
+				//				c.listeSpectacleParSemaine.add(listeSpectacles);
+
 			}
 		}
-		
-		
-//		c.listeSemaines.forEach((numeroSemaine) -> {
-//			c.listeSpectacles.forEach((id,s) -> {
-//				if (s.getNumSemaine()==numeroSemaine) {
-//					
-//				}
-//			});
-//		});
+
+
+		//		c.listeSemaines.forEach((numeroSemaine) -> {
+		//			c.listeSpectacles.forEach((id,s) -> {
+		//				if (s.getNumSemaine()==numeroSemaine) {
+		//					
+		//				}
+		//			});
+		//		});
 
 	}
 
@@ -253,6 +288,7 @@ public class Submain_A {
 			c.dataBase.update(c.sqlQuery2(personnage.getNom()));
 
 		});
+		
 		c.listePersonnes.forEach((personnage, mapPersonnes) -> {
 
 			for (Personne personne : mapPersonnes) {
@@ -264,26 +300,36 @@ public class Submain_A {
 
 
 
-//		System.out.println(c.sb.toString());
-				System.out.println(c.dataBase.select(c.sb.toString()));
+		String[] result = c.dataBase.select(c.sb.toString()).split("\n");
+		
+		for (String s : result) {
+			c.sb = new StringBuilder("INSERT INTO `listeequipe` VALUES (NULL, ");
+			String[] result2 = s.split("/");
+			for (String s2 : result2) {
+				c.sb.append("'"+s2+"',");
+			}
+			c.dataBase.update(c.sb.toString().substring(0, c.sb.toString().length()-1)+",'1');");
+		}
 
-
+		//
+		
 	}
 
 	private void calculDuCrossJoin() {
 		c.sb = new StringBuilder("SELECT ");
 		c.id = 0;
-
-		c.listePersonnes.forEach((personnage, mapPersonnes) -> {
+		for (String s : c.personnages) {
 			if (c.id==0) {
-				c.sb.append(personnage.getNom()+".id_personne as "+personnage.getNom());
+				c.sb.append(s+".id_personne as "+s);
 				c.id++;
 			}else {
-				c.sb.append(", "+personnage.getNom()+".id_personne as "+personnage.getNom());
+				c.sb.append(", "+s+".id_personne as "+s);
 			}
-
-		});
-
+		}
+		
+		
+		
+		
 		c.id = 0;
 
 		c.listePersonnes.forEach((personnage, mapPersonnes) -> {
@@ -296,15 +342,14 @@ public class Submain_A {
 		});
 
 	}
-	
+
 	private void affichagePersonnes() {
 		logger.info("Affichage de la fine équipe");
-		c.listePersonnes.forEach((personnage, mapPersonnes) -> {
-			System.out.print(personnage+" ");
-			System.out.println(mapPersonnes);
-		});		
+		c.listePersonnes2.forEach((id, p) -> {
+			System.out.println(p);
+		});
 	}
-	
+
 }
 
 
