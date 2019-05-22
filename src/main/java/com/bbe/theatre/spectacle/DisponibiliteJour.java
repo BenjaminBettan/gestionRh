@@ -2,6 +2,7 @@ package com.bbe.theatre.spectacle;
 
 import java.time.LocalDateTime;
 
+import com.bbe.theatre._enum.DISPO;
 import com.bbe.theatre.personne.Personnage;
 import com.bbe.theatre.personne.Personne;
 
@@ -9,7 +10,9 @@ public class DisponibiliteJour {
 	
 	private Personne personne;
 	private LocalDateTime idDate;
+	private int numSemaine;
 	private Personnage personnage;
+	private DISPO dispo;
 
 	public DisponibiliteJour setIdDate(LocalDateTime idDate) {
 		this.idDate = idDate;
@@ -21,11 +24,13 @@ public class DisponibiliteJour {
 		return this;
 	}
 
-	public DisponibiliteJour(Personne personne, LocalDateTime idDate, Personnage personnage) {
+	public DisponibiliteJour(Personne personne, LocalDateTime idDate, Personnage personnage, DISPO dispoForte, int numSemaine) {
 		super();
 		this.personne = personne;
 		this.idDate = idDate;
 		this.personnage = personnage;
+		this.dispo=dispoForte;
+		this.numSemaine = numSemaine;
 	}
 	
 	public Personne getPersonne() {
@@ -76,5 +81,13 @@ public class DisponibiliteJour {
 			return false;
 		return true;
 	}
-	
+
+	public DISPO getDispo() {
+		return dispo;
+	}
+
+	public int getNumSemaine() {
+		return numSemaine;
+	}
+
 }
