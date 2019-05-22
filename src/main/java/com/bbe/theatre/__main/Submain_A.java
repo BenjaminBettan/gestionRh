@@ -116,32 +116,9 @@ public class Submain_A {
 
 	private String calculDoitRencontrer(String[] doitRencontrer) {
 		StringBuilder idDoitRencontrer = new StringBuilder();
-		boolean b = false;
-		for (int i = 0; i < doitRencontrer.length; i++) {
-			if (doitRencontrer[i].equals(Integer.toString(c.id))) {
-				//l'id a été trouvé dans la liste
-				b = true;
-				c.neDoitPasRencontrer2 = c.prop.getProperty("neDoitPasRencontrer").trim().split(",");
-				break;
-			}
-		}
-		if (b) {
-			for (String s0 : c.neDoitPasRencontrer2) {
-				String[] s1 = s0.trim().replace("{", "").replace("}", "").split(";");
-				for (String s2 : s1) {
-					if (c.id==Integer.parseInt(s2)) {
-						for (String s3 : s1) {
-							if (c.id!=Integer.parseInt(s3)) {
-								if (idDoitRencontrer.toString().equals("")) {
-									idDoitRencontrer.append(s3);
-								}
-								else {
-									idDoitRencontrer.append(","+s3);
-								}
-							}
-						}
-					}
-				}
+		for (String string : doitRencontrer) {
+			if (c.id==Integer.parseInt(string.trim().split(";")[0].trim())) {
+				idDoitRencontrer.append(string.trim().split(";")[1].trim()+",");
 			}
 		}
 
@@ -150,7 +127,7 @@ public class Submain_A {
 
 	private void chargementContraintesJoueurs() {
 		//		c.doitRencontrer =
-		c.neDoitPasRencontrer = c.prop.getProperty("neDoitPasRencontrer").trim().replace("{", "").replace("}", "").replace(";", ",").split(",");
+		c.neDoitPasRencontrer = c.prop.getProperty("neDoitPasRencontrer").trim().replace("{", "").replace("}", "").split(",");
 	}
 
 	private void creationPersonnages() {
