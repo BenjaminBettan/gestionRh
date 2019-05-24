@@ -16,6 +16,7 @@ import com.bbe.theatre.DataBase;
 import com.bbe.theatre.personne.Personnage;
 import com.bbe.theatre.personne.Personne;
 import com.bbe.theatre.spectacle.DisponibiliteJour;
+import com.bbe.theatre.spectacle.Semaine;
 import com.bbe.theatre.spectacle.Spectacle;
 import com.bbe.theatre.spectacle.Team;
 
@@ -56,6 +57,7 @@ public class Config {
 	public Map<Integer, Team> listeTeam = new HashMap<>();
 	public Map<Integer,  Set<Spectacle>> listeSpectacleParSemaine = new HashMap<>();
 	public Map<Integer, List<DisponibiliteJour>> dispos = new HashMap<>();
+	public Map<Integer, Semaine> semaines = new HashMap<>();
 	public Queue<Integer> listeSemaines = new LinkedList<>();
 
 

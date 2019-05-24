@@ -7,9 +7,11 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -17,7 +19,9 @@ import com.bbe.theatre._enum.DISPO;
 import com.bbe.theatre.personne.Personnage;
 import com.bbe.theatre.personne.Personne;
 import com.bbe.theatre.spectacle.DisponibiliteJour;
+import com.bbe.theatre.spectacle.Semaine;
 import com.bbe.theatre.spectacle.Spectacle;
+import com.bbe.theatre.spectacle.Team;
 import com.mysql.jdbc.DatabaseMetaData;
 import com.mysql.jdbc.ResultSet;
 
@@ -46,15 +50,29 @@ public class Submain_A {
 
 		creationPersonnages();
 
-		initPersonne();
+		creationPersonnes();
 
 		calculTeams();
-
+		
+		c.listeSemaines.forEach((numSemaine) -> {
+			c.semaines.put(numSemaine, new Semaine());
+			});
+		
+		
+		
+//		List<DisponibiliteJour> l = c.dispos.get(numSemaine);
+//		l.forEach((dispo) -> {
+//			c.listePersonnes.forEach((personnage,personne) -> {
+//				
+//			});
+//		});
+		
+		
 		affichage();
 
 	}
 
-	private void initPersonne() throws IOException {
+	private void creationPersonnes() throws IOException {
 		for (c.id = 0; c.id < Integer.parseInt(c.prop.getProperty("effectifComediens").trim()); c.id++) {
 			creationPersonne();
 			chargeFichierDateDeCettePersonne();
@@ -225,13 +243,11 @@ public class Submain_A {
 					else {
 						d = new DisponibiliteJour(c.p, t,c.personnage,DISPO.MOYEN_DISPO,numeroSemaine);
 					}
-					System.out.println(numeroSemaine);
 					List<DisponibiliteJour> ld = c.dispos.get(numeroSemaine);
 					ld.add(d);
 				}
 			}
 		}
-
 	}
 
 	private void affichageTeams() {
@@ -279,7 +295,17 @@ public class Submain_A {
 				}
 				c.dataBase.update("UPDATE LISTEEQUIPE SET OK='1' WHERE OK='T';");
 			}
-		});		
+		});
+		String[] l = c.dataBase.select("SELECT * FROM LISTEEQUIPE WHERE OK=1;").split("\n");
+		for (String s : l) {
+			
+			String[] s2 = s.split("/");
+			Map<Personnage, Personne> teamPourLeSpectacle = new HashMap<>();
+			for (int i = 1; i < s2.length - 1; i++) {
+				teamPourLeSpectacle.put(c.listePersonnes2.get(Integer.parseInt(s2[i])).getPersonnage(), c.listePersonnes2.get(Integer.parseInt(s2[i])));
+			}
+			c.listeTeam.put(Integer.parseInt(s2[0]), new Team(Integer.parseInt(s2[0]),teamPourLeSpectacle));
+		}
 	}
 
 	private void calculDuCrossJoin() {
