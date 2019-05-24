@@ -6,11 +6,17 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.temporal.WeekFields;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
+
 import org.apache.log4j.Logger;
+
+import com.bbe.theatre._enum.DISPO;
 import com.bbe.theatre.personne.Personnage;
 import com.bbe.theatre.personne.Personne;
+import com.bbe.theatre.spectacle.DisponibiliteJour;
 import com.bbe.theatre.spectacle.Spectacle;
 import com.mysql.jdbc.DatabaseMetaData;
 import com.mysql.jdbc.ResultSet;
@@ -113,6 +119,7 @@ public class Submain_A {
 	 */
 	private void remplirListeSemaines() throws IOException {
 		chargeFichierDateDeCettePersonne();//utilisateur 0
+		c.test = true;
 		String[] listeDates = c.sb.toString().split("\n");
 
 		for (String l : listeDates) {
@@ -130,7 +137,7 @@ public class Submain_A {
 				if ( ! c.listeSemaines.contains(numeroSemaine)) {
 					c.listeSemaines.add(numeroSemaine);
 					c.listeSpectacleParSemaine.put(numeroSemaine,new HashSet<>());
-//					c.dispos.add(numeroSemaine, new HashMap<>());
+					c.dispos.put(numeroSemaine, new ArrayList<>() );
 				}
 
 				c.listeSpectacleParSemaine.get(numeroSemaine).add(new Spectacle(t));
@@ -194,43 +201,37 @@ public class Submain_A {
 
 			c.sb.append(c.line[0].trim()+";"+c.line[1].trim()+";"+c.line[2].trim()+";"+c.line[3].trim()+";"+c.line[4].trim()+";"+c.line[5].trim()+";\n");
 		}
+		if (c.test) {
+			String[] listeDates = c.sb.toString().split("\n");
+			for (String l : listeDates) {
+				String[] listesDates_ = l.split(";");
 
-		/*
-		String[] listeDates = c.sb.toString().split("\n");
-		for (String l : listeDates) {
-			String[] listesDates_ = l.split(";");
+				for (int j = 0; j < Integer.parseInt(listesDates_[1]); j++) {
 
-			for (int j = 0; j < Integer.parseInt(listesDates_[1]); j++) {
+					LocalDateTime t = LocalDateTime.of(Integer.parseInt("20"+listesDates_[0].split("/")[2]), 
+							Integer.parseInt(listesDates_[0].split("/")[1]), 
+							Integer.parseInt(listesDates_[0].split("/")[0]), 
+							Integer.parseInt(listesDates_[1]) > 1 ?  (j == 0 ? 16 : 21 ) : 21 , 0);
+					int numeroSemaine = t.get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
 
-				LocalDateTime t = LocalDateTime.of(Integer.parseInt("20"+listesDates_[0].split("/")[2]), 
-						Integer.parseInt(listesDates_[0].split("/")[1]), 
-						Integer.parseInt(listesDates_[0].split("/")[0]), 
-						Integer.parseInt(listesDates_[1]) > 1 ?  (j == 0 ? 16 : 21 ) : 21 , 0);
-				int numeroSemaine = t.get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
+					DisponibiliteJour d;
 
-				DisponibiliteJour d;
-
-				if (listesDates_[2].equals("1")) {
-					d = new DisponibiliteJour(c.p, t,c.personnage,DISPO.DISPO,numeroSemaine);
+					if (listesDates_[2].equals("1")) {
+						d = new DisponibiliteJour(c.p, t,c.personnage,DISPO.DISPO,numeroSemaine);
+					}
+					else if (listesDates_[2].equals("0")) {
+						d = new DisponibiliteJour(c.p, t,c.personnage,DISPO.PAS_DISPO,numeroSemaine);
+					}
+					else {
+						d = new DisponibiliteJour(c.p, t,c.personnage,DISPO.MOYEN_DISPO,numeroSemaine);
+					}
+					System.out.println(numeroSemaine);
+					List<DisponibiliteJour> ld = c.dispos.get(numeroSemaine);
+					ld.add(d);
 				}
-				else if (listesDates_[2].equals("0")) {
-					d = new DisponibiliteJour(c.p, t,c.personnage,DISPO.PAS_DISPO,numeroSemaine);
-				}
-				else {
-					d = new DisponibiliteJour(c.p, t,c.personnage,DISPO.MOYEN_DISPO,numeroSemaine);
-				}
-
-				Map<Integer, DisponibiliteJour> m = c.dispos.get(numeroSemaine);
-
-				if (m==null) {
-					m = new HashMap<>();
-				}
-
-				m.put(numeroSemaine, d);
-				c.dispos.put(numeroSemaine, m);
-
 			}
-		}*/
+		}
+
 	}
 
 	private void affichageTeams() {
@@ -321,8 +322,9 @@ public class Submain_A {
 		affichageTeams();
 		logger.debug(c.listeSemaines);
 		logger.debug(c.listeSpectacleParSemaine);
-		c.dispos.forEach((p) -> {
-			System.out.println(p);
+		c.dispos.forEach((numSemaine, dispo) -> {
+			System.out.println(numSemaine);
+			System.out.println(dispo);
 		});
 	}
 

@@ -4,6 +4,7 @@ import java.io.File;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Queue;
@@ -48,12 +49,13 @@ public class Config {
 	public Personnage personnage;
 	public Properties prop = new Properties();
 	public CSVReader reader;
+	public boolean test = false;
 	
 	public Map<Personnage, Set<Personne>> listePersonnes = new HashMap<>();
 	public Map<Integer, Personne> listePersonnes2 = new HashMap<>();
 	public Map<Integer, Team> listeTeam = new HashMap<>();
 	public Map<Integer,  Set<Spectacle>> listeSpectacleParSemaine = new HashMap<>();
-	public Queue<Map<Integer, DisponibiliteJour>> dispos = new LinkedList<>();
+	public Map<Integer, List<DisponibiliteJour>> dispos = new HashMap<>();
 	public Queue<Integer> listeSemaines = new LinkedList<>();
 
 
