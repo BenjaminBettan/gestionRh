@@ -251,7 +251,7 @@ public class Submain_A {
 
 	private void affichageTeams() {
 		logger.debug("Affichage des teams");
-		c.listeTeam.forEach((i, team) -> {
+		Config.listeTeam.forEach((i, team) -> {
 			logger.debug(i+" ");
 			logger.debug(team);
 		});	
@@ -303,7 +303,7 @@ public class Submain_A {
 			for (int i = 1; i < s2.length - 1; i++) {
 				teamPourLeSpectacle.put(c.listePersonnes2.get(Integer.parseInt(s2[i])).getPersonnage(), c.listePersonnes2.get(Integer.parseInt(s2[i])));
 			}
-			c.listeTeam.put(Integer.parseInt(s2[0]), new Team(Integer.parseInt(s2[0]),teamPourLeSpectacle));
+			Config.listeTeam.put(Integer.parseInt(s2[0]), new Team(Integer.parseInt(s2[0]),teamPourLeSpectacle));
 		}
 		
 		Config.listeSemaines.forEach((numSemaine) -> {
@@ -332,7 +332,7 @@ public class Submain_A {
 				}
 			});
 			
-			c.listeTeam.forEach((idTeam,t) -> {
+			Config.listeTeam.forEach((idTeam,t) -> {
 				c.addTeam = true;
 				t.getTeamPourLeSpectacle().forEach((idpers,pers2) -> {
 					if ( ! pers2.estDispoCetteSemaine() ) {

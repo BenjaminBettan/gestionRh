@@ -18,7 +18,7 @@ public class Planning {
 	private Map<Integer, Semaine> semaines = new HashMap<>();
 	private int critere1 = -1;
 	private int critere2 = -1;
-	private int i = 0;
+	private int i,compt = 0;
 	private List<Semaine> semainesNonLockees = new ArrayList<>();
 
 	public Map<Integer, Semaine> getSemaines() {
@@ -71,12 +71,34 @@ public class Planning {
 	
 	private int calculEccartType() {
 		int compteur = 0;
-		for (int i = 0 ; i < Config.listeSemaines.size() - 1; i++) {
-//			equipeCourante = semaines.get(Config.listeSemaines)
+		for (int j = 0 ; j < Config.listeSemaines.size() - 1; j++) {
+			int equipeCourante = semaines.get(Config.listeSemaines.get(j)).getIdTeam();
+			int equipeSuivante = semaines.get(Config.listeSemaines.get(j+1)).getIdTeam();
+			
+			compteur += calculEccartType(equipeCourante,equipeSuivante);
+			
 		}
 		return compteur;
 	}
 	
+	private int calculEccartType(int equipeCourante, int equipeSuivante) {
+		Team eCourante = Config.listeTeam.get(equipeCourante);
+		Team eSuivante = Config.listeTeam.get(equipeSuivante);
+		compt = 0;
+		
+		eCourante.getTeamPourLeSpectacle().forEach( (personnage,p) -> {
+			eSuivante.getTeamPourLeSpectacle().forEach( (personnage2,p2) -> {
+				if (personnage.getNom().equals(personnage2.getNom())) {
+					if (p.getId()!=p2.getId()) {
+						compt++;
+					}
+				}
+			});
+		});
+		
+		return compt;
+	}
+
 	public int calculCritere2() {
 		switch (CRITERE.CRITERE_2.getIntitule()) {
 		case NB_SPECTACLE_MIN :
@@ -147,7 +169,5 @@ public class Planning {
 		}
 		return critere2;
 	}
-	
-	
 	
 }

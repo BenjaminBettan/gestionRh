@@ -1,15 +1,13 @@
 package com.bbe.theatre.__main;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Queue;
 import java.util.Set;
 
 import org.apache.log4j.PropertyConfigurator;
@@ -27,7 +25,9 @@ import au.com.bytecode.opencsv.CSVReader;
 public class Config {
 	public static Properties prop;
 	public static boolean testPlaning1 = false;
-	public static Queue<Integer> listeSemaines = new LinkedList<>();
+	public static List<Integer> listeSemaines = new ArrayList<>();
+	public static Map<Integer, Team> listeTeam = new HashMap<>();
+
 	static {
 		PropertyConfigurator.configure("log4j.properties");
 		prop = new Properties();
@@ -52,7 +52,6 @@ public class Config {
 	public DataBase dataBase;
 	
 	public StringBuilder sb;
-	public static String f1;
 	public String f2 = "src\\main\\resources\\dates\\";
 	public String dataBaseName = "simulation"+LocalDateTime.now().toString().substring(2, 19).replace("-", "x").replace(":", "x");
 	public String sqlQueryDatabase = 
@@ -61,8 +60,6 @@ public class Config {
 	public String[] neDoitPasRencontrer;
 	public String[] line;
 
-	public File f = new File(f1);
-	public File[] listOfFiles = f.listFiles();
 	public Personne p;
 	public Personnage personnage;
 	public CSVReader reader;
@@ -70,7 +67,6 @@ public class Config {
 	
 	public Map<Personnage, Set<Personne>> listePersonnes = new HashMap<>();
 	public Map<Integer, Personne> listePersonnes2 = new HashMap<>();
-	public Map<Integer, Team> listeTeam = new HashMap<>();
 	public Map<Integer,  Set<Spectacle>> listeSpectacleParSemaine = new HashMap<>();
 	public Map<Integer, List<DisponibiliteJour>> dispos = new HashMap<>();
 	public Map<Integer, Semaine> semaines = new HashMap<>();
