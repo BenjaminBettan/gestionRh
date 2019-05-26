@@ -151,8 +151,8 @@ public class Submain_A {
 
 				int numeroSemaine = t.get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
 
-				if ( ! c.listeSemaines.contains(numeroSemaine)) {
-					c.listeSemaines.add(numeroSemaine);
+				if ( ! Config.listeSemaines.contains(numeroSemaine)) {
+					Config.listeSemaines.add(numeroSemaine);
 					c.listeSpectacleParSemaine.put(numeroSemaine,new HashSet<>());
 					c.dispos.put(numeroSemaine, new ArrayList<>() );
 				}
@@ -306,11 +306,11 @@ public class Submain_A {
 			c.listeTeam.put(Integer.parseInt(s2[0]), new Team(Integer.parseInt(s2[0]),teamPourLeSpectacle));
 		}
 		
-		c.listeSemaines.forEach((numSemaine) -> {
+		Config.listeSemaines.forEach((numSemaine) -> {
 			c.semaines.put(numSemaine, new Semaine(c.listeSpectacleParSemaine.get(numSemaine).size(),numSemaine));
 		});
 
-		c.listeSemaines.forEach((numSemaine) -> {
+		Config.listeSemaines.forEach((numSemaine) -> {
 			Semaine sem = c.semaines.get(numSemaine);
 			List<DisponibiliteJour> lDispos = c.dispos.get(numSemaine);
 			c.listePersonnes2.forEach((id,pers) -> {
@@ -385,8 +385,8 @@ public class Submain_A {
 	private void affichage() {
 		affichagePersonnes();
 		affichageTeams();
-		logger.info("Liste des semaines : "+c.listeSemaines);
-		c.listeSemaines.forEach((l) -> {
+		logger.info("Liste des semaines : "+Config.listeSemaines);
+		Config.listeSemaines.forEach((l) -> {
 			if (c.semaines.get(l)!=null) {
 				logger.info("Numéro de semaine : "+l);
 				logger.info(c.semaines.get(l).getTeam().size());

@@ -3,10 +3,7 @@ package com.bbe.theatre.spectacle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-
 import org.apache.log4j.Logger;
-
-import com.bbe.theatre.__main.Config;
 
 public class Semaine {
 	private List<Integer> team = new ArrayList<>();
@@ -20,31 +17,24 @@ public class Semaine {
 		this.nbSpectacle = nbSpectacle;
 		this.numSemaine = numSemaine;
 	}
-	
-	public Semaine mute(){
-		if ( ! locked) {
-			int rand = ThreadLocalRandom.current().nextInt(0, 1000);//entre 0 et 999
-			
-			if ( rand < Config.tauxMutation ) {
-				//mutation
-				logger.debug("Mutation !");
+
+	public void mute(){
+		//mutation
+		logger.debug("Mutation !");
+		int rand = ThreadLocalRandom.current().nextInt(0, this.getTeam().size());
+
+		while (true) {
+			if (team.get(rand)==idTeam) {//on a choppé le meme, on recommence
 				rand = ThreadLocalRandom.current().nextInt(0, this.getTeam().size());
-				
-				while (true) {
-					if (team.get(rand)==idTeam) {//on a choppé le meme, on recommence
-						rand = ThreadLocalRandom.current().nextInt(0, this.getTeam().size());
-					}
-					else {
-						break;
-					}
-				}
-				
-				setIdTeam(this.getTeam().get(rand));
+			}
+			else {
+				break;
 			}
 		}
-		return this;
+
+		setIdTeam(team.get(rand));
 	}
-	
+
 	public Semaine(Semaine s) {
 		this.nbSpectacle = s.nbSpectacle;
 		this.numSemaine = s.numSemaine;
@@ -89,5 +79,5 @@ public class Semaine {
 	public void setLocked(boolean locked) {
 		this.locked = locked;
 	}
-	
+
 }

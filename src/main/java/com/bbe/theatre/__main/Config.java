@@ -26,7 +26,8 @@ import au.com.bytecode.opencsv.CSVReader;
 
 public class Config {
 	public static Properties prop;
-
+	public static boolean testPlaning1 = false;
+	public static Queue<Integer> listeSemaines = new LinkedList<>();
 	static {
 		PropertyConfigurator.configure("log4j.properties");
 		prop = new Properties();
@@ -73,7 +74,7 @@ public class Config {
 	public Map<Integer,  Set<Spectacle>> listeSpectacleParSemaine = new HashMap<>();
 	public Map<Integer, List<DisponibiliteJour>> dispos = new HashMap<>();
 	public Map<Integer, Semaine> semaines = new HashMap<>();
-	public Queue<Integer> listeSemaines = new LinkedList<>();
+	
 
 
 	public String sqlQuery2(String nomUserTable){

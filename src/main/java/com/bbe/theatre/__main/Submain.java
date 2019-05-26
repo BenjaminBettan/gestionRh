@@ -2,8 +2,9 @@ package com.bbe.theatre.__main;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -11,7 +12,7 @@ import com.bbe.theatre.spectacle.Planning;
 
 public class Submain extends Submain_A{
 	
-	private Set<Planning> planning = new HashSet<>();
+	private List<Planning> plannings = new ArrayList<>();
 	private int taillePopulation;
 	private static Logger logger = Logger.getLogger(Submain.class);
 	public void go() throws IOException, SQLException {
@@ -43,8 +44,7 @@ public class Submain extends Submain_A{
 	}
 
 	private void evaluationPopulation() {
-		// TODO Auto-generated method stub
-		
+		plannings.sort(Comparator.comparing(Planning::getCritere1).thenComparing(Planning::getCritere2));
 	}
 
 	private void creationPopulationInitiale() {
@@ -55,12 +55,8 @@ public class Submain extends Submain_A{
 		for (int i = 0; i < taillePopulation; i++) {
 			
 			Planning p = new Planning();
-			c.semaines.forEach((id,sem) -> {
-				p.addSemaine(id, sem);
-			});
-			
-			p.creationPopulationMelange();
-			planning.add(p);
+			c.semaines.forEach((id,sem) -> {p.addSemaine(id, sem);});//on charge les equipes dispo par semaine
+			plannings.add(p.build());//on attribue au hasard une equipe par semaine
 			
 		}		
 	}
