@@ -11,6 +11,7 @@ public class Personne {
 	
 	private String personneAvecQuiJeDoisJouer ="";
 	private String personneAvecQuiJeNeDoisPasJouer ="";
+	private boolean estDispoCetteSemaine = true;
 
 	public String getPersonneAvecQuiJeDoisJouer() {
 		return personneAvecQuiJeDoisJouer;
@@ -87,6 +88,14 @@ public class Personne {
 	public Personne setId(int id) {
 		this.id = id;
 		return this;
+	}
+
+	public boolean estDispoCetteSemaine() {
+		return estDispoCetteSemaine;
+	}
+
+	public void setEstDispoCetteSemaine(boolean estDispoCetteSemaine) {
+		this.estDispoCetteSemaine = estDispoCetteSemaine;
 	}
 	
 }

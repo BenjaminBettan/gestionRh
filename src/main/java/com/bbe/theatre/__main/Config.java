@@ -1,6 +1,8 @@
 package com.bbe.theatre.__main;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -23,19 +25,33 @@ import com.bbe.theatre.spectacle.Team;
 import au.com.bytecode.opencsv.CSVReader;
 
 public class Config {
+	public static Properties prop;
 
-	static {PropertyConfigurator.configure("log4j.properties");}
+	static {
+		PropertyConfigurator.configure("log4j.properties");
+		prop = new Properties();
+		try {
+			prop.load(new FileInputStream("src\\main\\resources\\global.properties"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		tauxMutation = Integer.parseInt(prop.getProperty("pourMilleMutation"));
+	}
+	
 	public final int nbSpectacleParSemaine = 5;
 	protected int idSpectacle = 0;
 	public int id = 0;
 	public int idTeam = 0;	
+	public int maxIndispoMoyenne = 0;	
+	public static int tauxMutation;	
+	
+	public boolean addTeam = true;
 
 
-
-	public DataBase dataBase = new DataBase();
+	public DataBase dataBase;
 	
 	public StringBuilder sb;
-	public String f1 = "src\\main\\resources\\global.properties";
+	public static String f1;
 	public String f2 = "src\\main\\resources\\dates\\";
 	public String dataBaseName = "simulation"+LocalDateTime.now().toString().substring(2, 19).replace("-", "x").replace(":", "x");
 	public String sqlQueryDatabase = 
@@ -48,7 +64,6 @@ public class Config {
 	public File[] listOfFiles = f.listFiles();
 	public Personne p;
 	public Personnage personnage;
-	public Properties prop = new Properties();
 	public CSVReader reader;
 	public boolean test = false;
 	

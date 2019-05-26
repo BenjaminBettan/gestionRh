@@ -1,6 +1,6 @@
 package com.bbe.theatre.__main;
 
-import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -12,9 +12,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
 import org.apache.log4j.Logger;
-
+import com.bbe.theatre.DataBase;
 import com.bbe.theatre._enum.DISPO;
 import com.bbe.theatre.personne.Personnage;
 import com.bbe.theatre.personne.Personne;
@@ -29,64 +28,63 @@ import au.com.bytecode.opencsv.CSVReader;
 
 public class Submain_A {
 
-	private static Logger logger = Logger.getLogger(Submain_A.class);
+	protected static Logger logger = Logger.getLogger(Submain_A.class);
 	protected Config c = new Config();
 
-	protected void init() throws IOException {
-		//lecture de global.properties
-		logger.debug("on lit le fichier global.properties");
-
-		c.prop.load(new FileInputStream(c.f1));
-		//creation de la DB
-		c.dataBase.update(c.sqlQueryDatabase);
-		c.dataBase.setBaseName(c.dataBaseName);
-		c.dataBase.update(c.sqlQuery3());
-
-		logger.debug("on lit 1 fois les dates de l'utilisateur 0");
+	protected void init() throws IOException, SQLException {
 		
+		logger.info("init primaire : on connecte la base de donnée");
+		initPrimaire();
+
+		logger.info("on lit les dates de l'utilisateur 0");
+
 		remplirListeSemaines();
 
+		logger.info("on charge les contraintes des joueurs");
+		
 		chargementContraintesJoueurs();
 
+		logger.info("on créé les personnages");
+		
 		creationPersonnages();
+		
+		logger.info("on créé les personnes");
 
 		creationPersonnes();
 
+		logger.info("on calcul les équipes");
+		
 		calculTeams();
-		
-		c.listeSemaines.forEach((numSemaine) -> {
-			c.semaines.put(numSemaine, new Semaine());
-			});
-		
-		
-		
-//		List<DisponibiliteJour> l = c.dispos.get(numSemaine);
-//		l.forEach((dispo) -> {
-//			c.listePersonnes.forEach((personnage,personne) -> {
-//				
-//			});
-//		});
-		
-		
+
 		affichage();
 
 	}
 
+	private void initPrimaire() throws FileNotFoundException, IOException, SQLException {
+		c.dataBase = new DataBase();//on connecte la db
+		cleanDb();
+		//creation de la DB
+		c.dataBase.update(c.sqlQueryDatabase);
+		c.dataBase.setBaseName(c.dataBaseName);
+		c.dataBase.update(c.sqlQuery3());
+		
+	}
+
 	private void creationPersonnes() throws IOException {
-		for (c.id = 0; c.id < Integer.parseInt(c.prop.getProperty("effectifComediens").trim()); c.id++) {
+		for (c.id = 0; c.id < Integer.parseInt(Config.prop.getProperty("effectifComediens").trim()); c.id++) {
 			creationPersonne();
 			chargeFichierDateDeCettePersonne();
 		}		
 	}
 
 	private void creationPersonne() {
-		int idRole = Integer.parseInt(c.prop.getProperty(c.id+".role").trim());
+		int idRole = Integer.parseInt(Config.prop.getProperty(c.id+".role").trim());
 		c.listePersonnes.forEach((personnage, map) -> {
 			if (personnage.getId()==idRole) {
 				c.personnage = personnage;
 				logger.debug("Création de l'utilisateur " + c.id);
-				c.p = new Personne().setNbSpectacleMin(Integer.parseInt(c.prop.getProperty(c.id+".nbSpectacle").trim()))
-						.setId(c.id).setNomActeur(c.prop.getProperty(c.id+".nom").trim())
+				c.p = new Personne().setNbSpectacleMin(Integer.parseInt(Config.prop.getProperty(c.id+".nbSpectacle").trim()))
+						.setId(c.id).setNomActeur(Config.prop.getProperty(c.id+".nom").trim())
 						.setPersonnage(personnage)
 						//.setPersonnage(personnage).setPersonneAvecQuiJeDoisJouer(calculDoitRencontrer(c.doitRencontrer))
 						.setPersonneAvecQuiJeNeDoisPasJouer(calculDoitRencontrer(c.neDoitPasRencontrer));
@@ -109,11 +107,11 @@ public class Submain_A {
 
 	private void chargementContraintesJoueurs() {
 		//		c.doitRencontrer =
-		c.neDoitPasRencontrer = c.prop.getProperty("neDoitPasRencontrer").trim().replace("{", "").replace("}", "").split(",");
+		c.neDoitPasRencontrer = Config.prop.getProperty("neDoitPasRencontrer").trim().replace("{", "").replace("}", "").split(",");
 	}
 
 	private void creationPersonnages() {
-		c.personnages = c.prop.getProperty("listePersonnage").trim().split(",");
+		c.personnages = Config.prop.getProperty("listePersonnage").trim().split(",");
 
 		for (int i = 0; i < c.personnages.length; i++) {
 			String s;
@@ -136,6 +134,7 @@ public class Submain_A {
 	 * @throws IOException
 	 */
 	private void remplirListeSemaines() throws IOException {
+		c.maxIndispoMoyenne = Integer.parseInt(Config.prop.getProperty("maxIndispoMoyenne"));
 		chargeFichierDateDeCettePersonne();//utilisateur 0
 		c.test = true;
 		String[] listeDates = c.sb.toString().split("\n");
@@ -243,8 +242,8 @@ public class Submain_A {
 					else {
 						d = new DisponibiliteJour(c.p, t,c.personnage,DISPO.MOYEN_DISPO,numeroSemaine);
 					}
-					List<DisponibiliteJour> ld = c.dispos.get(numeroSemaine);
-					ld.add(d);
+
+					c.dispos.get(numeroSemaine).add(d);
 				}
 			}
 		}
@@ -298,7 +297,7 @@ public class Submain_A {
 		});
 		String[] l = c.dataBase.select("SELECT * FROM LISTEEQUIPE WHERE OK=1;").split("\n");
 		for (String s : l) {
-			
+
 			String[] s2 = s.split("/");
 			Map<Personnage, Personne> teamPourLeSpectacle = new HashMap<>();
 			for (int i = 1; i < s2.length - 1; i++) {
@@ -306,6 +305,46 @@ public class Submain_A {
 			}
 			c.listeTeam.put(Integer.parseInt(s2[0]), new Team(Integer.parseInt(s2[0]),teamPourLeSpectacle));
 		}
+		
+		c.listeSemaines.forEach((numSemaine) -> {
+			c.semaines.put(numSemaine, new Semaine(c.listeSpectacleParSemaine.get(numSemaine).size(),numSemaine));
+		});
+
+		c.listeSemaines.forEach((numSemaine) -> {
+			Semaine sem = c.semaines.get(numSemaine);
+			List<DisponibiliteJour> lDispos = c.dispos.get(numSemaine);
+			c.listePersonnes2.forEach((id,pers) -> {
+				int compteurDispoMoyenne = 0;
+				pers.setEstDispoCetteSemaine(true);
+				for (DisponibiliteJour d : lDispos) {
+					if (d.getPersonne().getId()==id) {//si c est ma personne
+						if (d.getDispo().equals(DISPO.PAS_DISPO)) {
+							pers.setEstDispoCetteSemaine(false);
+							break;
+						}
+						else if (d.getDispo().equals(DISPO.MOYEN_DISPO)) {
+							if ( ++compteurDispoMoyenne == c.maxIndispoMoyenne) {
+								pers.setEstDispoCetteSemaine(false);
+								break;							
+							}
+						}
+					}
+				}
+			});
+			
+			c.listeTeam.forEach((idTeam,t) -> {
+				c.addTeam = true;
+				t.getTeamPourLeSpectacle().forEach((idpers,pers2) -> {
+					if ( ! pers2.estDispoCetteSemaine() ) {
+						c.addTeam = false;
+					}
+				});
+				if (c.addTeam) {
+					sem.addTeam(idTeam);
+				}
+			});
+		});
+		
 	}
 
 	private void calculDuCrossJoin() {
@@ -346,11 +385,12 @@ public class Submain_A {
 	private void affichage() {
 		affichagePersonnes();
 		affichageTeams();
-		logger.debug(c.listeSemaines);
-		logger.debug(c.listeSpectacleParSemaine);
-		c.dispos.forEach((numSemaine, dispo) -> {
-			System.out.println(numSemaine);
-			System.out.println(dispo);
+		logger.info("Liste des semaines : "+c.listeSemaines);
+		c.listeSemaines.forEach((l) -> {
+			if (c.semaines.get(l)!=null) {
+				logger.info("Numéro de semaine : "+l);
+				logger.info(c.semaines.get(l).getTeam().size());
+			}
 		});
 	}
 
