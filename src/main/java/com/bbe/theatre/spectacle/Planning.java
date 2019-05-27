@@ -12,7 +12,7 @@ import com.bbe.theatre.__main.Config;
 import com.bbe.theatre._enum.CRITERE;
 
 public class Planning {
-	
+
 	private static Logger logger = Logger.getLogger(Planning.class);
 
 	private Map<Integer, Semaine> semaines = new HashMap<>();
@@ -21,15 +21,37 @@ public class Planning {
 	private int i,compt = 0;
 	private List<Semaine> semainesNonLockees = new ArrayList<>();
 
+	public Planning(){
+		super();
+	}
+	/**
+	 * Brassage génétique des 2 parents et mutation
+	 * @param p1
+	 * @param p2
+	 */
+	public Planning(Planning p1, Planning p2){
+		super();
+		Config.listeSemaines.forEach( 
+				idSem ->{
+					int rand = ThreadLocalRandom.current().nextInt(0, 2);//0 ou 1
+					if (rand==0) {
+						this.addSemaine(idSem, p1.semaines.get(idSem));//le pere
+					}else {
+						this.addSemaine(idSem, p2.semaines.get(idSem));//la mere
+					}
+				});
+		this.mute();//on fait parfois une mutation (prise en compte de la proba de mutation au sein de cette methode)
+	}
+
 	public Map<Integer, Semaine> getSemaines() {
 		return semaines;
 	}
-	
+
 	public Planning addSemaine(int id, Semaine s){
 		semaines.put(id, new Semaine(s));
 		return this;
 	}
-	
+
 	public Planning build() {
 		semaines.forEach((id,sem)-> {
 			if (sem.getTeam().isEmpty()) {
@@ -60,32 +82,32 @@ public class Planning {
 		default:
 			break;
 		}
-		
+
 		return critere1;
 	}
-	
+
 	private int calculNbSpectMin() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	
+
 	private int calculEccartType() {
 		int compteur = 0;
 		for (int j = 0 ; j < Config.listeSemaines.size() - 1; j++) {
 			int equipeCourante = semaines.get(Config.listeSemaines.get(j)).getIdTeam();
 			int equipeSuivante = semaines.get(Config.listeSemaines.get(j+1)).getIdTeam();
-			
+
 			compteur += calculEccartType(equipeCourante,equipeSuivante);
-			
+
 		}
 		return compteur;
 	}
-	
+
 	private int calculEccartType(int equipeCourante, int equipeSuivante) {
 		Team eCourante = Config.listeTeam.get(equipeCourante);
 		Team eSuivante = Config.listeTeam.get(equipeSuivante);
 		compt = 0;
-		
+
 		eCourante.getTeamPourLeSpectacle().forEach( (personnage,p) -> {
 			eSuivante.getTeamPourLeSpectacle().forEach( (personnage2,p2) -> {
 				if (personnage.getNom().equals(personnage2.getNom())) {
@@ -95,7 +117,7 @@ public class Planning {
 				}
 			});
 		});
-		
+
 		return compt;
 	}
 
@@ -110,21 +132,21 @@ public class Planning {
 		default:
 			break;
 		}
-		
+
 		return critere2;
 	}
 
 	public Planning mute(){
-		
+
 		int rand = ThreadLocalRandom.current().nextInt(0, 1000);//entre 0 et 999
 		i = 0;
-		
-		
+
+
 		if ( rand < Config.tauxMutation ) {
 			//verification qu une mutation est possible dans le planning. A faire une seule fois
 			if (Config.testPlaning1==false) {
 				Config.testPlaning1=true;
-				
+
 				semaines.forEach((id,sem)-> {
 					if ( ! sem.isLocked() ) {
 						i++;
@@ -136,9 +158,9 @@ public class Planning {
 				}
 				i = 0;
 			}
-			
+
 			//poursuite de la mutation. On recupere les semaines non lockées
-			
+
 			if (i==0) {
 				i=1;
 				semaines.forEach((id,sem)-> {
@@ -147,12 +169,12 @@ public class Planning {
 					}
 				});
 			}
-			
+
 			rand = ThreadLocalRandom.current().nextInt(0, semainesNonLockees.size());//entre 0 et semainesNonLockees.size()
-			
+
 			semainesNonLockees.get(rand).mute();
 		}
-		
+
 		return this;
 	}
 
@@ -169,5 +191,5 @@ public class Planning {
 		}
 		return critere2;
 	}
-	
+
 }
