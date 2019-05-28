@@ -11,35 +11,35 @@ import org.apache.log4j.Logger;
 import com.bbe.theatre.spectacle.Planning;
 
 public class Submain extends Submain_A{
-	
+
+	private static Logger logger = Logger.getLogger(Submain.class);
+
 	private List<Planning> plannings = new ArrayList<>();
 	private int taillePopulation;
-	private static Logger logger = Logger.getLogger(Submain.class);
+	
 	public void go() throws IOException, SQLException {
 		long l = System.currentTimeMillis();
 		init();
 		logger.info("TEMPS DE CALCUL INIT : "+ (System.currentTimeMillis() - l) + "ms");
 
 		creationPopulationInitiale();
-		evaluationPopulation();
 		extinctionPopulation();
-		for (int i = 0; true; i++) {
+		for (int i = 1; true; i++) {
 			if (i%100==0) {
-				logger.info(i + "eme generation");
+				logger.info(i + " iteration");
 			}
-			naissance();
-			evaluationPopulation();
+			naissanceDeLaNouvelleGeneration();
 			extinctionPopulation();
 		}
 	}
 
-	private void naissance() {
+	private void naissanceDeLaNouvelleGeneration() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	private void extinctionPopulation() {
-		// TODO Auto-generated method stub
+		evaluationPopulation();
 		
 	}
 

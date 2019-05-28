@@ -92,6 +92,21 @@ public class Planning {
 		return critere1;
 	}
 
+	public int calculCritere2() {
+		switch (CRITERE.CRITERE_2.getIntitule()) {
+		case NB_SPECTACLE_MIN :
+			critere2 = calculNbSpectMin();
+			break;
+		case ECCART_TYPE :
+			critere2 = calculEccartType();
+			break;
+		default:
+			break;
+		}
+
+		return critere2;
+	}
+
 	private int calculNbSpectMin() {
 		// TODO Auto-generated method stub
 		return 0;
@@ -125,21 +140,6 @@ public class Planning {
 		});
 
 		return compt;
-	}
-
-	public int calculCritere2() {
-		switch (CRITERE.CRITERE_2.getIntitule()) {
-		case NB_SPECTACLE_MIN :
-			critere2 = calculNbSpectMin();
-			break;
-		case ECCART_TYPE :
-			critere2 = calculEccartType();
-			break;
-		default:
-			break;
-		}
-
-		return critere2;
 	}
 
 	public Planning mute(){
