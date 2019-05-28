@@ -18,9 +18,15 @@ public class Planning {
 	private Map<Integer, Semaine> semaines = new HashMap<>();
 	private int critere1 = -1;
 	private int critere2 = -1;
-	private int i,compt = 0;
+	private int i,idPlanning,compt = 0;
+	private static int compteurPlanning = 0;
 	private List<Semaine> semainesNonLockees = new ArrayList<>();
 
+	{
+		idPlanning = compteurPlanning++;
+		
+	}
+	
 	public Planning(){
 		super();
 	}
@@ -191,5 +197,9 @@ public class Planning {
 		}
 		return critere2;
 	}
-
+	
+	public int getIdPlanning() {
+		return idPlanning;
+	}
+	
 }
