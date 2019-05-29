@@ -25,8 +25,11 @@ import au.com.bytecode.opencsv.CSVReader;
 public class Config {
 	public static Properties prop;
 	public static boolean testPlaning1 = false;
-	public static List<Integer> listeSemaines = new ArrayList<>();
+	public static List<Double> listeSemaines = new ArrayList<>();
 	public static Map<Integer, Team> listeTeam = new HashMap<>();
+	public static Map<Integer, Personne> listePersonnes2 = new HashMap<>();
+	public static int normeCritereNB_SPECTACLE_MIN;
+	public static int normeCritereECCART_TYPE;
 
 	static {
 		PropertyConfigurator.configure("log4j.properties");
@@ -40,7 +43,6 @@ public class Config {
 	}
 	
 	public final int nbSpectacleParSemaine = 5;
-	protected int idSpectacle = 0;
 	public int id = 0;
 	public int idTeam = 0;	
 	public int maxIndispoMoyenne = 0;	
@@ -66,10 +68,9 @@ public class Config {
 	public boolean test = false;
 	
 	public Map<Personnage, Set<Personne>> listePersonnes = new HashMap<>();
-	public Map<Integer, Personne> listePersonnes2 = new HashMap<>();
-	public Map<Integer,  Set<Spectacle>> listeSpectacleParSemaine = new HashMap<>();
-	public Map<Integer, List<DisponibiliteJour>> dispos = new HashMap<>();
-	public Map<Integer, Semaine> semaines = new HashMap<>();
+	public Map<Double,  Set<Spectacle>> listeSpectacleParSemaine = new HashMap<>();
+	public Map<Double, List<DisponibiliteJour>> dispos = new HashMap<>();
+	public Map<Double, Semaine> semaines = new HashMap<>();
 	
 
 

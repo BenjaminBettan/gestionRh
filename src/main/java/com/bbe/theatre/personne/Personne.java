@@ -3,7 +3,7 @@ package com.bbe.theatre.personne;
 public class Personne {
 
 	private int id = 0;
-	private int nbDateCourant = 0;
+	private int nbSpectacleCourant = 0;
 	private int nbSpectacleMin = 0;
 
 	private String nomActeur;
@@ -32,7 +32,7 @@ public class Personne {
 	}
 
 	public int getMalus(){
-		return nbDateCourant >= nbSpectacleMin ? 0 : nbSpectacleMin - nbDateCourant;
+		return nbSpectacleCourant >= nbSpectacleMin ? 0 : nbSpectacleMin - nbSpectacleCourant;
 	}
 
 	public int getId() {
@@ -43,7 +43,7 @@ public class Personne {
 
 	@Override
 	public String toString() {
-		return "Personne [id=" + id + ", nbDateCourant=" + nbDateCourant + ", nbSpectacleMin=" + nbSpectacleMin
+		return "Personne [id=" + id + ", nbSpectacleCourant=" + nbSpectacleCourant + ", nbSpectacleMin=" + nbSpectacleMin
 				+ ", nomActeur=" + nomActeur + ", personnage=" + personnage.getNom() + ", personneAvecQuiJeDoisJouer="
 				+ personneAvecQuiJeDoisJouer + ", personneAvecQuiJeNeDoisPasJouer=" + personneAvecQuiJeNeDoisPasJouer
 				+ "]";
@@ -54,12 +54,12 @@ public class Personne {
 		return this;
 	}
 
-	public int getNbDateCourant() {
-		return nbDateCourant;
+	public int getNbSpectacleCourant() {
+		return nbSpectacleCourant;
 	}
 
-	public Personne setNbDateCourant(int nbDateCourant) {
-		this.nbDateCourant = nbDateCourant;
+	public Personne setNbSpectacleCourant(int nbDateCourant) {
+		this.nbSpectacleCourant = nbDateCourant;
 		return this;
 	}
 
@@ -96,6 +96,10 @@ public class Personne {
 
 	public void setEstDispoCetteSemaine(boolean estDispoCetteSemaine) {
 		this.estDispoCetteSemaine = estDispoCetteSemaine;
+	}
+
+	public void incrementCalculNbSpectMin(int i) {
+		nbSpectacleCourant+=i;
 	}
 	
 }

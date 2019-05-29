@@ -8,12 +8,12 @@ import org.apache.log4j.Logger;
 public class Semaine {
 	private List<Integer> team = new ArrayList<>();
 	private final int nbSpectacle;
-	private final int numSemaine;
+	private final double numSemaine;
 	private int idTeam = -1;
 	private boolean locked = false;
 	private static Logger logger = Logger.getLogger(Semaine.class);
 
-	public Semaine(int nbSpectacle, int numSemaine) {
+	public Semaine(int nbSpectacle, double numSemaine) {
 		this.nbSpectacle = nbSpectacle;
 		this.numSemaine = numSemaine;
 	}
@@ -38,6 +38,7 @@ public class Semaine {
 	public Semaine(Semaine s) {
 		this.nbSpectacle = s.nbSpectacle;
 		this.numSemaine = s.numSemaine;
+		this.idTeam = s.idTeam;
 		s.team.forEach((i)->{
 			this.team.add(i);
 		});
@@ -60,7 +61,7 @@ public class Semaine {
 		return "Semaine [team=" + team + ", nbSpectacle=" + nbSpectacle + ", numSemaine=" + numSemaine + "]";
 	}
 
-	public int getNumSemaine() {
+	public double getNumSemaine() {
 		return numSemaine;
 	}
 
@@ -68,8 +69,9 @@ public class Semaine {
 		return idTeam;
 	}
 
-	public void setIdTeam(int idTeam) {
+	public Semaine setIdTeam(int idTeam) {
 		this.idTeam = idTeam;
+		return this;
 	}
 
 	public boolean isLocked() {

@@ -32,7 +32,7 @@ public class Submain_A {
 	protected Config c = new Config();
 
 	protected void init() throws IOException, SQLException {
-		
+
 		logger.info("init primaire : on connecte la base de donnée");
 		initPrimaire();
 
@@ -41,19 +41,19 @@ public class Submain_A {
 		remplirListeSemaines();
 
 		logger.info("on charge les contraintes des joueurs");
-		
+
 		chargementContraintesJoueurs();
 
 		logger.info("on créé les personnages");
-		
+
 		creationPersonnages();
-		
+
 		logger.info("on créé les personnes");
 
 		creationPersonnes();
 
 		logger.info("on calcul les équipes");
-		
+
 		calculTeams();
 
 		affichage();
@@ -67,14 +67,15 @@ public class Submain_A {
 		c.dataBase.update(c.sqlQueryDatabase);
 		c.dataBase.setBaseName(c.dataBaseName);
 		c.dataBase.update(c.sqlQuery3());
-		
+
 	}
 
 	private void creationPersonnes() throws IOException {
 		for (c.id = 0; c.id < Integer.parseInt(Config.prop.getProperty("effectifComediens").trim()); c.id++) {
 			creationPersonne();
 			chargeFichierDateDeCettePersonne();
-		}		
+		}
+		
 	}
 
 	private void creationPersonne() {
@@ -88,7 +89,7 @@ public class Submain_A {
 						.setPersonnage(personnage)
 						//.setPersonnage(personnage).setPersonneAvecQuiJeDoisJouer(calculDoitRencontrer(c.doitRencontrer))
 						.setPersonneAvecQuiJeNeDoisPasJouer(calculDoitRencontrer(c.neDoitPasRencontrer));
-				c.listePersonnes2.put(c.id, c.p);
+				Config.listePersonnes2.put(c.id, c.p);
 				map.add(c.p);
 			}
 		});		
@@ -150,14 +151,14 @@ public class Submain_A {
 						Integer.parseInt(listesDates_[1]) > 1 ?  (j == 0 ? 16 : 21 ) : 21 , 0);
 
 				int numeroSemaine = t.get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
-
-				if ( ! Config.listeSemaines.contains(numeroSemaine)) {
-					Config.listeSemaines.add(numeroSemaine);
-					c.listeSpectacleParSemaine.put(numeroSemaine,new HashSet<>());
-					c.dispos.put(numeroSemaine, new ArrayList<>() );
+				double numSemaine = Double.parseDouble(numeroSemaine+"."+t.getYear());
+				if ( ! Config.listeSemaines.contains(numSemaine)) {
+					Config.listeSemaines.add(numSemaine);
+					c.listeSpectacleParSemaine.put(numSemaine,new HashSet<>());
+					c.dispos.put(numSemaine, new ArrayList<>() );
 				}
 
-				c.listeSpectacleParSemaine.get(numeroSemaine).add(new Spectacle(t));
+				c.listeSpectacleParSemaine.get(numSemaine).add(new Spectacle(t));
 
 			}
 		}
@@ -230,20 +231,21 @@ public class Submain_A {
 							Integer.parseInt(listesDates_[0].split("/")[0]), 
 							Integer.parseInt(listesDates_[1]) > 1 ?  (j == 0 ? 16 : 21 ) : 21 , 0);
 					int numeroSemaine = t.get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
+					double numSemaine = Double.parseDouble(numeroSemaine+"."+t.getYear());
 
 					DisponibiliteJour d;
 
 					if (listesDates_[2].equals("1")) {
-						d = new DisponibiliteJour(c.p, t,c.personnage,DISPO.DISPO,numeroSemaine);
+						d = new DisponibiliteJour(c.p, t,c.personnage,DISPO.DISPO,numSemaine);
 					}
 					else if (listesDates_[2].equals("0")) {
-						d = new DisponibiliteJour(c.p, t,c.personnage,DISPO.PAS_DISPO,numeroSemaine);
+						d = new DisponibiliteJour(c.p, t,c.personnage,DISPO.PAS_DISPO,numSemaine);
 					}
 					else {
-						d = new DisponibiliteJour(c.p, t,c.personnage,DISPO.MOYEN_DISPO,numeroSemaine);
+						d = new DisponibiliteJour(c.p, t,c.personnage,DISPO.MOYEN_DISPO,numSemaine);
 					}
 
-					c.dispos.get(numeroSemaine).add(d);
+					c.dispos.get(numSemaine).add(d);
 				}
 			}
 		}
@@ -285,12 +287,12 @@ public class Submain_A {
 		}
 
 
-		c.listePersonnes2.forEach((id, personne) -> {
+		Config.listePersonnes2.forEach((id, personne) -> {
 			if ( ! personne.getPersonneAvecQuiJeNeDoisPasJouer().equals("")) {
 				String[] p = personne.getPersonneAvecQuiJeNeDoisPasJouer().split(",");
 				c.dataBase.update("UPDATE LISTEEQUIPE SET OK='T' WHERE OK='1' AND " + personne.getPersonnage().getNom() +" ='" + personne.getId()+"';");
 				for (String string : p) {
-					c.dataBase.update("UPDATE LISTEEQUIPE SET OK='0' WHERE OK='T' AND " + c.listePersonnes2.get(Integer.parseInt(string)).getPersonnage().getNom() +" ='" + string +"';");
+					c.dataBase.update("UPDATE LISTEEQUIPE SET OK='0' WHERE OK='T' AND " + Config.listePersonnes2.get(Integer.parseInt(string)).getPersonnage().getNom() +" ='" + string +"';");
 				}
 				c.dataBase.update("UPDATE LISTEEQUIPE SET OK='1' WHERE OK='T';");
 			}
@@ -301,11 +303,11 @@ public class Submain_A {
 			String[] s2 = s.split("/");
 			Map<Personnage, Personne> teamPourLeSpectacle = new HashMap<>();
 			for (int i = 1; i < s2.length - 1; i++) {
-				teamPourLeSpectacle.put(c.listePersonnes2.get(Integer.parseInt(s2[i])).getPersonnage(), c.listePersonnes2.get(Integer.parseInt(s2[i])));
+				teamPourLeSpectacle.put(Config.listePersonnes2.get(Integer.parseInt(s2[i])).getPersonnage(), Config.listePersonnes2.get(Integer.parseInt(s2[i])));
 			}
 			Config.listeTeam.put(Integer.parseInt(s2[0]), new Team(Integer.parseInt(s2[0]),teamPourLeSpectacle));
 		}
-		
+
 		Config.listeSemaines.forEach((numSemaine) -> {
 			c.semaines.put(numSemaine, new Semaine(c.listeSpectacleParSemaine.get(numSemaine).size(),numSemaine));
 		});
@@ -313,7 +315,7 @@ public class Submain_A {
 		Config.listeSemaines.forEach((numSemaine) -> {
 			Semaine sem = c.semaines.get(numSemaine);
 			List<DisponibiliteJour> lDispos = c.dispos.get(numSemaine);
-			c.listePersonnes2.forEach((id,pers) -> {
+			Config.listePersonnes2.forEach((id,pers) -> {
 				int compteurDispoMoyenne = 0;
 				pers.setEstDispoCetteSemaine(true);
 				for (DisponibiliteJour d : lDispos) {
@@ -331,7 +333,7 @@ public class Submain_A {
 					}
 				}
 			});
-			
+
 			Config.listeTeam.forEach((idTeam,t) -> {
 				c.addTeam = true;
 				t.getTeamPourLeSpectacle().forEach((idpers,pers2) -> {
@@ -344,7 +346,7 @@ public class Submain_A {
 				}
 			});
 		});
-		
+
 	}
 
 	private void calculDuCrossJoin() {
@@ -377,7 +379,7 @@ public class Submain_A {
 
 	private void affichagePersonnes() {
 		logger.info("Affichage de la fine équipe");
-		c.listePersonnes2.forEach((id, p) -> {
+		Config.listePersonnes2.forEach((id, p) -> {
 			logger.info(p);
 		});
 	}

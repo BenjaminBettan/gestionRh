@@ -1,21 +1,22 @@
 package com.bbe.theatre._enum;
 
+import com.bbe.theatre.__main.Config;
+
 public enum CRITERE 
 {
-	CRITERE_1(CRITERE_INTITULE.NB_SPECTACLE_MIN),
-	CRITERE_2(CRITERE_INTITULE.ECCART_TYPE),
+	NB_SPECTACLE_MIN(Integer.parseInt(Config.prop.getProperty("critere_NB_SPECTACLE_MIN_Ponderation"))),
+	ECCART_TYPE(Integer.parseInt(Config.prop.getProperty("critere_ECCART_TYPE_Ponderation"))),
 	;
 	
-	private CRITERE_INTITULE c;
+	private int ponderation;
 	
-	CRITERE(CRITERE_INTITULE password_)//constructor
+	CRITERE( int ponderation_)
 	{
-		this.c = password_;
+		this.ponderation = ponderation_;
 		
 	}
 
-	public CRITERE_INTITULE getIntitule() {
-		return c;
+	public int getPonderation() {
+		return ponderation;
 	}
-
 }

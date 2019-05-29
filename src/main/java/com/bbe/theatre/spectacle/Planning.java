@@ -15,9 +15,9 @@ public class Planning {
 
 	private static Logger logger = Logger.getLogger(Planning.class);
 
-	private Map<Integer, Semaine> semaines = new HashMap<>();
-	private int critere1 = -1;
-	private int critere2 = -1;
+	private Map<Double, Semaine> semaines = new HashMap<>();
+	private int critereEccartType = -1;
+	private int critereNbSpectMin = -1;
 	private int i,idPlanning,compt = 0;
 	private static int compteurPlanning = 0;
 	private List<Semaine> semainesNonLockees = new ArrayList<>();
@@ -41,19 +41,19 @@ public class Planning {
 				idSem ->{
 					int rand = ThreadLocalRandom.current().nextInt(0, 2);//0 ou 1
 					if (rand==0) {
-						this.addSemaine(idSem, p1.semaines.get(idSem));//le pere
+						this.addSemaine(idSem, new Semaine(p1.semaines.get(idSem)));//le pere
 					}else {
-						this.addSemaine(idSem, p2.semaines.get(idSem));//la mere
+						this.addSemaine(idSem, new Semaine(p2.semaines.get(idSem)));//la mere
 					}
 				});
 		this.mute();//on fait parfois une mutation (prise en compte de la proba de mutation au sein de cette methode)
 	}
 
-	public Map<Integer, Semaine> getSemaines() {
+	public Map<Double, Semaine> getSemaines() {
 		return semaines;
 	}
 
-	public Planning addSemaine(int id, Semaine s){
+	public Planning addSemaine(double id, Semaine s){
 		semaines.put(id, new Semaine(s));
 		return this;
 	}
@@ -77,53 +77,43 @@ public class Planning {
 		return this;
 	}
 
-	public int calculCritere1() {
-		switch (CRITERE.CRITERE_1.getIntitule()) {
-		case NB_SPECTACLE_MIN :
-			critere1 = calculNbSpectMin();
-			break;
-		case ECCART_TYPE :
-			critere1 = calculEccartType();
-			break;
-		default:
-			break;
+	public double getValue(){
+		return CRITERE.NB_SPECTACLE_MIN.getPonderation()*calculNbSpectMin() + CRITERE.ECCART_TYPE.getPonderation() * calculEccartType();
+	}
+	
+	public int calculNbSpectMin() {
+		if (critereNbSpectMin==-1) {
+			critereNbSpectMin = 0;
+			
+			semaines.forEach((idSem,sem)->{
+				Config.listeTeam.get(sem.getIdTeam()).getTeamPourLeSpectacle().forEach((personnage,personne)->{
+					personne.incrementCalculNbSpectMin(sem.getNbSpectacle());
+				});
+			});
+			
+			Config.listePersonnes2.forEach((id,pers)->{
+				critereNbSpectMin+=pers.getMalus();
+				pers.setNbSpectacleCourant(0);
+			});
+			
 		}
-
-		return critere1;
+		return critereNbSpectMin;
 	}
 
-	public int calculCritere2() {
-		switch (CRITERE.CRITERE_2.getIntitule()) {
-		case NB_SPECTACLE_MIN :
-			critere2 = calculNbSpectMin();
-			break;
-		case ECCART_TYPE :
-			critere2 = calculEccartType();
-			break;
-		default:
-			break;
+	public int calculEccartType() {
+		if (critereEccartType==-1) {
+			critereEccartType = 0;
+			for (int j = 0 ; j < Config.listeSemaines.size() - 1; j++) {
+				int equipeCourante = semaines.get(Config.listeSemaines.get(j)).getIdTeam();
+				int equipeSuivante = semaines.get(Config.listeSemaines.get(j+1)).getIdTeam();
+
+				critereEccartType += calculEccartType(equipeCourante,equipeSuivante);
+
+			}
 		}
-
-		return critere2;
+		return critereEccartType;
 	}
-
-	private int calculNbSpectMin() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	private int calculEccartType() {
-		int compteur = 0;
-		for (int j = 0 ; j < Config.listeSemaines.size() - 1; j++) {
-			int equipeCourante = semaines.get(Config.listeSemaines.get(j)).getIdTeam();
-			int equipeSuivante = semaines.get(Config.listeSemaines.get(j+1)).getIdTeam();
-
-			compteur += calculEccartType(equipeCourante,equipeSuivante);
-
-		}
-		return compteur;
-	}
-
+	
 	private int calculEccartType(int equipeCourante, int equipeSuivante) {
 		Team eCourante = Config.listeTeam.get(equipeCourante);
 		Team eSuivante = Config.listeTeam.get(equipeSuivante);
@@ -184,20 +174,6 @@ public class Planning {
 		return this;
 	}
 
-	public int getCritere1() {
-		if (critere1==-1) {
-			return calculCritere1();
-		}
-		return critere1;
-	}
-
-	public int getCritere2() {
-		if (critere2==-1) {
-			return calculCritere2();
-		}
-		return critere2;
-	}
-	
 	public int getIdPlanning() {
 		return idPlanning;
 	}

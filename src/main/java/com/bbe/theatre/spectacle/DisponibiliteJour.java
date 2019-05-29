@@ -10,7 +10,7 @@ public class DisponibiliteJour {
 	
 	private Personne personne;
 	private LocalDateTime idDate;
-	private int numSemaine;
+	private double numSemaine;
 	private Personnage personnage;
 	private DISPO dispo;
 
@@ -24,7 +24,7 @@ public class DisponibiliteJour {
 		return this;
 	}
 
-	public DisponibiliteJour(Personne personne, LocalDateTime idDate, Personnage personnage, DISPO dispoForte, int numSemaine) {
+	public DisponibiliteJour(Personne personne, LocalDateTime idDate, Personnage personnage, DISPO dispoForte, double numSemaine) {
 		super();
 		this.personne = personne;
 		this.idDate = idDate;
@@ -55,7 +55,7 @@ public class DisponibiliteJour {
 		return dispo;
 	}
 
-	public int getNumSemaine() {
+	public double getNumSemaine() {
 		return numSemaine;
 	}
 

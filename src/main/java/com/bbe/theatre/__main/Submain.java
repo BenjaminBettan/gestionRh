@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.log4j.Logger;
 
@@ -16,6 +17,7 @@ public class Submain extends Submain_A{
 
 	private List<Planning> plannings = new ArrayList<>();
 	private int taillePopulation;
+	private int taillePopulationRestante;
 	
 	public void go() throws IOException, SQLException {
 		long l = System.currentTimeMillis();
@@ -23,32 +25,52 @@ public class Submain extends Submain_A{
 		logger.info("TEMPS DE CALCUL INIT : "+ (System.currentTimeMillis() - l) + "ms");
 
 		creationPopulationInitiale();
-		extinctionPopulation();
+		
 		for (int i = 1; true; i++) {
 			if (i%100==0) {
 				logger.info(i + " iteration");
 			}
+			
 			naissanceDeLaNouvelleGeneration();
-			extinctionPopulation();
 		}
 	}
 
 	private void naissanceDeLaNouvelleGeneration() {
-		// TODO Auto-generated method stub
 		
+		for (int i = 0; i < taillePopulation - taillePopulationRestante; i++) {
+			plannings.remove(taillePopulationRestante);
+		}
+		
+		System.out.println(plannings.get(0).getValue() + "  " + plannings.get(0).calculEccartType() + " " + plannings.get(0).calculNbSpectMin());
+		
+		
+		
+		for (int i = 0; i < taillePopulation - taillePopulationRestante; i++) {
+			int idPapa = ThreadLocalRandom.current().nextInt(0, taillePopulationRestante);
+			int idMaman = ThreadLocalRandom.current().nextInt(0, taillePopulationRestante);
+			
+			while (idPapa==idMaman) {
+				idMaman = ThreadLocalRandom.current().nextInt(0, taillePopulationRestante);	
+			}
+			Planning papa = plannings.get(idPapa);
+			Planning maman = plannings.get(idMaman);
+			Planning enfant = new Planning(papa, maman);
+			plannings.add(enfant);
+		}
+		
+
+		
+		evaluationPopulation();
 	}
 
-	private void extinctionPopulation() {
-		evaluationPopulation();
-		
-	}
 
 	private void evaluationPopulation() {
-		plannings.sort(Comparator.comparing(Planning::getCritere1).thenComparing(Planning::getCritere2));
+		plannings.sort(Comparator.comparing(Planning::getValue));
 	}
 
 	private void creationPopulationInitiale() {
 		taillePopulation = Integer.parseInt(Config.prop.getProperty("taillePopulation"));
+		taillePopulationRestante = Integer.parseInt(Config.prop.getProperty("taillePopulationRestante"));
 		
 		logger.info("Creation population initiale taille : " + taillePopulation);
 
@@ -58,6 +80,9 @@ public class Submain extends Submain_A{
 			c.semaines.forEach((id,sem) -> {p.addSemaine(id, sem);});//on charge les equipes dispo par semaine
 			plannings.add(p.build());//on attribue au hasard une equipe par semaine
 			
-		}		
+		}
+		
+		evaluationPopulation();
+		
 	}
 }
