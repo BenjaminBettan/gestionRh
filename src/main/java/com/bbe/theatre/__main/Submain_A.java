@@ -32,6 +32,8 @@ public class Submain_A {
 	protected Config c = new Config();
 
 	protected void init() throws IOException, SQLException {
+		
+		long l = System.currentTimeMillis();
 
 		logger.info("init primaire : on connecte la base de donnée");
 		initPrimaire();
@@ -57,6 +59,8 @@ public class Submain_A {
 		calculTeams();
 
 		affichage();
+		
+		logger.info("TEMPS DE CALCUL INIT : "+ (System.currentTimeMillis() - l) + "ms");
 
 	}
 

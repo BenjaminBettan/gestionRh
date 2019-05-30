@@ -77,7 +77,7 @@ public class Planning {
 		return this;
 	}
 
-	public double getValue(){
+	public int getValue(){
 		return CRITERE.NB_SPECTACLE_MIN.getPonderation()*calculNbSpectMin() + CRITERE.ECCART_TYPE.getPonderation() * calculEccartType();
 	}
 	

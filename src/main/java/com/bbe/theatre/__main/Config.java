@@ -28,8 +28,7 @@ public class Config {
 	public static List<Double> listeSemaines = new ArrayList<>();
 	public static Map<Integer, Team> listeTeam = new HashMap<>();
 	public static Map<Integer, Personne> listePersonnes2 = new HashMap<>();
-	public static int normeCritereNB_SPECTACLE_MIN;
-	public static int normeCritereECCART_TYPE;
+	public static int tauxMutation;	
 
 	static {
 		PropertyConfigurator.configure("log4j.properties");
@@ -39,14 +38,12 @@ public class Config {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		tauxMutation = Integer.parseInt(prop.getProperty("pourMilleMutation"));
 	}
 	
 	public final int nbSpectacleParSemaine = 5;
 	public int id = 0;
 	public int idTeam = 0;	
 	public int maxIndispoMoyenne = 0;	
-	public static int tauxMutation;	
 	
 	public boolean addTeam = true;
 
