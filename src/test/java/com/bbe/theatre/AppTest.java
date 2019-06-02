@@ -1,4 +1,4 @@
-package com.bbe.franglaises.franglaises;
+package com.bbe.theatre;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

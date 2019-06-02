@@ -1,4 +1,4 @@
-package com.bbe.franglaises.franglaises;
+package com.bbe.theatre;
 
 import org.junit.runner.RunWith;
 

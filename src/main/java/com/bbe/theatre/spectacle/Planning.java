@@ -18,7 +18,7 @@ public class Planning {
 	private Map<Double, Semaine> semaines = new HashMap<>();
 	private int critereEccartType = -1;
 	private int critereNbSpectMin = -1;
-	private int i,idPlanning,compt = 0;
+	private int i,idPlanning = 0;
 	private static int compteurPlanning = 0;
 	private List<Semaine> semainesNonLockees = new ArrayList<>();
 
@@ -59,21 +59,30 @@ public class Planning {
 	}
 
 	public Planning build() {
-		semaines.forEach((id,sem)-> {
+		boolean premierSucces = false;
+		for (int i = 0; i < Config.listeSemaines.size(); i++) {
+			Semaine sem = semaines.get(Config.listeSemaines.get(i));
 			if (sem.getTeam().isEmpty()) {
 				logger.warn("Semaine " + sem.getNumSemaine() +" n a pas d equipe. Le programme va quitter");
 				System.exit(1);
 			}
-			else if (sem.getTeam().size() == 1) {
+			else if (sem.getTeam().size() == 1 || sem.isLocked()) {
+				premierSucces = true;
 				sem.setIdTeam(sem.getTeam().get(0));
 				sem.setLocked(true);
-				logger.warn("Semaine " + sem.getNumSemaine() +" a une seule equipe");
+				logger.warn("Semaine " + sem.getNumSemaine() +" a une seule equipe ou a ete locke par l utilisateur");//TODO
 			}
 			else if (sem.getTeam().size() > 1) {
-				logger.debug("Taille suffisante 2 ou superieur, on attribue au hasard une equipe");
-				sem.setIdTeam(sem.getTeam().get(ThreadLocalRandom.current().nextInt(0, sem.getTeam().size())));
+				if (! premierSucces) {
+					premierSucces = true;
+					logger.debug("Taille suffisante 2 ou superieur, on attribue au hasard une equipe");
+					sem.setIdTeam(sem.getTeam().get(ThreadLocalRandom.current().nextInt(0, sem.getTeam().size())));
+				}
+				else {
+					sem.setIdTeam(Config.eccartTypePersistance.getMeilleurTeam(semaines.get(Config.listeSemaines.get(i -1)).getIdTeam(), sem.getTeam()));
+				}
 			}
-		});
+		}
 		return this;
 	}
 
@@ -107,31 +116,13 @@ public class Planning {
 				int equipeCourante = semaines.get(Config.listeSemaines.get(j)).getIdTeam();
 				int equipeSuivante = semaines.get(Config.listeSemaines.get(j+1)).getIdTeam();
 
-				critereEccartType += calculEccartType(equipeCourante,equipeSuivante);
+				critereEccartType += Config.calculEccartType(equipeCourante,equipeSuivante);
 
 			}
 		}
 		return critereEccartType;
 	}
 	
-	private int calculEccartType(int equipeCourante, int equipeSuivante) {
-		Team eCourante = Config.listeTeam.get(equipeCourante);
-		Team eSuivante = Config.listeTeam.get(equipeSuivante);
-		compt = 0;
-
-		eCourante.getTeamPourLeSpectacle().forEach( (personnage,p) -> {
-			eSuivante.getTeamPourLeSpectacle().forEach( (personnage2,p2) -> {
-				if (personnage.getNom().equals(personnage2.getNom())) {
-					if (p.getId()!=p2.getId()) {
-						compt++;
-					}
-				}
-			});
-		});
-
-		return compt;
-	}
-
 	public Planning mute(){
 
 		int rand = ThreadLocalRandom.current().nextInt(0, 1000);//entre 0 et 999

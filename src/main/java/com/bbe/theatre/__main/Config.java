@@ -16,6 +16,7 @@ import com.bbe.theatre.DataBase;
 import com.bbe.theatre.personne.Personnage;
 import com.bbe.theatre.personne.Personne;
 import com.bbe.theatre.spectacle.DisponibiliteJour;
+import com.bbe.theatre.spectacle.EccartTypePersistance;
 import com.bbe.theatre.spectacle.Semaine;
 import com.bbe.theatre.spectacle.Spectacle;
 import com.bbe.theatre.spectacle.Team;
@@ -29,6 +30,9 @@ public class Config {
 	public static Map<Integer, Team> listeTeam = new HashMap<>();
 	public static Map<Integer, Personne> listePersonnes2 = new HashMap<>();
 	public static int tauxMutation;	
+	private static int compt;
+	public static EccartTypePersistance eccartTypePersistance = new EccartTypePersistance();
+	public static String[] personnages;
 
 	static {
 		PropertyConfigurator.configure("log4j.properties");
@@ -55,7 +59,6 @@ public class Config {
 	public String dataBaseName = "simulation"+LocalDateTime.now().toString().substring(2, 19).replace("-", "x").replace(":", "x");
 	public String sqlQueryDatabase = 
 			"CREATE DATABASE IF NOT EXISTS `"+dataBaseName+"` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;\n";
-	public String[] personnages;
 	public String[] neDoitPasRencontrer;
 	public String[] line;
 
@@ -87,9 +90,27 @@ public class Config {
 				+") ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;";
 		return s;
 	} 
-
+	
 	public String getFileName2() {
 		return "src\\main\\resources\\dates\\"+id+".csv";
 	}
 
+	public static int calculEccartType(int equipeCourante, int equipeSuivante) {
+		Team eCourante = Config.listeTeam.get(equipeCourante);
+		Team eSuivante = Config.listeTeam.get(equipeSuivante);
+		compt = 0;
+
+		eCourante.getTeamPourLeSpectacle().forEach( (personnage,p) -> {
+			eSuivante.getTeamPourLeSpectacle().forEach( (personnage2,p2) -> {
+				if (personnage.getNom().equals(personnage2.getNom())) {
+					if (p.getId()!=p2.getId()) {
+						compt++;
+					}
+				}
+			});
+		});
+
+		return compt;
+	}
+	
 }

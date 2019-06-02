@@ -71,7 +71,6 @@ public class Submain_A {
 		c.dataBase.update(c.sqlQueryDatabase);
 		c.dataBase.setBaseName(c.dataBaseName);
 		c.dataBase.update(c.sqlQuery3());
-
 	}
 
 	private void creationPersonnes() throws IOException {
@@ -116,23 +115,23 @@ public class Submain_A {
 	}
 
 	private void creationPersonnages() {
-		c.personnages = Config.prop.getProperty("listePersonnage").trim().split(",");
+		Config.personnages = Config.prop.getProperty("listePersonnage").trim().split(",");
 
-		for (int i = 0; i < c.personnages.length; i++) {
+		for (int i = 0; i < Config.personnages.length; i++) {
 			String s;
-			Personnage p = new Personnage(i,c.personnages[i]);
+			Personnage p = new Personnage(i,Config.personnages[i]);
 			c.listePersonnes.put(p, new HashSet<>());
 			if (i==0) {
 				s = "id_unique";
 			}
 			else {
-				s = c.personnages[i-1];
+				s = Config.personnages[i-1];
 			}
-			c.dataBase.update("ALTER TABLE `listeequipe` ADD `"+c.personnages[i]+"` VARCHAR(2) NOT NULL AFTER `"+s+"`;");
+			c.dataBase.update("ALTER TABLE `listeequipe` ADD `"+Config.personnages[i]+"` VARCHAR(2) NOT NULL AFTER `"+s+"`;");
 			//			ALTER TABLE `listeequipe` ADD `jonathan` VARCHAR(2) NOT NULL AFTER `s`;
 
 		}
-		c.dataBase.update("ALTER TABLE `listeequipe` ADD `ok` VARCHAR(1) NOT NULL AFTER `"+c.personnages[c.personnages.length-1]+"`;");
+		c.dataBase.update("ALTER TABLE `listeequipe` ADD `ok` VARCHAR(1) NOT NULL AFTER `"+Config.personnages[Config.personnages.length-1]+"`;");
 	}
 
 	/** permet de remplir la map listeSpectacle
@@ -350,13 +349,23 @@ public class Submain_A {
 				}
 			});
 		});
-
+		
+		if (Boolean.parseBoolean(Config.prop.getProperty("precalculsA_Faire"))) {
+			Config.listeTeam.forEach((idTeam,t) -> {
+				Config.listeTeam.forEach((idTeam2,t2) -> {
+					if (idTeam!=idTeam2) {
+						Config.eccartTypePersistance.setEccartTypePersistance(idTeam,idTeam2,Config.calculEccartType(idTeam, idTeam2));
+					}
+				});
+			});
+		}
+		
 	}
 
 	private void calculDuCrossJoin() {
 		c.sb = new StringBuilder("SELECT ");
 		c.id = 0;
-		for (String s : c.personnages) {
+		for (String s : Config.personnages) {
 			if (c.id==0) {
 				c.sb.append(s+".id_personne as "+s);
 				c.id++;
