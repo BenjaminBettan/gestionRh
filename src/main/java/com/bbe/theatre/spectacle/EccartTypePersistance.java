@@ -9,12 +9,14 @@ import java.util.concurrent.ThreadLocalRandom;
 import com.bbe.theatre.__main.Config;
 
 public class EccartTypePersistance {
+	
+	public final String path ="C:\\tools\\EccartTypePersistanceDb\\";
 
 	public void setEccartTypePersistance(Integer idTeam, Integer idTeam2, int calculEccartType) {
-		new File("target\\" + idTeam + "\\"+calculEccartType+"\\").mkdirs();
+		new File(path + idTeam + "\\"+calculEccartType+"\\").mkdirs();
 		
 		try {
-			new File("target\\" + idTeam + "\\"+calculEccartType+"\\"+idTeam2).createNewFile();
+			new File(path + idTeam + "\\"+calculEccartType+"\\"+idTeam2).createNewFile();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}  
@@ -22,10 +24,10 @@ public class EccartTypePersistance {
 
 	public Integer getMeilleurTeam(Integer idTeam, List<Integer> idTeams) {
 		for (int i = 1; i <= Config.personnages.length; i++) {
-			if (new File("target\\" + idTeam + "\\"+i+"\\").exists()) {
+			if (new File(path + idTeam + "\\"+i+"\\").exists()) {
 				List<Integer> idTeams_ = new ArrayList<>();
 				for (int id : idTeams) {
-					if (new File("target\\" + idTeam + "\\"+i+"\\"+id).exists()) {
+					if (new File(path + idTeam + "\\"+i+"\\"+id).exists()) {
 						idTeams_.add(id);
 					}
 				}
