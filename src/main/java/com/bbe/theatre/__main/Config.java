@@ -2,13 +2,11 @@ package com.bbe.theatre.__main;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import org.apache.log4j.PropertyConfigurator;
 
@@ -56,7 +54,7 @@ public class Config {
 	
 	public StringBuilder sb;
 	public String f2 = "src\\main\\resources\\dates\\";
-	public String dataBaseName = "simulation"+LocalDateTime.now().toString().substring(2, 19).replace("-", "x").replace(":", "x");
+	public String dataBaseName = "simulation";
 	public String sqlQueryDatabase = 
 			"CREATE DATABASE IF NOT EXISTS `"+dataBaseName+"` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;\n";
 	public String[] neDoitPasRencontrer;
@@ -67,8 +65,8 @@ public class Config {
 	public CSVReader reader;
 	public boolean test = false;
 	
-	public Map<Personnage, Set<Personne>> listePersonnes = new HashMap<>();
-	public Map<Double,  Set<Spectacle>> listeSpectacleParSemaine = new HashMap<>();
+	public Map<Personnage, List<Personne>> listePersonnes = new HashMap<>();
+	public Map<Double,  List<Spectacle>> listeSpectacleParSemaine = new HashMap<>();
 	public Map<Double, List<DisponibiliteJour>> dispos = new HashMap<>();
 	public Map<Double, Semaine> semaines = new HashMap<>();
 	

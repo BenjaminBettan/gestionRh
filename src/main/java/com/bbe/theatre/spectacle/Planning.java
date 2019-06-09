@@ -79,7 +79,11 @@ public class Planning {
 					sem.setIdTeam(sem.getTeam().get(ThreadLocalRandom.current().nextInt(0, sem.getTeam().size())));
 				}
 				else {
-					sem.setIdTeam(Config.eccartTypePersistance.getMeilleurTeam(semaines.get(Config.listeSemaines.get(i -1)).getIdTeam(), sem.getTeam()));
+					Integer idTeam = Config.eccartTypePersistance.getMeilleurTeam(semaines.get(Config.listeSemaines.get(i -1)).getIdTeam(), sem.getTeam());
+					if (idTeam==null) {
+						logger.error("Fin du programme. Veuillez ");
+					}
+					sem.setIdTeam(idTeam);
 				}
 			}
 		}

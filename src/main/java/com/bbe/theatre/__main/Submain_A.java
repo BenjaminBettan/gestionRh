@@ -1,5 +1,6 @@
 package com.bbe.theatre.__main;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -8,16 +9,18 @@ import java.time.LocalDateTime;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import com.bbe.theatre.DataBase;
 import com.bbe.theatre._enum.DISPO;
 import com.bbe.theatre.personne.Personnage;
 import com.bbe.theatre.personne.Personne;
 import com.bbe.theatre.spectacle.DisponibiliteJour;
+import com.bbe.theatre.spectacle.EccartTypePersistance;
 import com.bbe.theatre.spectacle.Semaine;
 import com.bbe.theatre.spectacle.Spectacle;
 import com.bbe.theatre.spectacle.Team;
@@ -54,7 +57,7 @@ public class Submain_A {
 
 		creationPersonnes();
 
-		logger.info("on calcul les équipes");
+		logger.info("on calcule les équipes");
 
 		calculTeams();
 
@@ -120,7 +123,7 @@ public class Submain_A {
 		for (int i = 0; i < Config.personnages.length; i++) {
 			String s;
 			Personnage p = new Personnage(i,Config.personnages[i]);
-			c.listePersonnes.put(p, new HashSet<>());
+			c.listePersonnes.put(p, new ArrayList<>());
 			if (i==0) {
 				s = "id_unique";
 			}
@@ -157,7 +160,7 @@ public class Submain_A {
 				double numSemaine = Double.parseDouble(numeroSemaine+"."+t.getYear());
 				if ( ! Config.listeSemaines.contains(numSemaine)) {
 					Config.listeSemaines.add(numSemaine);
-					c.listeSpectacleParSemaine.put(numSemaine,new HashSet<>());
+					c.listeSpectacleParSemaine.put(numSemaine,new ArrayList<>());
 					c.dispos.put(numSemaine, new ArrayList<>() );
 				}
 
@@ -351,6 +354,15 @@ public class Submain_A {
 		});
 		
 		if (Boolean.parseBoolean(Config.prop.getProperty("precalculsA_Faire"))) {
+			
+			File file = new File(EccartTypePersistance.path);
+			try {
+				FileUtils.deleteDirectory(file);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			
 			Config.listeTeam.forEach((idTeam,t) -> {
 				Config.listeTeam.forEach((idTeam2,t2) -> {
 					if (idTeam!=idTeam2) {

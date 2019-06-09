@@ -67,7 +67,7 @@ public class Submain extends Submain_A{
 						taillePopulationRestante = Integer.parseInt(Config.prop.getProperty("taillePopulationRestante"));
 						taillePopulation = Integer.parseInt(Config.prop.getProperty("taillePopulation"));
 						
-						if (taillePopulation>1000) {
+						if (taillePopulation>=1000) {
 							taillePopulation = taillePopulation / 10;
 							taillePopulationRestante = taillePopulationRestante / 10;
 							logger.info("Reduction de la population à "+taillePopulation+" individus");
@@ -122,7 +122,6 @@ public class Submain extends Submain_A{
 			Planning p = new Planning();
 			c.semaines.forEach((id,sem) -> {p.addSemaine(id, sem);});//on charge les equipes dispo par semaine
 			plannings.add(p.build());//on attribue au hasard une equipe par semaine
-			
 		}
 		
 		evaluationPopulation(plannings);

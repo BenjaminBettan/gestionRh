@@ -10,7 +10,7 @@ import com.bbe.theatre.__main.Config;
 
 public class EccartTypePersistance {
 	
-	public final String path ="C:\\tools\\EccartTypePersistanceDb\\";
+	public final static String path ="C:\\tools\\EccartTypePersistanceDb\\";
 
 	public void setEccartTypePersistance(Integer idTeam, Integer idTeam2, int calculEccartType) {
 		new File(path + idTeam + "\\"+calculEccartType+"\\").mkdirs();
