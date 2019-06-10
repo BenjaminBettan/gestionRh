@@ -34,16 +34,16 @@ public class DataBase {
 	 * @param DATABASE_CONFIG_ the database informations to connect
 	 */
 	
-	public DataBase setBaseName(String s){
+	public DataBase setBaseNameAndConnect(String s){
 		dataBaseConf.setBaseName(s);
 		connect(this.dataBaseConf);
 		return this;
 	}
 	
-	public void connect() {
+	public DataBase connect() {
 		dataBaseConf = DATABASE_CONFIG.MYSQL;
 		connect(dataBaseConf);
-		
+		return this;
 	}
 	
 	public void connect(DATABASE_CONFIG DATABASE_CONFIG_) 

@@ -12,6 +12,7 @@ public class Personne {
 	private String personneAvecQuiJeDoisJouer ="";
 	private String personneAvecQuiJeNeDoisPasJouer ="";
 	private boolean estDispoCetteSemaine = true;
+	private boolean isAncien = false;
 
 	public String getPersonneAvecQuiJeDoisJouer() {
 		return personneAvecQuiJeDoisJouer;
@@ -100,6 +101,15 @@ public class Personne {
 
 	public void incrementCalculNbSpectMin(int i) {
 		nbSpectacleCourant+=i;
+	}
+
+	public boolean isAncien() {
+		return isAncien;
+	}
+
+	public Personne setAncien(boolean isAncien) {
+		this.isAncien = isAncien;
+		return this;
 	}
 	
 }

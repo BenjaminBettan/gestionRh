@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Scanner;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -64,39 +65,63 @@ public class Submain_A {
 		affichage();
 		
 		logger.info("TEMPS DE CALCUL INIT : "+ (System.currentTimeMillis() - l) + "ms");
+		
+		logger.info("Entrez q sur la console Eclipse pour quitter");
+		
+		Thread thread = new Thread(){
+			public void run(){
+				String userInput = "";
+				while ( ! userInput.toUpperCase().equals("Q")) {
+					Scanner reader = new Scanner(System.in);  // Reading from System.in
+					System.out.println("Entrez q pour quitter et validez ensuite");
+					userInput = reader.next();
+					reader.close();
+				}
+				Config.setExitAlgo(true);
+			}
+		};
 
+		thread.start();
 	}
 
 	private void initPrimaire() throws FileNotFoundException, IOException, SQLException {
-		c.dataBase = new DataBase();//on connecte la db
+		  
+		Config.setDataBase(new DataBase());//on connecte la db
 		cleanDb();
 		//creation de la DB
-		c.dataBase.update(c.sqlQueryDatabase);
-		c.dataBase.setBaseName(c.dataBaseName);
-		c.dataBase.update(c.sqlQuery3());
+		Config.getDataBase().update(c.getSqlQueryDatabase());
+		Config.getDataBase().setBaseNameAndConnect("simulation");
+		Config.getDataBase().update(c.sqlQuery3());
+		Config.getDataBase().update(c.sqlQuery4());
+		Config.getDataBase().update(c.sqlQuery5());
+		Config.getDataBase().update(c.sqlQuery6());
+		Config.getDataBase().update("ALTER TABLE `rel_team_personnes` ADD INDEX(`id_team`);");
+		Config.getDataBase().update("ALTER TABLE `personnes` ADD INDEX(`id_personne`);");
+		Config.getDataBase().update("ALTER TABLE `spectacles` ADD INDEX(`date_spectacle`);");
 	}
 
 	private void creationPersonnes() throws IOException {
-		for (c.id = 0; c.id < Integer.parseInt(Config.prop.getProperty("effectifComediens").trim()); c.id++) {
+		for (c.setId(0); c.getId() < Integer.parseInt(Config.getProp().getProperty("effectifComediens").trim()); c.setId(c.getId() +1)) {
 			creationPersonne();
 			chargeFichierDateDeCettePersonne();
 		}
-		
 	}
 
 	private void creationPersonne() {
-		int idRole = Integer.parseInt(Config.prop.getProperty(c.id+".role").trim());
-		c.listePersonnes.forEach((personnage, map) -> {
+		int idRole = Integer.parseInt(Config.getProp().getProperty(c.getId()+".role").trim());
+		c.getListePersonnes().forEach((personnage, map) -> {
 			if (personnage.getId()==idRole) {
-				c.personnage = personnage;
-				logger.debug("Création de l'utilisateur " + c.id);
-				c.p = new Personne().setNbSpectacleMin(Integer.parseInt(Config.prop.getProperty(c.id+".nbSpectacle").trim()))
-						.setId(c.id).setNomActeur(Config.prop.getProperty(c.id+".nom").trim())
+				c.setPersonnage(personnage);
+				logger.debug("Création de l'utilisateur " + c.getId());
+				c.setP(new Personne().setNbSpectacleMin(Integer.parseInt(Config.getProp().getProperty(c.getId()+".nbSpectacle").trim()))
+						.setId(c.getId()).setNomActeur(Config.getProp().getProperty(c.getId()+".nom").trim())
 						.setPersonnage(personnage)
-						//.setPersonnage(personnage).setPersonneAvecQuiJeDoisJouer(calculDoitRencontrer(c.doitRencontrer))
-						.setPersonneAvecQuiJeNeDoisPasJouer(calculDoitRencontrer(c.neDoitPasRencontrer));
-				Config.listePersonnes2.put(c.id, c.p);
-				map.add(c.p);
+						.setPersonnage(personnage).setPersonneAvecQuiJeDoisJouer(calculDoitRencontrer(c.getDoitRencontrer()))
+						.setPersonneAvecQuiJeNeDoisPasJouer(calculDoitRencontrer(c.getNeDoitPasRencontrer()))
+						.setAncien(new Boolean(Config.getProp().getProperty(c.getId()+".isAncien").trim())));
+				Config.getListePersonnes2().put(c.getId(), c.getP());
+				map.add(c.getP());
+				Config.getDataBase().update("INSERT INTO `personnes` (`id_unique`, `nom_personne`,`nom_personnage`, `id_personne`, `nb_spect_min`, `isAncien`) VALUES (NULL, '"+c.getP().getNomActeur()+"', '"+c.getP().getPersonnage().getNom()+"', '"+c.getP().getId()+"', '"+c.getP().getNbSpectacleMin()+"', '"+(c.getP().isAncien() ? "1":"0")+"');");
 			}
 		});		
 	}
@@ -104,8 +129,10 @@ public class Submain_A {
 	private String calculDoitRencontrer(String[] doitRencontrer) {
 		StringBuilder idDoitRencontrer = new StringBuilder();
 		for (String string : doitRencontrer) {
-			if (c.id==Integer.parseInt(string.trim().split(";")[0].trim())) {
-				idDoitRencontrer.append(string.trim().split(";")[1].trim()+",");
+			if ( ! string.equals("")) {
+				if (c.getId()==Integer.parseInt(string.trim().split(";")[0].trim())) {
+					idDoitRencontrer.append(string.trim().split(";")[1].trim()+",");
+				}
 			}
 		}
 
@@ -113,38 +140,45 @@ public class Submain_A {
 	}
 
 	private void chargementContraintesJoueurs() {
-		//		c.doitRencontrer =
-		c.neDoitPasRencontrer = Config.prop.getProperty("neDoitPasRencontrer").trim().replace("{", "").replace("}", "").split(",");
+		
+		String[] s = Config.getProp().getProperty("neDoitPasRencontrer").trim().replace("{", "").replace("}", "").split(",");
+		if ( ! (s.length==1 && s.equals("") ) ) {
+			c.setNeDoitPasRencontrer(s);
+		}
+		s = Config.getProp().getProperty("doitRencontrer").trim().replace("{", "").replace("}", "").split(",");
+		if ( ! (s.length==1 && s.equals("") ) ) {
+			c.setDoitRencontrer(s);
+		}
 	}
 
 	private void creationPersonnages() {
-		Config.personnages = Config.prop.getProperty("listePersonnage").trim().split(",");
+		Config.setPersonnages(Config.getProp().getProperty("listePersonnage").trim().split(","));
 
-		for (int i = 0; i < Config.personnages.length; i++) {
+		for (int i = 0; i < Config.getPersonnages().length; i++) {
 			String s;
-			Personnage p = new Personnage(i,Config.personnages[i]);
-			c.listePersonnes.put(p, new ArrayList<>());
+			Personnage p = new Personnage(i,Config.getPersonnages()[i]);
+			c.getListePersonnes().put(p, new ArrayList<>());
 			if (i==0) {
 				s = "id_unique";
 			}
 			else {
-				s = Config.personnages[i-1];
+				s = Config.getPersonnages()[i-1];
 			}
-			c.dataBase.update("ALTER TABLE `listeequipe` ADD `"+Config.personnages[i]+"` VARCHAR(2) NOT NULL AFTER `"+s+"`;");
+			Config.getDataBase().update("ALTER TABLE `listeequipe` ADD `"+Config.getPersonnages()[i]+"` VARCHAR(2) NOT NULL AFTER `"+s+"`;");
 			//			ALTER TABLE `listeequipe` ADD `jonathan` VARCHAR(2) NOT NULL AFTER `s`;
 
 		}
-		c.dataBase.update("ALTER TABLE `listeequipe` ADD `ok` VARCHAR(1) NOT NULL AFTER `"+Config.personnages[Config.personnages.length-1]+"`;");
+		Config.getDataBase().update("ALTER TABLE `listeequipe` ADD `ok` VARCHAR(1) NOT NULL AFTER `"+Config.getPersonnages()[Config.getPersonnages().length-1]+"`;");
 	}
 
 	/** permet de remplir la map listeSpectacle
 	 * @throws IOException
 	 */
 	private void remplirListeSemaines() throws IOException {
-		c.maxIndispoMoyenne = Integer.parseInt(Config.prop.getProperty("maxIndispoMoyenne"));
+		c.setMaxIndispoMoyenne(Integer.parseInt(Config.getProp().getProperty("maxIndispoMoyenne")));
 		chargeFichierDateDeCettePersonne();//utilisateur 0
-		c.test = true;
-		String[] listeDates = c.sb.toString().split("\n");
+		c.setTest(true);
+		String[] listeDates = c.getSb().toString().split("\n");
 
 		for (String l : listeDates) {
 			String[] listesDates_ = l.split(";");
@@ -158,13 +192,13 @@ public class Submain_A {
 
 				int numeroSemaine = t.get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
 				double numSemaine = Double.parseDouble(numeroSemaine+"."+t.getYear());
-				if ( ! Config.listeSemaines.contains(numSemaine)) {
-					Config.listeSemaines.add(numSemaine);
-					c.listeSpectacleParSemaine.put(numSemaine,new ArrayList<>());
-					c.dispos.put(numSemaine, new ArrayList<>() );
+				if ( ! Config.getListeSemaines().contains(numSemaine)) {
+					Config.getListeSemaines().add(numSemaine);
+					Config.getListeSpectacleParSemaine().put(numSemaine,new ArrayList<>());
+					c.getDispos().put(numSemaine, new ArrayList<>() );
 				}
 
-				c.listeSpectacleParSemaine.get(numSemaine).add(new Spectacle(t));
+				Config.getListeSpectacleParSemaine().get(numSemaine).add(new Spectacle(t));
 
 			}
 		}
@@ -174,17 +208,17 @@ public class Submain_A {
 	 * @throws SQLException
 	 */
 	protected void cleanDb() throws SQLException {
-		c.dataBase.connect();
+		Config.getDataBase().connect();
 
-		DatabaseMetaData dbmd = (DatabaseMetaData) c.dataBase.getConnexion().getMetaData();
+		DatabaseMetaData dbmd = (DatabaseMetaData) Config.getDataBase().getConnexion().getMetaData();
 
 		ResultSet ctlgs = (ResultSet) dbmd.getCatalogs();
 
 		while (ctlgs.next()){
 			if (ctlgs.getString(1).length()> 5) {
 				if (ctlgs.getString(1).substring(0, 5).equals("simul")) {
-					c.dataBase.update("DROP DATABASE "+ctlgs.getString(1)+";");
-					logger.debug("DROP TABLE '"+ctlgs.getString(1)+"';");
+					Config.getDataBase().update("DROP DATABASE "+ctlgs.getString(1)+";");
+					logger.debug("DROP DATABASE '"+ctlgs.getString(1)+"';");
 				}				
 			}
 		}		
@@ -194,39 +228,39 @@ public class Submain_A {
 	 * @throws IOException
 	 */
 	private void chargeFichierDateDeCettePersonne() throws IOException {
-		c.sb = new StringBuilder();
-		c.reader = new CSVReader(new FileReader(c.f2 + Integer.toString(c.id) + ".csv"));
+		c.setSb(new StringBuilder());
+		c.setReader(new CSVReader(new FileReader(c.getF2() + Integer.toString(c.getId()) + ".csv")));
 
 		while (true) {
-			c.line = c.reader.readNext();
-			if (c.line==null) {
-				c.reader.close();
+			c.setLine(c.getReader().readNext());
+			if (c.getLine()==null) {
+				c.getReader().close();
 				break;//fin du fichier
 			}
 			// on filtre les données inutiles. On aura une ligne par date
-			if (c.line[0].equals("")) {
+			if (c.getLine()[0].equals("")) {
 				continue;
-			}else if (c.line[0].substring(0,3).equals("Dat")) {
+			}else if (c.getLine()[0].substring(0,3).equals("Dat")) {
 				continue;
-			}else if (c.line[0].substring(0,3).equals("Sam")) {
+			}else if (c.getLine()[0].substring(0,3).equals("Sam")) {
 				continue;
-			}else if (c.line[0].equals("Nombre souhaité de semaines")) {
+			}else if (c.getLine()[0].equals("Nombre souhaité de semaines")) {
 				continue;
-			}else if (c.line[0].equals("Nombre total de semaines ")) {
+			}else if (c.getLine()[0].equals("Nombre total de semaines ")) {
 				continue;
 			}
-			else if (c.line[1].equals("")) {
+			else if (c.getLine()[1].equals("")) {
 				continue;
-			}else if (c.line[0].trim().length()>3) {
-				if (c.line[0].trim().substring(0,3).equals("Ind")) {
+			}else if (c.getLine()[0].trim().length()>3) {
+				if (c.getLine()[0].trim().substring(0,3).equals("Ind")) {
 					continue;
 				}
 			}
 
-			c.sb.append(c.line[0].trim()+";"+c.line[1].trim()+";"+c.line[2].trim()+";"+c.line[3].trim()+";"+c.line[4].trim()+";"+c.line[5].trim()+";\n");
+			c.getSb().append(c.getLine()[0].trim()+";"+c.getLine()[1].trim()+";"+c.getLine()[2].trim()+";"+c.getLine()[3].trim()+";"+c.getLine()[4].trim()+";"+c.getLine()[5].trim()+";\n");
 		}
-		if (c.test) {
-			String[] listeDates = c.sb.toString().split("\n");
+		if (c.isTest()) {
+			String[] listeDates = c.getSb().toString().split("\n");
 			for (String l : listeDates) {
 				String[] listesDates_ = l.split(";");
 
@@ -242,16 +276,16 @@ public class Submain_A {
 					DisponibiliteJour d;
 
 					if (listesDates_[2].equals("1")) {
-						d = new DisponibiliteJour(c.p, t,c.personnage,DISPO.DISPO,numSemaine);
+						d = new DisponibiliteJour(c.getP(), t,c.getPersonnage(),DISPO.DISPO,numSemaine);
 					}
 					else if (listesDates_[2].equals("0")) {
-						d = new DisponibiliteJour(c.p, t,c.personnage,DISPO.PAS_DISPO,numSemaine);
+						d = new DisponibiliteJour(c.getP(), t,c.getPersonnage(),DISPO.PAS_DISPO,numSemaine);
 					}
 					else {
-						d = new DisponibiliteJour(c.p, t,c.personnage,DISPO.MOYEN_DISPO,numSemaine);
+						d = new DisponibiliteJour(c.getP(), t,c.getPersonnage(),DISPO.MOYEN_DISPO,numSemaine);
 					}
 
-					c.dispos.get(numSemaine).add(d);
+					c.getDispos().get(numSemaine).add(d);
 				}
 			}
 		}
@@ -259,7 +293,7 @@ public class Submain_A {
 
 	private void affichageTeams() {
 		logger.debug("Affichage des teams");
-		Config.listeTeam.forEach((i, team) -> {
+		Config.getListeTeam().forEach((i, team) -> {
 			logger.debug(i+" ");
 			logger.debug(team);
 		});	
@@ -268,60 +302,67 @@ public class Submain_A {
 	private void calculTeams() {
 		logger.debug("Calcul des permutations d'equipes");
 
-		c.listePersonnes.forEach((personnage, mapPersonnes) -> {
-			c.dataBase.update(c.sqlQuery2(personnage.getNom()));
+		c.getListePersonnes().forEach((personnage, mapPersonnes) -> {
+			Config.getDataBase().update(c.sqlQuery2(personnage.getNom()));
 
 		});
 
-		c.listePersonnes.forEach((personnage, mapPersonnes) -> {
+		c.getListePersonnes().forEach((personnage, mapPersonnes) -> {
 
 			for (Personne personne : mapPersonnes) {
-				c.dataBase.update("INSERT INTO `" + personnage.getNom() + "` (`id_unique`, `id_personne`) VALUES (NULL, '"+personne.getId()+"');");
+				Config.getDataBase().update("INSERT INTO `" + personnage.getNom() + "` (`id_unique`, `id_personne`) VALUES (NULL, '"+personne.getId()+"');");
 			}
 		});
 		calculDuCrossJoin();
 
-		String[] result = c.dataBase.select(c.sb.toString()).split("\n");
+		String[] result = Config.getDataBase().select(c.getSb().toString()).split("\n");
 
 		for (String s : result) {
-			c.sb = new StringBuilder("INSERT INTO `listeequipe` VALUES (NULL, ");
+			c.setSb(new StringBuilder("INSERT INTO `listeequipe` VALUES (NULL, "));
 			String[] result2 = s.split("/");
 			for (String s2 : result2) {
-				c.sb.append("'"+s2+"',");
+				c.getSb().append("'"+s2+"',");
 			}
-			c.dataBase.update(c.sb.toString().substring(0, c.sb.toString().length()-1)+",'1');");
+			Config.getDataBase().update(c.getSb().toString().substring(0, c.getSb().toString().length()-1)+",'1');");
 		}
 
 
-		Config.listePersonnes2.forEach((id, personne) -> {
+		Config.getListePersonnes2().forEach((id, personne) -> {
 			if ( ! personne.getPersonneAvecQuiJeNeDoisPasJouer().equals("")) {
 				String[] p = personne.getPersonneAvecQuiJeNeDoisPasJouer().split(",");
-				c.dataBase.update("UPDATE LISTEEQUIPE SET OK='T' WHERE OK='1' AND " + personne.getPersonnage().getNom() +" ='" + personne.getId()+"';");
+				Config.getDataBase().update("UPDATE LISTEEQUIPE SET OK='T' WHERE OK='1' AND " + personne.getPersonnage().getNom() +" ='" + personne.getId()+"';");
 				for (String string : p) {
-					c.dataBase.update("UPDATE LISTEEQUIPE SET OK='0' WHERE OK='T' AND " + Config.listePersonnes2.get(Integer.parseInt(string)).getPersonnage().getNom() +" ='" + string +"';");
+					Config.getDataBase().update("UPDATE LISTEEQUIPE SET OK='0' WHERE OK='T' AND " + Config.getListePersonnes2().get(Integer.parseInt(string)).getPersonnage().getNom() +" ='" + string +"';");
 				}
-				c.dataBase.update("UPDATE LISTEEQUIPE SET OK='1' WHERE OK='T';");
+				Config.getDataBase().update("UPDATE LISTEEQUIPE SET OK='1' WHERE OK='T';");
 			}
 		});
-		String[] l = c.dataBase.select("SELECT * FROM LISTEEQUIPE WHERE OK=1;").split("\n");
+		
+		Config.getListePersonnes2().forEach((id, personne) -> {
+			if ( ! personne.getPersonneAvecQuiJeDoisJouer().equals("")) {
+				String[] p = personne.getPersonneAvecQuiJeDoisJouer().split(",");
+				Config.getDataBase().update("UPDATE LISTEEQUIPE SET OK='0' WHERE OK='1' AND (" + Config.getListePersonnes2().get(Integer.parseInt(p[0])).getPersonnage().getNom() +" ='" + Config.getListePersonnes2().get(Integer.parseInt(p[0])).getId()+"' XOR " + personne.getPersonnage().getNom() +" ='" + id +"');");
+			}
+		});
+		String[] l = Config.getDataBase().select("SELECT * FROM LISTEEQUIPE WHERE OK=1;").split("\n");
 		for (String s : l) {
 
 			String[] s2 = s.split("/");
 			Map<Personnage, Personne> teamPourLeSpectacle = new HashMap<>();
 			for (int i = 1; i < s2.length - 1; i++) {
-				teamPourLeSpectacle.put(Config.listePersonnes2.get(Integer.parseInt(s2[i])).getPersonnage(), Config.listePersonnes2.get(Integer.parseInt(s2[i])));
+				teamPourLeSpectacle.put(Config.getListePersonnes2().get(Integer.parseInt(s2[i])).getPersonnage(), Config.getListePersonnes2().get(Integer.parseInt(s2[i])));
 			}
-			Config.listeTeam.put(Integer.parseInt(s2[0]), new Team(Integer.parseInt(s2[0]),teamPourLeSpectacle));
+			Config.getListeTeam().put(Integer.parseInt(s2[0]), new Team(Integer.parseInt(s2[0]),teamPourLeSpectacle));
 		}
 
-		Config.listeSemaines.forEach((numSemaine) -> {
-			c.semaines.put(numSemaine, new Semaine(c.listeSpectacleParSemaine.get(numSemaine).size(),numSemaine));
+		Config.getListeSemaines().forEach((numSemaine) -> {
+			c.getSemaines().put(numSemaine, new Semaine(Config.getListeSpectacleParSemaine().get(numSemaine).size(),numSemaine));
 		});
 
-		Config.listeSemaines.forEach((numSemaine) -> {
-			Semaine sem = c.semaines.get(numSemaine);
-			List<DisponibiliteJour> lDispos = c.dispos.get(numSemaine);
-			Config.listePersonnes2.forEach((id,pers) -> {
+		Config.getListeSemaines().forEach((numSemaine) -> {
+			Semaine sem = c.getSemaines().get(numSemaine);
+			List<DisponibiliteJour> lDispos = c.getDispos().get(numSemaine);
+			Config.getListePersonnes2().forEach((id,pers) -> {
 				int compteurDispoMoyenne = 0;
 				pers.setEstDispoCetteSemaine(true);
 				for (DisponibiliteJour d : lDispos) {
@@ -331,7 +372,7 @@ public class Submain_A {
 							break;
 						}
 						else if (d.getDispo().equals(DISPO.MOYEN_DISPO)) {
-							if ( ++compteurDispoMoyenne == c.maxIndispoMoyenne) {
+							if ( ++compteurDispoMoyenne == c.getMaxIndispoMoyenne()) {
 								pers.setEstDispoCetteSemaine(false);
 								break;							
 							}
@@ -340,20 +381,20 @@ public class Submain_A {
 				}
 			});
 
-			Config.listeTeam.forEach((idTeam,t) -> {
-				c.addTeam = true;
+			Config.getListeTeam().forEach((idTeam,t) -> {
+				c.setAddTeam(true);
 				t.getTeamPourLeSpectacle().forEach((idpers,pers2) -> {
 					if ( ! pers2.estDispoCetteSemaine() ) {
-						c.addTeam = false;
+						c.setAddTeam(false);
 					}
 				});
-				if (c.addTeam) {
+				if (c.isAddTeam()) {
 					sem.addTeam(idTeam);
 				}
 			});
 		});
 		
-		if (Boolean.parseBoolean(Config.prop.getProperty("precalculsA_Faire"))) {
+		if (Boolean.parseBoolean(Config.getProp().getProperty("precalculsA_Faire"))) {
 			
 			File file = new File(EccartTypePersistance.path);
 			try {
@@ -363,40 +404,48 @@ public class Submain_A {
 			}
 
 			
-			Config.listeTeam.forEach((idTeam,t) -> {
-				Config.listeTeam.forEach((idTeam2,t2) -> {
+			Config.getListeTeam().forEach((idTeam,t) -> {
+				Config.getListeTeam().forEach((idTeam2,t2) -> {
 					if (idTeam!=idTeam2) {
-						Config.eccartTypePersistance.setEccartTypePersistance(idTeam,idTeam2,Config.calculEccartType(idTeam, idTeam2));
+						Config.getEccartTypePersistance().setEccartTypePersistance(idTeam,idTeam2,Config.calculEccartType(idTeam, idTeam2));
 					}
 				});
 			});
 		}
 		
+		
+		Config.getListeTeam().forEach((idTeam,t) -> {
+			t.getTeamPourLeSpectacle().forEach((personnage,p)->{
+				Config.getDataBase().update("INSERT INTO `rel_team_personnes` (`id_unique`, `id_team`, `id_personne`) VALUES (NULL, '"+idTeam+"', '"+p.getId()+"');");	
+			});
+		});		
+		System.out.println();
+		
 	}
 
 	private void calculDuCrossJoin() {
-		c.sb = new StringBuilder("SELECT ");
-		c.id = 0;
-		for (String s : Config.personnages) {
-			if (c.id==0) {
-				c.sb.append(s+".id_personne as "+s);
-				c.id++;
+		c.setSb(new StringBuilder("SELECT "));
+		c.setId(0);
+		for (String s : Config.getPersonnages()) {
+			if (c.getId()==0) {
+				c.getSb().append(s+".id_personne as "+s);
+				c.setId(c.getId() +1);
 			}else {
-				c.sb.append(", "+s+".id_personne as "+s);
+				c.getSb().append(", "+s+".id_personne as "+s);
 			}
 		}
 
 
 
 
-		c.id = 0;
+		c.setId(0);
 
-		c.listePersonnes.forEach((personnage, mapPersonnes) -> {
-			if (c.id==0) {
-				c.sb.append(" FROM " + personnage.getNom());	
-				c.id++;
+		c.getListePersonnes().forEach((personnage, mapPersonnes) -> {
+			if (c.getId()==0) {
+				c.getSb().append(" FROM " + personnage.getNom());	
+				c.setId(c.getId() +1);
 			}else {
-				c.sb.append( " CROSS JOIN "+personnage.getNom());	
+				c.getSb().append( " CROSS JOIN "+personnage.getNom());	
 			}
 		});
 
@@ -404,7 +453,7 @@ public class Submain_A {
 
 	private void affichagePersonnes() {
 		logger.info("Affichage de la fine équipe");
-		Config.listePersonnes2.forEach((id, p) -> {
+		Config.getListePersonnes2().forEach((id, p) -> {
 			logger.info(p);
 		});
 	}
@@ -412,11 +461,11 @@ public class Submain_A {
 	private void affichage() {
 		affichagePersonnes();
 		affichageTeams();
-		logger.info("Liste des semaines : "+Config.listeSemaines);
-		Config.listeSemaines.forEach((l) -> {
-			if (c.semaines.get(l)!=null) {
+		logger.info("Liste des semaines : "+Config.getListeSemaines());
+		Config.getListeSemaines().forEach((l) -> {
+			if (c.getSemaines().get(l)!=null) {
 				logger.info("Numéro de semaine : "+l);
-				logger.info(c.semaines.get(l).getTeam().size());
+				logger.info(c.getSemaines().get(l).getTeam().size());
 			}
 		});
 	}

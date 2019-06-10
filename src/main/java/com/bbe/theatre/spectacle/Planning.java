@@ -37,7 +37,7 @@ public class Planning {
 	 */
 	public Planning(Planning p1, Planning p2){
 		super();
-		Config.listeSemaines.forEach( 
+		Config.getListeSemaines().forEach( 
 				idSem ->{
 					int rand = ThreadLocalRandom.current().nextInt(0, 2);//0 ou 1
 					if (rand==0) {
@@ -60,8 +60,8 @@ public class Planning {
 
 	public Planning build() {
 		boolean premierSucces = false;
-		for (int i = 0; i < Config.listeSemaines.size(); i++) {
-			Semaine sem = semaines.get(Config.listeSemaines.get(i));
+		for (int i = 0; i < Config.getListeSemaines().size(); i++) {
+			Semaine sem = semaines.get(Config.getListeSemaines().get(i));
 			if (sem.getTeam().isEmpty()) {
 				logger.warn("Semaine " + sem.getNumSemaine() +" n a pas d equipe. Le programme va quitter");
 				System.exit(1);
@@ -79,9 +79,9 @@ public class Planning {
 					sem.setIdTeam(sem.getTeam().get(ThreadLocalRandom.current().nextInt(0, sem.getTeam().size())));
 				}
 				else {
-					Integer idTeam = Config.eccartTypePersistance.getMeilleurTeam(semaines.get(Config.listeSemaines.get(i -1)).getIdTeam(), sem.getTeam());
+					Integer idTeam = Config.getEccartTypePersistance().getMeilleurTeam(semaines.get(Config.getListeSemaines().get(i -1)).getIdTeam(), sem.getTeam());
 					if (idTeam==null) {
-						logger.error("Fin du programme. Veuillez ");
+						logger.error("Fin du programme. Veuillez positionner la variable precalculsA_Faire du fichier global.properties à true et redemarrez le programme.");
 					}
 					sem.setIdTeam(idTeam);
 				}
@@ -99,12 +99,12 @@ public class Planning {
 			critereNbSpectMin = 0;
 			
 			semaines.forEach((idSem,sem)->{
-				Config.listeTeam.get(sem.getIdTeam()).getTeamPourLeSpectacle().forEach((personnage,personne)->{
+				Config.getListeTeam().get(sem.getIdTeam()).getTeamPourLeSpectacle().forEach((personnage,personne)->{
 					personne.incrementCalculNbSpectMin(sem.getNbSpectacle());
 				});
 			});
 			
-			Config.listePersonnes2.forEach((id,pers)->{
+			Config.getListePersonnes2().forEach((id,pers)->{
 				critereNbSpectMin+=pers.getMalus();
 				pers.setNbSpectacleCourant(0);
 			});
@@ -116,9 +116,9 @@ public class Planning {
 	public int calculEccartType() {
 		if (critereEccartType==-1) {
 			critereEccartType = 0;
-			for (int j = 0 ; j < Config.listeSemaines.size() - 1; j++) {
-				int equipeCourante = semaines.get(Config.listeSemaines.get(j)).getIdTeam();
-				int equipeSuivante = semaines.get(Config.listeSemaines.get(j+1)).getIdTeam();
+			for (int j = 0 ; j < Config.getListeSemaines().size() - 1; j++) {
+				int equipeCourante = semaines.get(Config.getListeSemaines().get(j)).getIdTeam();
+				int equipeSuivante = semaines.get(Config.getListeSemaines().get(j+1)).getIdTeam();
 
 				critereEccartType += Config.calculEccartType(equipeCourante,equipeSuivante);
 
@@ -133,10 +133,10 @@ public class Planning {
 		i = 0;
 
 
-		if ( rand < Config.tauxMutation ) {
+		if ( rand < Config.getTauxMutation() ) {
 			//verification qu une mutation est possible dans le planning. A faire une seule fois
-			if (Config.testPlaning1==false) {
-				Config.testPlaning1=true;
+			if (Config.isTestPlaning1()==false) {
+				Config.setTestPlaning1(true);
 
 				semaines.forEach((id,sem)-> {
 					if ( ! sem.isLocked() ) {

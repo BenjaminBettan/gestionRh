@@ -22,55 +22,51 @@ import com.bbe.theatre.spectacle.Team;
 import au.com.bytecode.opencsv.CSVReader;
 
 public class Config {
-	public static Properties prop;
-	public static boolean testPlaning1 = false;
-	public static List<Double> listeSemaines = new ArrayList<>();
-	public static Map<Integer, Team> listeTeam = new HashMap<>();
-	public static Map<Integer, Personne> listePersonnes2 = new HashMap<>();
-	public static int tauxMutation;	
+	
+	private static DataBase dataBase;
+	private static Properties prop;
+	private static boolean exitAlgo = false;
+	private static boolean testPlaning1 = false;
+	private static List<Double> listeSemaines = new ArrayList<>();
+	private static Map<Integer, Team> listeTeam = new HashMap<>();
+	private static Map<Integer, Personne> listePersonnes2 = new HashMap<>();
+	private static Map<Double,  List<Spectacle>> listeSpectacleParSemaine = new HashMap<>();
+	private static int tauxMutation;	
 	private static int compt;
-	public static EccartTypePersistance eccartTypePersistance = new EccartTypePersistance();
-	public static String[] personnages;
+	private static EccartTypePersistance eccartTypePersistance = new EccartTypePersistance();
+	private static String[] personnages;
 
 	static {
-		PropertyConfigurator.configure("log4j.properties");
-		prop = new Properties();
 		try {
+			PropertyConfigurator.configure("log4j.properties");
+			prop = new Properties();
 			prop.load(new FileInputStream("src\\main\\resources\\global.properties"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public final int nbSpectacleParSemaine = 5;
-	public int id = 0;
-	public int idTeam = 0;	
-	public int maxIndispoMoyenne = 0;	
+	private int id = 0;
+	private int idTeam = 0;	
+	private int maxIndispoMoyenne = 0;	
 	
-	public boolean addTeam = true;
+	private boolean addTeam = true;
+	private boolean test = false;
 
-
-	public DataBase dataBase;
+	private Map<Personnage, List<Personne>> listePersonnes = new HashMap<>();
+	private Map<Double, List<DisponibiliteJour>> dispos = new HashMap<>();
+	private Map<Double, Semaine> semaines = new HashMap<>();
 	
-	public StringBuilder sb;
-	public String f2 = "src\\main\\resources\\dates\\";
-	public String dataBaseName = "simulation";
-	public String sqlQueryDatabase = 
-			"CREATE DATABASE IF NOT EXISTS `"+dataBaseName+"` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;\n";
-	public String[] neDoitPasRencontrer;
-	public String[] line;
-
-	public Personne p;
-	public Personnage personnage;
-	public CSVReader reader;
-	public boolean test = false;
+	private Personne p;
+	private Personnage personnage;
+	private CSVReader reader;
 	
-	public Map<Personnage, List<Personne>> listePersonnes = new HashMap<>();
-	public Map<Double,  List<Spectacle>> listeSpectacleParSemaine = new HashMap<>();
-	public Map<Double, List<DisponibiliteJour>> dispos = new HashMap<>();
-	public Map<Double, Semaine> semaines = new HashMap<>();
-	
-
+	private StringBuilder sb;
+	private String f2 = "src\\main\\resources\\dates\\";
+	private String sqlQueryDatabase = "CREATE DATABASE IF NOT EXISTS `simulation` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;\n";
+	private String[] neDoitPasRencontrer;
+	private String[] doitRencontrer;
+	private String[] line;
 
 	public String sqlQuery2(String nomUserTable){
 		String s = "CREATE TABLE IF NOT EXISTS `"+nomUserTable+"` (\n"
@@ -84,6 +80,39 @@ public class Config {
 	public String sqlQuery3(){
 		String s = "CREATE TABLE IF NOT EXISTS `listeEquipe` (\n"
 				+"  `id_unique` int(3) NOT NULL AUTO_INCREMENT,\n"
+				+"  UNIQUE KEY `id_unique` (`id_unique`)\n"
+				+") ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;";
+		return s;
+	} 
+	
+	public String sqlQuery4(){
+		String s = "CREATE TABLE IF NOT EXISTS `personnes` (\n"
+				+"  `id_unique` int(3) NOT NULL AUTO_INCREMENT,\n"
+				+"  `nom_personne` varchar(20) NOT NULL,\n"
+				+"  `nom_personnage` varchar(20) NOT NULL,\n"
+				+"  `id_personne` varchar(3) NOT NULL,\n"
+				+"  `nb_spect_min` varchar(3) NOT NULL,\n"
+				+"  `isAncien` varchar(1) NOT NULL,\n"
+				+"  UNIQUE KEY `id_unique` (`id_unique`)\n"
+				+") ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;";
+		return s;
+	} 
+	
+	public String sqlQuery5(){
+		String s = "CREATE TABLE IF NOT EXISTS `rel_team_personnes` (\n"
+				+"  `id_unique` int(3) NOT NULL AUTO_INCREMENT,\n"
+				+"  `id_team` varchar(5) NOT NULL,\n"
+				+"  `id_personne` varchar(2) NOT NULL,\n"
+				+"  UNIQUE KEY `id_unique` (`id_unique`)\n"
+				+") ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;";
+		return s;
+	} 
+	
+	public String sqlQuery6(){
+		String s = "CREATE TABLE IF NOT EXISTS `spectacles` (\n"
+				+"  `id_unique` int(3) NOT NULL AUTO_INCREMENT,\n"
+				+"  `date_spectacle` varchar(16) NOT NULL,\n"
+				+"  `id_team` varchar(5) NOT NULL,\n"
 				+"  UNIQUE KEY `id_unique` (`id_unique`)\n"
 				+") ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;";
 		return s;
@@ -109,6 +138,230 @@ public class Config {
 		});
 
 		return compt;
+	}
+
+	public static DataBase getDataBase() {
+		return dataBase;
+	}
+
+	public static void setDataBase(DataBase dataBase) {
+		Config.dataBase = dataBase;
+	}
+
+	public static boolean isExitAlgo() {
+		return exitAlgo;
+	}
+
+	public static void setExitAlgo(boolean exitAlgo) {
+		Config.exitAlgo = exitAlgo;
+	}
+
+	public static boolean isTestPlaning1() {
+		return testPlaning1;
+	}
+
+	public static void setTestPlaning1(boolean testPlaning1) {
+		Config.testPlaning1 = testPlaning1;
+	}
+
+	public static List<Double> getListeSemaines() {
+		return listeSemaines;
+	}
+
+	public static void setListeSemaines(List<Double> listeSemaines) {
+		Config.listeSemaines = listeSemaines;
+	}
+
+	public static Map<Integer, Personne> getListePersonnes2() {
+		return listePersonnes2;
+	}
+
+	public static void setListePersonnes2(Map<Integer, Personne> listePersonnes2) {
+		Config.listePersonnes2 = listePersonnes2;
+	}
+
+	public static Map<Double,  List<Spectacle>> getListeSpectacleParSemaine() {
+		return listeSpectacleParSemaine;
+	}
+
+	public static void setListeSpectacleParSemaine(Map<Double,  List<Spectacle>> listeSpectacleParSemaine) {
+		Config.listeSpectacleParSemaine = listeSpectacleParSemaine;
+	}
+
+	public static int getTauxMutation() {
+		return tauxMutation;
+	}
+
+	public static void setTauxMutation(int tauxMutation) {
+		Config.tauxMutation = tauxMutation;
+	}
+
+	public static EccartTypePersistance getEccartTypePersistance() {
+		return eccartTypePersistance;
+	}
+
+	public static void setEccartTypePersistance(EccartTypePersistance eccartTypePersistance) {
+		Config.eccartTypePersistance = eccartTypePersistance;
+	}
+
+	public static String[] getPersonnages() {
+		return personnages;
+	}
+
+	public static void setPersonnages(String[] personnages) {
+		Config.personnages = personnages;
+	}
+
+	public static Map<Integer, Team> getListeTeam() {
+		return listeTeam;
+	}
+
+	public static void setListeTeam(Map<Integer, Team> listeTeam) {
+		Config.listeTeam = listeTeam;
+	}
+
+	public static Properties getProp() {
+		return prop;
+	}
+
+	public static void setProp(Properties prop) {
+		Config.prop = prop;
+	}
+
+	public int getIdTeam() {
+		return idTeam;
+	}
+
+	public void setIdTeam(int idTeam) {
+		this.idTeam = idTeam;
+	}
+
+	public int getMaxIndispoMoyenne() {
+		return maxIndispoMoyenne;
+	}
+
+	public void setMaxIndispoMoyenne(int maxIndispoMoyenne) {
+		this.maxIndispoMoyenne = maxIndispoMoyenne;
+	}
+
+	public boolean isAddTeam() {
+		return addTeam;
+	}
+
+	public void setAddTeam(boolean addTeam) {
+		this.addTeam = addTeam;
+	}
+
+	public boolean isTest() {
+		return test;
+	}
+
+	public void setTest(boolean test) {
+		this.test = test;
+	}
+
+	public Map<Personnage, List<Personne>> getListePersonnes() {
+		return listePersonnes;
+	}
+
+	public void setListePersonnes(Map<Personnage, List<Personne>> listePersonnes) {
+		this.listePersonnes = listePersonnes;
+	}
+
+	public Map<Double, List<DisponibiliteJour>> getDispos() {
+		return dispos;
+	}
+
+	public void setDispos(Map<Double, List<DisponibiliteJour>> dispos) {
+		this.dispos = dispos;
+	}
+
+	public Map<Double, Semaine> getSemaines() {
+		return semaines;
+	}
+
+	public void setSemaines(Map<Double, Semaine> semaines) {
+		this.semaines = semaines;
+	}
+
+	public Personne getP() {
+		return p;
+	}
+
+	public void setP(Personne p) {
+		this.p = p;
+	}
+
+	public Personnage getPersonnage() {
+		return personnage;
+	}
+
+	public void setPersonnage(Personnage personnage) {
+		this.personnage = personnage;
+	}
+
+	public CSVReader getReader() {
+		return reader;
+	}
+
+	public void setReader(CSVReader reader) {
+		this.reader = reader;
+	}
+
+	public StringBuilder getSb() {
+		return sb;
+	}
+
+	public void setSb(StringBuilder sb) {
+		this.sb = sb;
+	}
+
+	public String getF2() {
+		return f2;
+	}
+
+	public void setF2(String f2) {
+		this.f2 = f2;
+	}
+
+	public String getSqlQueryDatabase() {
+		return sqlQueryDatabase;
+	}
+
+	public void setSqlQueryDatabase(String sqlQueryDatabase) {
+		this.sqlQueryDatabase = sqlQueryDatabase;
+	}
+
+	public String[] getNeDoitPasRencontrer() {
+		return neDoitPasRencontrer;
+	}
+
+	public void setNeDoitPasRencontrer(String[] neDoitPasRencontrer) {
+		this.neDoitPasRencontrer = neDoitPasRencontrer;
+	}
+
+	public String[] getLine() {
+		return line;
+	}
+
+	public void setLine(String[] line) {
+		this.line = line;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String[] getDoitRencontrer() {
+		return doitRencontrer;
+	}
+
+	public void setDoitRencontrer(String[] doitRencontrer) {
+		this.doitRencontrer = doitRencontrer;
 	}
 	
 }
