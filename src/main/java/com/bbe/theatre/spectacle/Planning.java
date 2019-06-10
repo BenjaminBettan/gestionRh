@@ -62,28 +62,41 @@ public class Planning {
 		boolean premierSucces = false;
 		for (int i = 0; i < Config.getListeSemaines().size(); i++) {
 			Semaine sem = semaines.get(Config.getListeSemaines().get(i));
-			if (sem.getTeam().isEmpty()) {
-				logger.warn("Semaine " + sem.getNumSemaine() +" n a pas d equipe. Le programme va quitter");
-				System.exit(1);
-			}
-			else if (sem.getTeam().size() == 1 || sem.isLocked()) {
-				premierSucces = true;
-				sem.setIdTeam(sem.getTeam().get(0));
-				sem.setLocked(true);
-				logger.warn("Semaine " + sem.getNumSemaine() +" a une seule equipe ou a ete locke par l utilisateur");//TODO
-			}
-			else if (sem.getTeam().size() > 1) {
-				if (! premierSucces) {
+			boolean semaineForcee = false;
+			for (int j = 0; j < Config.getDateForcee().length; j++) {
+				if (sem.getNumSemaine().equals(Double.parseDouble(Config.getDateForcee()[j].split(";")[0]))) {
+					semaineForcee = true;
 					premierSucces = true;
-					logger.debug("Taille suffisante 2 ou superieur, on attribue au hasard une equipe");
-					sem.setIdTeam(sem.getTeam().get(ThreadLocalRandom.current().nextInt(0, sem.getTeam().size())));
+					sem.setLocked(true);
+					sem.setIdTeam(Integer.parseInt(Config.getDateForcee()[j].split(";")[1]));
+					break;
 				}
-				else {
-					Integer idTeam = Config.getEccartTypePersistance().getMeilleurTeam(semaines.get(Config.getListeSemaines().get(i -1)).getIdTeam(), sem.getTeam());
-					if (idTeam==null) {
-						logger.error("Fin du programme. Veuillez positionner la variable precalculsA_Faire du fichier global.properties à true et redemarrez le programme.");
+			}
+			
+			if ( ! semaineForcee) {
+				if (sem.getTeam().isEmpty()) {
+					logger.warn("Semaine " + sem.getNumSemaine() +" n a pas d equipe. Le programme va quitter");
+					System.exit(1);
+				}
+				else if (sem.getTeam().size() == 1 || sem.isLocked()) {
+					premierSucces = true;
+					sem.setIdTeam(sem.getTeam().get(0));
+					sem.setLocked(true);
+					logger.warn("Semaine " + sem.getNumSemaine() +" a une seule equipe ou a ete locke par l utilisateur");//TODO
+				}
+				else if (sem.getTeam().size() > 1) {
+					if (! premierSucces) {
+						premierSucces = true;
+						logger.debug("Taille suffisante 2 ou superieur, on attribue au hasard une equipe");
+						sem.setIdTeam(sem.getTeam().get(ThreadLocalRandom.current().nextInt(0, sem.getTeam().size())));
 					}
-					sem.setIdTeam(idTeam);
+					else {
+						Integer idTeam = Config.getEccartTypePersistance().getMeilleurTeam(semaines.get(Config.getListeSemaines().get(i -1)).getIdTeam(), sem.getTeam());
+						if (idTeam==null) {
+							logger.error("Fin du programme. Veuillez positionner la variable precalculsA_Faire du fichier global.properties à true et redemarrez le programme.");
+						}
+						sem.setIdTeam(idTeam);
+					}
 				}
 			}
 		}

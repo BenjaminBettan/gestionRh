@@ -61,7 +61,7 @@ public class Semaine {
 		return "Semaine [team=" + team + ", nbSpectacle=" + nbSpectacle + ", numSemaine=" + numSemaine + "]";
 	}
 
-	public double getNumSemaine() {
+	public Double getNumSemaine() {
 		return numSemaine;
 	}
 

@@ -35,6 +35,7 @@ public class Config {
 	private static int compt;
 	private static EccartTypePersistance eccartTypePersistance = new EccartTypePersistance();
 	private static String[] personnages;
+	private static String[] dateForcee;
 
 	static {
 		try {
@@ -362,6 +363,16 @@ public class Config {
 
 	public void setDoitRencontrer(String[] doitRencontrer) {
 		this.doitRencontrer = doitRencontrer;
+	}
+
+	public static String[] getDateForcee() {
+		return dateForcee;
+	}
+
+	public static void setDateForcee(String[] dateForcee) {
+		if ( ! dateForcee[0].equals("")) {
+			Config.dateForcee = dateForcee;
+		}
 	}
 	
 }

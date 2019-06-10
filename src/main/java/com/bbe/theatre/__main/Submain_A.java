@@ -48,7 +48,7 @@ public class Submain_A {
 
 		logger.info("on charge les contraintes des joueurs");
 
-		chargementContraintesJoueurs();
+		chargementContraintesUtilisateur();
 
 		logger.info("on créé les personnages");
 
@@ -139,16 +139,21 @@ public class Submain_A {
 		return idDoitRencontrer.toString();
 	}
 
-	private void chargementContraintesJoueurs() {
+	private void chargementContraintesUtilisateur() {
 		
 		String[] s = Config.getProp().getProperty("neDoitPasRencontrer").trim().replace("{", "").replace("}", "").split(",");
+		
 		if ( ! (s.length==1 && s.equals("") ) ) {
 			c.setNeDoitPasRencontrer(s);
 		}
+		
 		s = Config.getProp().getProperty("doitRencontrer").trim().replace("{", "").replace("}", "").split(",");
+		
 		if ( ! (s.length==1 && s.equals("") ) ) {
 			c.setDoitRencontrer(s);
 		}
+		
+		Config.setDateForcee(Config.getProp().getProperty("dateForcee").trim().replace("{", "").replace("}", "").split(","));
 	}
 
 	private void creationPersonnages() {
