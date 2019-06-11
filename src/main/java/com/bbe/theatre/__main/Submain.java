@@ -16,12 +16,18 @@ public class Submain extends Submain_A{
 	private static Logger logger = Logger.getLogger(Submain.class);
 
 	private List<Planning> plannings = new ArrayList<>();
-	private List<Planning> top10 = new ArrayList<>();
+	private List<Planning> top = new ArrayList<>();
 	private int taillePopulation;
 	private int taillePopulationRestante;
 	private int j;
 	private int k;
 	private final int iteration = Integer.parseInt(Config.getProp().getProperty("nbIterationControlAlgo").trim());
+	private final int tailleTop = Integer.parseInt(Config.getProp().getProperty("tailleTop").trim());
+	private final int tailleMin = Integer.parseInt(Config.getProp().getProperty("tailleMin").trim());
+	private final int onDivisePar = Integer.parseInt(Config.getProp().getProperty("onDivisePar").trim());
+	private final int evenementNbIteration = Integer.parseInt(Config.getProp().getProperty("evenementNbIteration").trim());
+	private final int conditionArret1 = Integer.parseInt(Config.getProp().getProperty("conditionArret1").trim());
+	private final int conditionArret2 = Integer.parseInt(Config.getProp().getProperty("conditionArret2").trim());
 
 	public void go() throws IOException, SQLException {
 
@@ -37,29 +43,33 @@ public class Submain extends Submain_A{
 				if ( i % iteration == 0 ) {
 					logger.info(i + " iterations");
 
-					if ( j == taillePopulationRestante*plannings.get(0).getValue() ) {
-
-						if (taillePopulation>=1000) {
-							taillePopulation = taillePopulation / 10;
-							taillePopulationRestante = taillePopulationRestante / 10;
+					if ( i % evenementNbIteration == 0 ) {
+						if ( taillePopulation >= tailleMin ) {
+							taillePopulation = taillePopulation / onDivisePar;
+							taillePopulationRestante = taillePopulationRestante / onDivisePar;
 							logger.info("Reduction de la population à "+taillePopulation+" individus");
 						}
+					}
 
-						if (++k==10) {
+					if ( j == taillePopulationRestante*plannings.get(0).getValue() ) {
+
+						if (++k==conditionArret1) {
 							logger.info("A priori on est plus très loin de la fin");
 							taillePopulationRestante = 2;
 							Config.setTauxMutation(1000);
 						}
-						else if (++k==30) {
+						else if (++k==conditionArret2) {
+							
 							exit = true;
-							top10.add(plannings.get(0));
-							evaluationPopulation(top10);
-							if (top10.size()==11) {
-								top10.remove(top10.size()-1);
+							top.add(plannings.get(0));
+							evaluationPopulation(top);
+							
+							if ( top.size() == tailleTop + 1 ) {
+								top.remove(top.size()-1);
 							}
-							logger.info("Top 10 :");
+							logger.info("Top :");
 
-							top10.forEach((p) -> {
+							top.forEach((p) -> {
 								logger.info(p.getValue());
 							});
 						}
@@ -85,10 +95,10 @@ public class Submain extends Submain_A{
 		}
 
 		//on a quitté l algo
-		if (top10.isEmpty()) {
-			top10.add(plannings.get(0));
+		if (top.isEmpty()) {
+			top.add(plannings.get(0));
 		}
-		Map<Double, Semaine> listeSemaines = top10.get(0).getSemaines();
+		Map<Double, Semaine> listeSemaines = top.get(0).getSemaines();
 
 		Config.getListeSpectacleParSemaine().forEach((idSemaine,spectacles)->{
 			spectacles.forEach( s -> {
