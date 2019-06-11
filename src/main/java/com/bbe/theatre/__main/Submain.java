@@ -21,6 +21,7 @@ public class Submain extends Submain_A{
 	private int taillePopulationRestante;
 	private int j;
 	private int k;
+	private final int iteration = Integer.parseInt(Config.getProp().getProperty("nbIterationControlAlgo").trim());
 
 	public void go() throws IOException, SQLException {
 
@@ -33,23 +34,17 @@ public class Submain extends Submain_A{
 
 			for (int i = 1; ! (exit || Config.isExitAlgo()); i++) {
 
-				if (i%30==0) {
+				if ( i % iteration == 0 ) {
 					logger.info(i + " iterations");
 
-					j=0;
-					plannings.forEach((p) -> {
-						j+=p.getValue();
-					});
+					if ( j == taillePopulationRestante*plannings.get(0).getValue() ) {
 
-
-					if (j==plannings.size()*plannings.get(0).getValue()) {
-						
 						if (taillePopulation>=1000) {
 							taillePopulation = taillePopulation / 10;
 							taillePopulationRestante = taillePopulationRestante / 10;
 							logger.info("Reduction de la population à "+taillePopulation+" individus");
 						}
-						
+
 						if (++k==10) {
 							logger.info("A priori on est plus très loin de la fin");
 							taillePopulationRestante = 2;
@@ -80,9 +75,12 @@ public class Submain extends Submain_A{
 					}
 				}
 
-				logger.info(plannings.get(0).getValue() + "  " + plannings.get(0).calculEccartType() + " " + plannings.get(0).calculNbSpectMin());
+				if ( ! ( exit || Config.isExitAlgo() )) {
+					logger.info(plannings.get(0).getValue() + "  " + plannings.get(0).calculEccartType() + " " + plannings.get(0).calculNbSpectMin());
 
-				naissanceDeLaNouvelleGeneration();
+					naissanceDeLaNouvelleGeneration(i);	
+				}
+
 			}
 		}
 
@@ -91,23 +89,30 @@ public class Submain extends Submain_A{
 			top10.add(plannings.get(0));
 		}
 		Map<Double, Semaine> listeSemaines = top10.get(0).getSemaines();
-		
+
 		Config.getListeSpectacleParSemaine().forEach((idSemaine,spectacles)->{
 			spectacles.forEach( s -> {
 				Config.getDataBase().update("INSERT INTO `spectacles` (`id_unique`, `date_spectacle`, `id_team`) VALUES (NULL, '"+s.getIdDate()+"', '"+listeSemaines.get(idSemaine).getIdTeam()+"');");
 			});
 		});
-		
+
 		String[] cmd = {"cmd.exe","/c","start http://localhost:8080/birt/frameset?__report=home.rptdesign"};
-		  
+
 		Runtime.getRuntime().exec(cmd);
-		
+
 	}
 
-	private void naissanceDeLaNouvelleGeneration() {
+	private void naissanceDeLaNouvelleGeneration(int iterationAlgoPrincipal) {
 		int fin = plannings.size();
 		for (int i = 0; i < fin - taillePopulationRestante; i++) {
 			plannings.remove(taillePopulationRestante);
+		}
+
+		if ( iterationAlgoPrincipal % iteration == iteration -1 ) {
+			j=0;
+			plannings.forEach((p) -> {
+				j+=p.getValue();
+			});
 		}
 
 		for (int i = 0; i < taillePopulation - taillePopulationRestante; i++) {
