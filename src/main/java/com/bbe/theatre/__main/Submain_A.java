@@ -173,8 +173,6 @@ public class Submain_A {
 				s = Config.getPersonnages()[i-1];
 			}
 			Config.getDataBase().update("ALTER TABLE `listeequipe` ADD `"+Config.getPersonnages()[i]+"` VARCHAR(2) NOT NULL AFTER `"+s+"`;");
-			//			ALTER TABLE `listeequipe` ADD `jonathan` VARCHAR(2) NOT NULL AFTER `s`;
-
 		}
 		Config.getDataBase().update("ALTER TABLE `listeequipe` ADD `ok` VARCHAR(1) NOT NULL AFTER `"+Config.getPersonnages()[Config.getPersonnages().length-1]+"`;");
 	}
@@ -183,7 +181,6 @@ public class Submain_A {
 	 * @throws IOException
 	 */
 	private void remplirListeSemaines() throws IOException {
-		c.setMaxIndispoMoyenne(Integer.parseInt(Config.getProp().getProperty("maxIndispoMoyenne")));
 		chargeFichierDateDeCettePersonne();//utilisateur 0
 		String[] listeDates = c.getSb().toString().split("\n");
 
@@ -199,10 +196,10 @@ public class Submain_A {
 
 				int numeroSemaine = t.get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
 				if (numeroSemaine==1) {
-						if (t.getMonthValue()==12) {
-							t.plusYears(1);
-						}
+					if (t.getMonthValue()==12) {
+						t.plusYears(1);
 					}
+				}
 				double numSemaine = Double.parseDouble(numeroSemaine+"."+t.getYear());
 				if ( ! Config.getListeSemaines().contains(numSemaine)) {
 					Config.getListeSemaines().add(numSemaine);
@@ -288,6 +285,7 @@ public class Submain_A {
 							t.plusYears(1);
 						}
 					}
+
 					double numSemaine = Double.parseDouble(numeroSemaine+"."+t.getYear());
 
 					DisponibiliteJour d;
@@ -296,7 +294,14 @@ public class Submain_A {
 						d = new DisponibiliteJour(c.getP(), t,c.getPersonnage(),DISPO.DISPO,numSemaine);
 					}
 					else if (listesDates_[2].equals("0")) {
-						d = new DisponibiliteJour(c.getP(), t,c.getPersonnage(),DISPO.PAS_DISPO,numSemaine);
+						d = new DisponibiliteJour(c.getP().addIndispo(numSemaine), t,c.getPersonnage(),DISPO.PAS_DISPO,numSemaine);
+						
+						for (Double d_ : Config.debugIncompatibilitePersonne) {
+							if (numSemaine==d_) {
+								logger.info("Semaine "+d_.intValue()+" " + Double.valueOf(d_*10000 - d_.intValue()*10000).intValue() +"> ID PERSONNE "+c.getP().getId() + " est absent le " + t);
+							}
+						}
+						
 					}
 					else {
 						d = new DisponibiliteJour(c.getP(), t,c.getPersonnage(),DISPO.MOYEN_DISPO,numSemaine);
@@ -317,7 +322,7 @@ public class Submain_A {
 	}
 
 	private void calculTeams() {
-		logger.debug("Calcul des permutations d'equipes");
+		logger.info("Calcul des permutations d'equipes");
 
 		c.getListePersonnes().forEach((personnage, mapPersonnes) -> {
 			Config.getDataBase().update(c.sqlQuery2(personnage.getNom()));
@@ -380,19 +385,12 @@ public class Submain_A {
 			Semaine sem = c.getSemaines().get(numSemaine);
 			List<DisponibiliteJour> lDispos = c.getDispos().get(numSemaine);
 			Config.getListePersonnes2().forEach((id,pers) -> {
-				int compteurDispoMoyenne = 0;
 				pers.setEstDispoCetteSemaine(true);
 				for (DisponibiliteJour d : lDispos) {
 					if (d.getPersonne().getId()==id) {//si c est ma personne
 						if (d.getDispo().equals(DISPO.PAS_DISPO)) {
 							pers.setEstDispoCetteSemaine(false);
 							break;
-						}
-						else if (d.getDispo().equals(DISPO.MOYEN_DISPO)) {
-							if ( ++compteurDispoMoyenne == c.getMaxIndispoMoyenne()) {
-								pers.setEstDispoCetteSemaine(false);
-								break;							
-							}
 						}
 					}
 				}
@@ -435,9 +433,26 @@ public class Submain_A {
 			t.getTeamPourLeSpectacle().forEach((personnage,p)->{
 				Config.getDataBase().update("INSERT INTO `rel_team_personnes` (`id_unique`, `id_team`, `id_personne`) VALUES (NULL, '"+idTeam+"', '"+p.getId()+"');");	
 			});
-		});		
-		System.out.println();
+		});
 
+		c.getSemaines().forEach((idSemaine,sem) -> {
+			if (sem.getTeam().size()==0) {
+				Config.setExitAlgo(true);
+				for (String personnage : Config.getPersonnages()) {
+					Config.getListePersonnes2().forEach((id,p)->{
+						if (personnage.equals(p.getPersonnage())) {
+							if (p.isDispo(idSemaine)) {
+								logger.info("Semaine : " + idSemaine + p.getNomActeur() + "est present (id="+p.getId()+")");
+							}
+						}
+					});
+				}
+			}
+		});
+		if (Config.isExitAlgo()) {
+			logger.error("L'algo a plante en raison d'indisponnibilite de personnes. Veuillez corriger les semaines avec 0 équipe disponible.");
+			System.exit(1);
+		}
 	}
 
 	private void calculDuCrossJoin() {

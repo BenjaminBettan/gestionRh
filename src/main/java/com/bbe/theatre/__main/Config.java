@@ -36,12 +36,16 @@ public class Config {
 	private static EccartTypePersistance eccartTypePersistance = new EccartTypePersistance();
 	private static String[] personnages;
 	private static String[] dateForcee;
-
+	public static List<Double> debugIncompatibilitePersonne = new ArrayList<>();
+	
 	static {
 		try {
 			PropertyConfigurator.configure("log4j.properties");
 			prop = new Properties();
 			prop.load(new FileInputStream("src\\main\\resources\\global.properties"));
+			for (int i = 0; i < Config.getProp().getProperty("debugIncompatibilitePersonne").trim().split(";").length; i++) {
+				debugIncompatibilitePersonne.add(Double.parseDouble(Config.getProp().getProperty("debugIncompatibilitePersonne").trim().split(";")[i]));
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -49,10 +53,10 @@ public class Config {
 	
 	private int id = 0;
 	private int idTeam = 0;	
-	private int maxIndispoMoyenne = 0;	
 	
 	private boolean addTeam = true;
 	private boolean test = false;
+
 
 	private Map<Personnage, List<Personne>> listePersonnes = new HashMap<>();
 	private Map<Double, List<DisponibiliteJour>> dispos = new HashMap<>();
@@ -89,7 +93,7 @@ public class Config {
 	public String sqlQuery4(){
 		String s = "CREATE TABLE IF NOT EXISTS `personnes` (\n"
 				+"  `id_unique` int(3) NOT NULL AUTO_INCREMENT,\n"
-				+"  `nom_personne` varchar(20) NOT NULL,\n"
+				+"  `nom_personne` varchar(22) NOT NULL,\n"
 				+"  `nom_personnage` varchar(20) NOT NULL,\n"
 				+"  `id_personne` varchar(3) NOT NULL,\n"
 				+"  `nb_spect_min` varchar(3) NOT NULL,\n"
@@ -235,14 +239,6 @@ public class Config {
 
 	public void setIdTeam(int idTeam) {
 		this.idTeam = idTeam;
-	}
-
-	public int getMaxIndispoMoyenne() {
-		return maxIndispoMoyenne;
-	}
-
-	public void setMaxIndispoMoyenne(int maxIndispoMoyenne) {
-		this.maxIndispoMoyenne = maxIndispoMoyenne;
 	}
 
 	public boolean isAddTeam() {

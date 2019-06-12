@@ -1,5 +1,8 @@
 package com.bbe.theatre.personne;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Personne {
 
 	private int id = 0;
@@ -13,6 +16,7 @@ public class Personne {
 	private String personneAvecQuiJeNeDoisPasJouer ="";
 	private boolean estDispoCetteSemaine = true;
 	private boolean isAncien = false;
+	private List<Double> lIndispo = new ArrayList<>();
 
 	public String getPersonneAvecQuiJeDoisJouer() {
 		return personneAvecQuiJeDoisJouer;
@@ -111,5 +115,12 @@ public class Personne {
 		this.isAncien = isAncien;
 		return this;
 	}
-	
+
+	public Personne addIndispo(double numSemaine) {
+		lIndispo.add(numSemaine);
+		return this;
+	}
+	public boolean isDispo(double numSemaine) {
+		return  ! lIndispo.contains(numSemaine);
+	}
 }
