@@ -6,12 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.apache.log4j.Logger;
+
 import com.bbe.theatre.__main.Config;
 
 public class EccartTypePersistance {
 	
 	public final static String path ="C:\\tools\\EccartTypePersistanceDb\\";
-
+	private static Logger logger = Logger.getLogger(EccartTypePersistance.class);
 	public void setEccartTypePersistance(Integer idTeam, Integer idTeam2, int calculEccartType) {
 		new File(path + idTeam + "\\"+calculEccartType+"\\").mkdirs();
 		
@@ -31,6 +33,7 @@ public class EccartTypePersistance {
 						idTeams_.add(id);
 					}
 				}
+				logger.info(idTeams_.size());
 				return idTeams_.get(ThreadLocalRandom.current().nextInt(0, idTeams_.size()));
 			}
 		}
