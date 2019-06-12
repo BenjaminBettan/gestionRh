@@ -28,6 +28,7 @@ public class Submain extends Submain_A{
 	private final int evenementNbIteration = Integer.parseInt(Config.getProp().getProperty("evenementNbIteration").trim());
 	private final int conditionArret1 = Integer.parseInt(Config.getProp().getProperty("conditionArret1").trim());
 	private final int conditionArret2 = Integer.parseInt(Config.getProp().getProperty("conditionArret2").trim());
+	private final int valeurMinPourTravailler = Integer.parseInt(Config.getProp().getProperty("valeurMinPourTravailler").trim());
 
 	public void go() throws IOException, SQLException {
 
@@ -58,7 +59,7 @@ public class Submain extends Submain_A{
 							taillePopulationRestante = 2;
 							Config.setTauxMutation(1000);
 						}
-						else if (++k==conditionArret2) {
+						else if (k==conditionArret2) {
 							
 							exit = true;
 							top.add(plannings.get(0));
@@ -90,7 +91,12 @@ public class Submain extends Submain_A{
 
 					naissanceDeLaNouvelleGeneration(i);	
 				}
-
+				
+				if (valeurMinPourTravailler!=0) {
+					if ( valeurMinPourTravailler < plannings.get(0).getValue() ) {
+						exit = true;
+					}
+				}
 			}
 		}
 
