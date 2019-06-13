@@ -57,7 +57,6 @@ public class Config {
 	private boolean addTeam = true;
 	private boolean test = false;
 
-
 	private Map<Personnage, List<Personne>> listePersonnes = new HashMap<>();
 	private Map<Double, List<DisponibiliteJour>> dispos = new HashMap<>();
 	private Map<Double, Semaine> semaines = new HashMap<>();
@@ -122,6 +121,11 @@ public class Config {
 				+") ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;";
 		return s;
 	} 
+	
+	public String sqlQuery7(){
+		String s = "CREATE TABLE IF NOT EXISTS `indispo` ( `id_unique` int(3) NOT NULL AUTO_INCREMENT, `id_personne` int(3) NOT NULL, `date` varchar(16) NOT NULL, `dispo` varchar(3) NOT NULL, KEY `id_personne` (`id_personne`), UNIQUE KEY `id_unique` (`id_unique`) ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=latin1";
+		return s;
+	}
 	
 	public String getFileName2() {
 		return "src\\main\\resources\\dates\\"+id+".csv";

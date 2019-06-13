@@ -95,6 +95,7 @@ public class Submain_A {
 		Config.getDataBase().update(c.sqlQuery4());
 		Config.getDataBase().update(c.sqlQuery5());
 		Config.getDataBase().update(c.sqlQuery6());
+		Config.getDataBase().update(c.sqlQuery7());
 		Config.getDataBase().update("ALTER TABLE `rel_team_personnes` ADD INDEX(`id_team`);");
 		Config.getDataBase().update("ALTER TABLE `personnes` ADD INDEX(`id_personne`);");
 		Config.getDataBase().update("ALTER TABLE `spectacles` ADD INDEX(`date_spectacle`);");
@@ -292,10 +293,11 @@ public class Submain_A {
 
 					if (listesDates_[2].equals("1")) {
 						d = new DisponibiliteJour(c.getP(), t,c.getPersonnage(),DISPO.DISPO,numSemaine);
+						Config.getDataBase().update("INSERT INTO `indispo` (`id_unique`, `id_personne`, `date`, `dispo`) VALUES (NULL, '"+ c.getP().getId() +"', '"+t+"', '1');");
 					}
 					else if (listesDates_[2].equals("0")) {
 						d = new DisponibiliteJour(c.getP().addIndispo(numSemaine), t,c.getPersonnage(),DISPO.PAS_DISPO,numSemaine);
-						
+						Config.getDataBase().update("INSERT INTO `indispo` (`id_unique`, `id_personne`, `date`, `dispo`) VALUES (NULL, '"+ c.getP().getId() +"', '"+t+"', '0');");
 						for (Double d_ : Config.debugIncompatibilitePersonne) {
 							if (numSemaine==d_) {
 								logger.info("Semaine "+d_.intValue()+" " + Double.valueOf(d_*10000 - d_.intValue()*10000).intValue() +"> ID PERSONNE "+c.getP().getId() + " est absent le " + t);
@@ -305,8 +307,8 @@ public class Submain_A {
 					}
 					else {
 						d = new DisponibiliteJour(c.getP(), t,c.getPersonnage(),DISPO.MOYEN_DISPO,numSemaine);
+						Config.getDataBase().update("INSERT INTO `indispo` (`id_unique`, `id_personne`, `date`, `dispo`) VALUES (NULL, '"+ c.getP().getId() +"', '"+t+"', '0,5');");
 					}
-
 					c.getDispos().get(numSemaine).add(d);
 				}
 			}
