@@ -66,6 +66,13 @@ public class Submain_A {
 
 		logger.info("TEMPS DE CALCUL INIT : "+ (System.currentTimeMillis() - l) + "ms");
 
+		
+//		if (Config.isExitAlgo()) {
+//			logger.error("L'algo a plante en raison d'indisponibilite de personnes. Veuillez corriger les semaines avec 0 équipe disponible.");
+//			System.exit(1);
+//		}
+		
+		
 		logger.info("Entrez q sur la console Eclipse pour quitter");
 
 		Thread thread = new Thread(){
@@ -439,7 +446,7 @@ public class Submain_A {
 
 		c.getSemaines().forEach((idSemaine,sem) -> {
 			if (sem.getTeam().size()==0) {
-				Config.setExitAlgo(true);
+//				Config.setExitAlgo(true);
 				for (String personnage : Config.getPersonnages()) {
 					Config.getListePersonnes2().forEach((id,p)->{
 						if (personnage.equals(p.getPersonnage())) {
@@ -451,10 +458,7 @@ public class Submain_A {
 				}
 			}
 		});
-		if (Config.isExitAlgo()) {
-			logger.error("L'algo a plante en raison d'indisponnibilite de personnes. Veuillez corriger les semaines avec 0 équipe disponible.");
-			System.exit(1);
-		}
+
 	}
 
 	private void calculDuCrossJoin() {
