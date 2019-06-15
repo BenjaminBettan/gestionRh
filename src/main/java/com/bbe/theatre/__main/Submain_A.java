@@ -284,7 +284,9 @@ public class Submain_A {
 					LocalDateTime t = LocalDateTime.of(Integer.parseInt("20"+listesDates_[0].split("/")[2]), 
 							Integer.parseInt(listesDates_[0].split("/")[1]), 
 							Integer.parseInt(listesDates_[0].split("/")[0]), 
-							Integer.parseInt(listesDates_[1]) > 1 ?  (j == 0 ? 16 : 21 ) : 21 , 0);
+							Integer.parseInt(listesDates_[1]) > 1 ?  (j == 0 ? c.heureSpectacleAprem : c.heureSoir ) : c.heureSoir , 
+							Integer.parseInt(listesDates_[1]) > 1 ?  (j == 0 ? c.minuteSpectacleAprem : c.minuteSoir ) : c.minuteSoir);
+							
 					int numeroSemaine = t.get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
 					if (numeroSemaine==1) {
 						if (t.getMonthValue()==12) {
@@ -380,15 +382,30 @@ public class Submain_A {
 			for (int i = 1; i < s2.length - 1; i++) {
 				teamPourLeSpectacle.put(Config.getListePersonnes2().get(Integer.parseInt(s2[i])).getPersonnage(), Config.getListePersonnes2().get(Integer.parseInt(s2[i])));
 			}
+			
 			Config.getListeTeam().put(Integer.parseInt(s2[0]), new Team(Integer.parseInt(s2[0]),teamPourLeSpectacle));
 		}
+		
+		for (int j = 0; j < Config.getDateForcee().length; j++) {
+			Double.parseDouble(Config.getDateForcee()[j].split(";")[1]);
+		}
+		l = Config.getDataBase().select("SELECT * FROM LISTEEQUIPE WHERE id_unique in('"+""+"');").split("\n");
+		for (String s : l) {
 
+			String[] s2 = s.split("/");
+			Map<Personnage, Personne> teamPourLeSpectacle = new HashMap<>();
+			for (int i = 1; i < s2.length - 1; i++) {
+				teamPourLeSpectacle.put(Config.getListePersonnes2().get(Integer.parseInt(s2[i])).getPersonnage(), Config.getListePersonnes2().get(Integer.parseInt(s2[i])));
+			}
+			Config.getListeTeam().put(Integer.parseInt(s2[0]), new Team(Integer.parseInt(s2[0]),teamPourLeSpectacle));
+		}
+		
 		Config.getListeSemaines().forEach((numSemaine) -> {
-			c.getSemaines().put(numSemaine, new Semaine(Config.getListeSpectacleParSemaine().get(numSemaine).size(),numSemaine));
+			Config.getSemaines().put(numSemaine, new Semaine(Config.getListeSpectacleParSemaine().get(numSemaine).size(),numSemaine));
 		});
 
 		Config.getListeSemaines().forEach((numSemaine) -> {
-			Semaine sem = c.getSemaines().get(numSemaine);
+			Semaine sem = Config.getSemaines().get(numSemaine);
 			List<DisponibiliteJour> lDispos = c.getDispos().get(numSemaine);
 			Config.getListePersonnes2().forEach((id,pers) -> {
 				pers.setEstDispoCetteSemaine(true);
@@ -465,7 +482,8 @@ public class Submain_A {
 		});
 
 		}
-		
+		logger.info("insertion dans la table rel_team_personnes. Operation assez longue.");
+
 		String res = Config.getDataBase().select("SELECT * FROM listeequipe");
 		
 		for (String s : res.split("\n")) {
@@ -475,7 +493,7 @@ public class Submain_A {
 			}
 		}
 		
-		c.getSemaines().forEach((idSemaine,sem) -> {
+		Config.getSemaines().forEach((idSemaine,sem) -> {
 			if (sem.getTeam().size()==0) {
 				for (String personnage : Config.getPersonnages()) {
 					Config.getListePersonnes2().forEach((id,p)->{
@@ -531,9 +549,9 @@ public class Submain_A {
 		affichageTeams();
 		logger.info("Liste des semaines : "+Config.getListeSemaines());
 		Config.getListeSemaines().forEach((l) -> {
-			if (c.getSemaines().get(l)!=null) {
+			if (Config.getSemaines().get(l)!=null) {
 				logger.info("Numéro de semaine : "+l);
-				logger.info(c.getSemaines().get(l).getTeam().size());
+				logger.info(Config.getSemaines().get(l).getTeam().size());
 			}
 		});
 	}

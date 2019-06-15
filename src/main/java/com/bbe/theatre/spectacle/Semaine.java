@@ -58,7 +58,7 @@ public class Semaine {
 
 	@Override
 	public String toString() {
-		return "Semaine [team=" + team + ", nbSpectacle=" + nbSpectacle + ", numSemaine=" + numSemaine + "]";
+		return "Semaine "+idTeam +"[team=" + team + ", nbSpectacle=" + nbSpectacle +"]";
 	}
 
 	public Double getNumSemaine() {

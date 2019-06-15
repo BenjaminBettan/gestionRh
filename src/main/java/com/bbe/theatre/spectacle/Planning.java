@@ -55,21 +55,31 @@ public class Planning {
 	}
 
 	public Planning addSemaine(double id, Semaine s){
-		semaines.put(id, new Semaine(s));
+		if ( ! semaines.containsKey(id)) {
+			semaines.put(id, new Semaine(s));
+		}
 		return this;
 	}
 
 	public Planning build() {
+		logger.debug("build>");
 		boolean premierSucces = false;
 		for (int i = 0; i < Config.getListeSemaines().size(); i++) {
 			Semaine sem = semaines.get(Config.getListeSemaines().get(i));
 			boolean semaineForcee = false;
 			for (int j = 0; j < Config.getDateForcee().length; j++) {
 				if (sem.getNumSemaine().equals(Double.parseDouble(Config.getDateForcee()[j].split(";")[0]))) {
+					logger.info(sem.getNumSemaine() + " idTeam="+Config.getDateForcee()[j].split(";")[1]);
 					semaineForcee = true;
 					premierSucces = true;
 					sem.setLocked(true);
+					sem.getTeam().add(Integer.parseInt(Config.getDateForcee()[j].split(";")[1]));
 					sem.setIdTeam(Integer.parseInt(Config.getDateForcee()[j].split(";")[1]));
+					
+					if ( ! Config.getSemaines().get(sem.getNumSemaine()).getTeam().contains(Integer.parseInt(Config.getDateForcee()[j].split(";")[1]))) {
+						Config.getSemaines().get(sem.getNumSemaine()).getTeam().add(Integer.parseInt(Config.getDateForcee()[j].split(";")[1]));
+					}
+					
 					break;
 				}
 			}
@@ -79,11 +89,11 @@ public class Planning {
 					logger.warn("Semaine " + sem.getNumSemaine() +" n a pas d equipe. Le programme va quitter");
 					System.exit(1);
 				}
-				else if (sem.getTeam().size() == 1 || sem.isLocked()) {
+				else if (sem.getTeam().size() == 1) {
 					premierSucces = true;
 					sem.setIdTeam(sem.getTeam().get(0));
 					sem.setLocked(true);
-					logger.warn("Semaine " + sem.getNumSemaine() +" a une seule equipe ou a ete locke par l utilisateur");
+					logger.warn("Semaine " + sem.getNumSemaine() +" a une seule equipe");
 				}
 				else if (sem.getTeam().size() > 1) {
 					if (! premierSucces) {
@@ -92,12 +102,14 @@ public class Planning {
 						sem.setIdTeam(sem.getTeam().get(ThreadLocalRandom.current().nextInt(0, sem.getTeam().size())));
 					}
 					else {
+						logger.info("TATA>"+sem.getTeam().size());
+
 						Integer idTeam = eccart.getMeilleurTeam(semaines.get(Config.getListeSemaines().get(i -1)).getIdTeam(), sem.getTeam());
-						
+						logger.info(sem.getNumSemaine() + " idTeam="+idTeam);
+
 						if (idTeam==null) {
 							logger.error(semaines.get(Config.getListeSemaines().get(i -1)).getIdTeam());
 							logger.error(sem.getTeam().size());
-//							logger.error(sem);
 							logger.error("Fin du programme. Veuillez positionner la variable precalculsA_Faire du fichier global.properties à true et redemarrez le programme.");
 							System.exit(1);
 						}
@@ -117,8 +129,16 @@ public class Planning {
 	public int calculNbSpectMin() {
 		if (critereNbSpectMin==-1) {
 			critereNbSpectMin = 0;
-			
+			logger.warn("DEBUG>");
+
 			semaines.forEach((idSem,sem)->{
+				
+				if (Config.getListeTeam().get(sem.getIdTeam())==null) {
+					logger.warn("null");
+				}
+				logger.warn(sem.getIdTeam());
+				logger.warn(Config.getListeTeam().size());
+
 				Config.getListeTeam().get(sem.getIdTeam()).getTeamPourLeSpectacle().forEach((personnage,personne)->{
 					personne.incrementCalculNbSpectMin(sem.getNbSpectacle());
 				});

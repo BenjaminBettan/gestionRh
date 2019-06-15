@@ -22,6 +22,8 @@ public class EccartTypePersistance {
 	}
 
 	public Integer getMeilleurTeam(Integer idTeam, List<Integer> idTeams) {
+//		System.out.println("je cherche : " +idTeam);
+//		System.out.println(" je cherche : " +idTeams);
 		for (int i = 1; i <= Config.getPersonnages().length; i++) {
 			if (new File(path + idTeam + "\\"+i+"\\").exists()) {
 				List<Integer> idTeams_ = new ArrayList<>();
@@ -30,7 +32,9 @@ public class EccartTypePersistance {
 						idTeams_.add(id);
 					}
 				}
-				return idTeams_.get(ThreadLocalRandom.current().nextInt(0, idTeams_.size()));
+				if (idTeams_.size()!=0) {
+					return idTeams_.get(ThreadLocalRandom.current().nextInt(0, idTeams_.size()));
+				}
 			}
 		}
 		return null;

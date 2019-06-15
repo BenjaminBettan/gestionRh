@@ -168,7 +168,7 @@ public class Submain extends Submain_A{
 				break;
 			}
 			Planning p = new Planning();
-			c.getSemaines().forEach((id,sem) -> {p.addSemaine(id, sem);});//on charge les equipes dispo par semaine
+			Config.getSemaines().forEach((id,sem) -> {p.addSemaine(id, sem);});//on charge les equipes dispo par semaine
 			plannings.add(p.build());//on attribue au hasard une equipe par semaine
 		}
 

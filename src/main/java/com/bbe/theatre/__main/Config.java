@@ -36,7 +36,8 @@ public class Config {
 	private static String[] personnages;
 	private static String[] dateForcee;
 	public static List<Double> debugIncompatibilitePersonne = new ArrayList<>();
-	
+	private static Map<Double, Semaine> semaines = new HashMap<>();
+
 	static {
 		try {
 			PropertyConfigurator.configure("log4j.properties");
@@ -58,7 +59,6 @@ public class Config {
 
 	private Map<Personnage, List<Personne>> listePersonnes = new HashMap<>();
 	private Map<Double, List<DisponibiliteJour>> dispos = new HashMap<>();
-	private Map<Double, Semaine> semaines = new HashMap<>();
 	public int heureSpectacleAprem = Integer.parseInt(Config.getProp().getProperty("heureSpectacleAprem").trim().split(":")[0]);
 	public int minuteSpectacleAprem = Integer.parseInt(Config.getProp().getProperty("heureSpectacleAprem").trim().split(":")[1]);
 	public int heureSoir = Integer.parseInt(Config.getProp().getProperty("heureSpectacleSoir").trim().split(":")[0]);
@@ -229,10 +229,6 @@ public class Config {
 		return listeTeam;
 	}
 
-	public static void setListeTeam(Map<Integer, Team> listeTeam) {
-		Config.listeTeam = listeTeam;
-	}
-
 	public static Properties getProp() {
 		return prop;
 	}
@@ -281,12 +277,8 @@ public class Config {
 		this.dispos = dispos;
 	}
 
-	public Map<Double, Semaine> getSemaines() {
+	public static Map<Double, Semaine> getSemaines() {
 		return semaines;
-	}
-
-	public void setSemaines(Map<Double, Semaine> semaines) {
-		this.semaines = semaines;
 	}
 
 	public Personne getP() {
