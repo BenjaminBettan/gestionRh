@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -16,6 +17,7 @@ import java.util.Scanner;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+
 import com.bbe.theatre.DataBase;
 import com.bbe.theatre._enum.DISPO;
 import com.bbe.theatre.personne.Personnage;
@@ -34,6 +36,7 @@ public class Submain_A {
 
 	protected static Logger logger = Logger.getLogger(Submain_A.class);
 	protected Config c = new Config();
+	private EccartTypePersistance eccart = new EccartTypePersistance();
 
 	protected void init() throws IOException, SQLException {
 
@@ -66,13 +69,6 @@ public class Submain_A {
 
 		logger.info("TEMPS DE CALCUL INIT : "+ (System.currentTimeMillis() - l) + "ms");
 
-		
-//		if (Config.isExitAlgo()) {
-//			logger.error("L'algo a plante en raison d'indisponibilite de personnes. Veuillez corriger les semaines avec 0 équipe disponible.");
-//			System.exit(1);
-//		}
-		
-		
 		logger.info("Entrez q sur la console Eclipse pour quitter");
 
 		Thread thread = new Thread(){
@@ -110,7 +106,7 @@ public class Submain_A {
 
 	private void creationPersonnes() throws IOException {
 
-		c.setTest(true);
+		c.phaseCreationPersonne(true);
 
 		for (c.setId(0); c.getId() < Integer.parseInt(Config.getProp().getProperty("effectifComediens").trim()); c.setId(c.getId() +1)) {
 			creationPersonne();
@@ -197,10 +193,12 @@ public class Submain_A {
 
 			for (int j = 0; j < Integer.parseInt(listesDates_[1]); j++) {
 
-				LocalDateTime t = LocalDateTime.of(Integer.parseInt("20"+listesDates_[0].split("/")[2]), 
+				LocalDateTime t = LocalDateTime.of(
+						Integer.parseInt("20"+listesDates_[0].split("/")[2]), 
 						Integer.parseInt(listesDates_[0].split("/")[1]), 
 						Integer.parseInt(listesDates_[0].split("/")[0]), 
-						Integer.parseInt(listesDates_[1]) > 1 ?  (j == 0 ? 16 : 21 ) : 21 , 0);
+						Integer.parseInt(listesDates_[1]) > 1 ?  (j == 0 ? c.heureSpectacleAprem : c.heureSoir ) : c.heureSoir , 
+						Integer.parseInt(listesDates_[1]) > 1 ?  (j == 0 ? c.minuteSpectacleAprem : c.minuteSoir ) : c.minuteSoir);
 
 				int numeroSemaine = t.get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
 				if (numeroSemaine==1) {
@@ -276,7 +274,7 @@ public class Submain_A {
 
 			c.getSb().append(c.getLine()[0].trim()+";"+c.getLine()[1].trim()+";"+c.getLine()[2].trim()+";\n");
 		}
-		if (c.isTest()) {
+		if (c.isPhaseCreationPersonne()) {
 			String[] listeDates = c.getSb().toString().split("\n");
 			for (String l : listeDates) {
 				String[] listesDates_ = l.split(";");
@@ -331,8 +329,6 @@ public class Submain_A {
 	}
 
 	private void calculTeams() {
-		logger.info("Calcul des permutations d'equipes");
-
 		c.getListePersonnes().forEach((personnage, mapPersonnes) -> {
 			Config.getDataBase().update(c.sqlQuery2(personnage.getNom()));
 
@@ -375,6 +371,7 @@ public class Submain_A {
 				Config.getDataBase().update("UPDATE LISTEEQUIPE SET OK='0' WHERE OK='1' AND (" + Config.getListePersonnes2().get(Integer.parseInt(p[0])).getPersonnage().getNom() +" ='" + Config.getListePersonnes2().get(Integer.parseInt(p[0])).getId()+"' XOR " + personne.getPersonnage().getNom() +" ='" + id +"');");
 			}
 		});
+		
 		String[] l = Config.getDataBase().select("SELECT * FROM LISTEEQUIPE WHERE OK=1;").split("\n");
 		for (String s : l) {
 
@@ -418,35 +415,68 @@ public class Submain_A {
 			});
 		});
 
+
+		
 		if (Boolean.parseBoolean(Config.getProp().getProperty("precalculsA_Faire"))) {
 
-			File file = new File(EccartTypePersistance.path);
+			File file = new File(Config.getProp().getProperty("dossierPrecalcul"));
 			try {
 				FileUtils.deleteDirectory(file);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-
-
-			Config.getListeTeam().forEach((idTeam,t) -> {
-				Config.getListeTeam().forEach((idTeam2,t2) -> {
-					if (idTeam!=idTeam2) {
-						Config.getEccartTypePersistance().setEccartTypePersistance(idTeam,idTeam2,Config.calculEccartType(idTeam, idTeam2));
+			
+			List<Integer> l2 = new ArrayList<>();
+			logger.error(Config.getProp().getProperty("dateForcee").trim().equals(""));
+			Arrays.asList(Config.getProp().getProperty("dateForcee").trim().replace("{", "").replace("}", "").split(","));
+			if ( ! Config.getProp().getProperty("dateForcee").trim().equals("") ) {
+				logger.error(Config.getProp().getProperty("dateForcee").trim().replace("{", "").replace("}", "").split(","));
+				String[] s_ = Config.getProp().getProperty("dateForcee").trim().replace("{", "").replace("}", "").split(",");
+				for (String string : s_) {
+					String s2 = string.split(";")[1];
+					if ( ! l2.contains(Integer.parseInt(s2)) ) {
+						if ( ! Config.getListeTeam().containsKey(Integer.parseInt(s2))) {
+							l2.add(Integer.parseInt(s2));
+						}
 					}
-				});
-			});
-		}
+				}
+			}
+			for (Integer id : l2) {
+				String[] l3 = Config.getDataBase().select("SELECT * FROM LISTEEQUIPE WHERE id_unique="+id+";").split("\n");
 
+				
+				for (String s : l3) {
 
-		Config.getListeTeam().forEach((idTeam,t) -> {
-			t.getTeamPourLeSpectacle().forEach((personnage,p)->{
-				Config.getDataBase().update("INSERT INTO `rel_team_personnes` (`id_unique`, `id_team`, `id_personne`) VALUES (NULL, '"+idTeam+"', '"+p.getId()+"');");	
+					String[] s2 = s.split("/");
+					Map<Personnage, Personne> teamPourLeSpectacle = new HashMap<>();
+					for (int i = 1; i < s2.length - 1; i++) {
+						teamPourLeSpectacle.put(Config.getListePersonnes2().get(Integer.parseInt(s2[i])).getPersonnage(), Config.getListePersonnes2().get(Integer.parseInt(s2[i])));
+					}
+					Config.getListeTeam().put(id, new Team(Integer.parseInt(s2[0]),teamPourLeSpectacle));
+				}
+			}
+			
+			Config.getListeTeam().forEach((idTeam,t) -> {
+			Config.getListeTeam().forEach((idTeam2,t2) -> {
+				if (idTeam!=idTeam2) {
+					eccart.setEccartTypePersistance(idTeam,idTeam2,Config.calculEccartType(idTeam, idTeam2));
+				}
 			});
 		});
 
+		}
+		
+		String res = Config.getDataBase().select("SELECT * FROM listeequipe");
+		
+		for (String s : res.split("\n")) {
+			String[] ll = s.split("/");
+			for (int i = 1; i < ll.length - 1; i++) {
+				Config.getDataBase().update("INSERT INTO `rel_team_personnes` (`id_unique`, `id_team`, `id_personne`) VALUES (NULL, '"+ll[0]+"', '"+ll[i]+"');");	
+			}
+		}
+		
 		c.getSemaines().forEach((idSemaine,sem) -> {
 			if (sem.getTeam().size()==0) {
-//				Config.setExitAlgo(true);
 				for (String personnage : Config.getPersonnages()) {
 					Config.getListePersonnes2().forEach((id,p)->{
 						if (personnage.equals(p.getPersonnage())) {

@@ -21,7 +21,8 @@ public class Planning {
 	private int i,idPlanning = 0;
 	private static int compteurPlanning = 0;
 	private List<Semaine> semainesNonLockees = new ArrayList<>();
-
+	private EccartTypePersistance eccart = new EccartTypePersistance();
+	
 	{
 		idPlanning = compteurPlanning++;
 		
@@ -82,7 +83,7 @@ public class Planning {
 					premierSucces = true;
 					sem.setIdTeam(sem.getTeam().get(0));
 					sem.setLocked(true);
-					logger.warn("Semaine " + sem.getNumSemaine() +" a une seule equipe ou a ete locke par l utilisateur");//TODO
+					logger.warn("Semaine " + sem.getNumSemaine() +" a une seule equipe ou a ete locke par l utilisateur");
 				}
 				else if (sem.getTeam().size() > 1) {
 					if (! premierSucces) {
@@ -91,10 +92,16 @@ public class Planning {
 						sem.setIdTeam(sem.getTeam().get(ThreadLocalRandom.current().nextInt(0, sem.getTeam().size())));
 					}
 					else {
-						Integer idTeam = Config.getEccartTypePersistance().getMeilleurTeam(semaines.get(Config.getListeSemaines().get(i -1)).getIdTeam(), sem.getTeam());
+						Integer idTeam = eccart.getMeilleurTeam(semaines.get(Config.getListeSemaines().get(i -1)).getIdTeam(), sem.getTeam());
+						
 						if (idTeam==null) {
+							logger.error(semaines.get(Config.getListeSemaines().get(i -1)).getIdTeam());
+							logger.error(sem.getTeam().size());
+//							logger.error(sem);
 							logger.error("Fin du programme. Veuillez positionner la variable precalculsA_Faire du fichier global.properties à true et redemarrez le programme.");
+							System.exit(1);
 						}
+
 						sem.setIdTeam(idTeam);
 					}
 				}
@@ -185,5 +192,10 @@ public class Planning {
 	public int getIdPlanning() {
 		return idPlanning;
 	}
+	@Override
+	public String toString() {
+		return "critereEccartType=" + critereEccartType + ", critereNbSpectMin="+ critereNbSpectMin + "\nsemaines=" + semaines;
+	}
+	
 	
 }

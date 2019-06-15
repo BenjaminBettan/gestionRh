@@ -71,7 +71,7 @@ public class Submain extends Submain_A{
 							logger.info("Top :");
 
 							top.forEach((p) -> {
-								logger.info(p.getValue());
+								logger.info(p);
 							});
 						}
 					}
@@ -87,7 +87,7 @@ public class Submain extends Submain_A{
 				}
 
 				if ( ! ( exit || Config.isExitAlgo() )) {
-					logger.info(plannings.get(0).getValue() + "  " + plannings.get(0).calculEccartType() + " " + plannings.get(0).calculNbSpectMin());
+					logger.info(plannings.get(0));
 
 					naissanceDeLaNouvelleGeneration(i);	
 				}

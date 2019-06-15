@@ -9,7 +9,7 @@ import com.bbe.theatre.__main.Config;
 
 public class EccartTypePersistance {
 	
-	public final static String path ="C:\\tools\\EccartTypePersistanceDb\\";
+	private String path = Config.getProp().getProperty("dossierPrecalcul");
 //	private static Logger logger = Logger.getLogger(EccartTypePersistance.class);
 	public void setEccartTypePersistance(Integer idTeam, Integer idTeam2, int calculEccartType) {
 		new File(path + idTeam + "\\"+calculEccartType+"\\").mkdirs();

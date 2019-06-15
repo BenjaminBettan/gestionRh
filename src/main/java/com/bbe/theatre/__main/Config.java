@@ -33,7 +33,6 @@ public class Config {
 	private static Map<Double,  List<Spectacle>> listeSpectacleParSemaine = new HashMap<>();
 	private static int tauxMutation;	
 	private static int compt;
-	private static EccartTypePersistance eccartTypePersistance = new EccartTypePersistance();
 	private static String[] personnages;
 	private static String[] dateForcee;
 	public static List<Double> debugIncompatibilitePersonne = new ArrayList<>();
@@ -55,16 +54,21 @@ public class Config {
 	private int idTeam = 0;	
 	
 	private boolean addTeam = true;
-	private boolean test = false;
+	private boolean phaseCreationPersonne = false;
 
 	private Map<Personnage, List<Personne>> listePersonnes = new HashMap<>();
 	private Map<Double, List<DisponibiliteJour>> dispos = new HashMap<>();
 	private Map<Double, Semaine> semaines = new HashMap<>();
-	
+	public int heureSpectacleAprem = Integer.parseInt(Config.getProp().getProperty("heureSpectacleAprem").trim().split(":")[0]);
+	public int minuteSpectacleAprem = Integer.parseInt(Config.getProp().getProperty("heureSpectacleAprem").trim().split(":")[1]);
+	public int heureSoir = Integer.parseInt(Config.getProp().getProperty("heureSpectacleSoir").trim().split(":")[0]);
+	public int minuteSoir = Integer.parseInt(Config.getProp().getProperty("heureSpectacleSoir").trim().split(":")[1]);
+
 	private Personne p;
 	private Personnage personnage;
 	private CSVReader reader;
-	
+	private EccartTypePersistance eccartTypePersistance = new EccartTypePersistance();
+
 	private StringBuilder sb;
 	private String f2 = "src\\main\\resources\\dates\\";
 	private String sqlQueryDatabase = "CREATE DATABASE IF NOT EXISTS `simulation` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;\n";
@@ -205,12 +209,12 @@ public class Config {
 		Config.tauxMutation = tauxMutation;
 	}
 
-	public static EccartTypePersistance getEccartTypePersistance() {
+	public EccartTypePersistance getEccartTypePersistance() {
 		return eccartTypePersistance;
 	}
 
-	public static void setEccartTypePersistance(EccartTypePersistance eccartTypePersistance) {
-		Config.eccartTypePersistance = eccartTypePersistance;
+	public void setEccartTypePersistance(EccartTypePersistance eccartTypePersistance_) {
+		eccartTypePersistance = eccartTypePersistance_;
 	}
 
 	public static String[] getPersonnages() {
@@ -253,12 +257,12 @@ public class Config {
 		this.addTeam = addTeam;
 	}
 
-	public boolean isTest() {
-		return test;
+	public boolean isPhaseCreationPersonne() {
+		return phaseCreationPersonne;
 	}
 
-	public void setTest(boolean test) {
-		this.test = test;
+	public void phaseCreationPersonne(boolean test) {
+		this.phaseCreationPersonne = test;
 	}
 
 	public Map<Personnage, List<Personne>> getListePersonnes() {
@@ -373,6 +377,14 @@ public class Config {
 		if ( ! dateForcee[0].equals("")) {
 			Config.dateForcee = dateForcee;
 		}
+	}
+
+	public Integer getHeureSpectacleAprem() {
+		return heureSpectacleAprem;
+	}
+
+	public Integer getHeureSoir() {
+		return heureSoir;
 	}
 	
 }
