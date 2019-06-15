@@ -71,7 +71,7 @@ public class Submain extends Submain_A{
 							logger.info("Top :");
 
 							top.forEach((p) -> {
-								logger.info(p);
+								logger.info(p.getValue());
 							});
 						}
 					}
@@ -87,7 +87,7 @@ public class Submain extends Submain_A{
 				}
 
 				if ( ! ( exit || Config.isExitAlgo() )) {
-					logger.info(plannings.get(0));
+					logger.info(plannings.get(0).getValue() + "  " + plannings.get(0).calculEccartType() + " " + plannings.get(0).calculNbSpectMin());
 
 					naissanceDeLaNouvelleGeneration(i);	
 				}
@@ -168,7 +168,7 @@ public class Submain extends Submain_A{
 				break;
 			}
 			Planning p = new Planning();
-			Config.getSemaines().forEach((id,sem) -> {p.addSemaine(id, sem);});//on charge les equipes dispo par semaine
+			c.getSemaines().forEach((id,sem) -> {p.addSemaine(id, sem);});//on charge les equipes dispo par semaine
 			plannings.add(p.build());//on attribue au hasard une equipe par semaine
 		}
 

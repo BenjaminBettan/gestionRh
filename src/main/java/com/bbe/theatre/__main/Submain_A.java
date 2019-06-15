@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -17,7 +16,6 @@ import java.util.Scanner;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-
 import com.bbe.theatre.DataBase;
 import com.bbe.theatre._enum.DISPO;
 import com.bbe.theatre.personne.Personnage;
@@ -69,6 +67,13 @@ public class Submain_A {
 
 		logger.info("TEMPS DE CALCUL INIT : "+ (System.currentTimeMillis() - l) + "ms");
 
+		
+//		if (Config.isExitAlgo()) {
+//			logger.error("L'algo a plante en raison d'indisponibilite de personnes. Veuillez corriger les semaines avec 0 équipe disponible.");
+//			System.exit(1);
+//		}
+		
+		
 		logger.info("Entrez q sur la console Eclipse pour quitter");
 
 		Thread thread = new Thread(){
@@ -106,7 +111,7 @@ public class Submain_A {
 
 	private void creationPersonnes() throws IOException {
 
-		c.phaseCreationPersonne(true);
+		c.setTest(true);
 
 		for (c.setId(0); c.getId() < Integer.parseInt(Config.getProp().getProperty("effectifComediens").trim()); c.setId(c.getId() +1)) {
 			creationPersonne();
@@ -274,19 +279,20 @@ public class Submain_A {
 
 			c.getSb().append(c.getLine()[0].trim()+";"+c.getLine()[1].trim()+";"+c.getLine()[2].trim()+";\n");
 		}
-		if (c.isPhaseCreationPersonne()) {
+		if (c.isTest()) {
 			String[] listeDates = c.getSb().toString().split("\n");
 			for (String l : listeDates) {
 				String[] listesDates_ = l.split(";");
 
 				for (int j = 0; j < Integer.parseInt(listesDates_[1]); j++) {
 
-					LocalDateTime t = LocalDateTime.of(Integer.parseInt("20"+listesDates_[0].split("/")[2]), 
+					LocalDateTime t = LocalDateTime.of(
+							Integer.parseInt("20"+listesDates_[0].split("/")[2]), 
 							Integer.parseInt(listesDates_[0].split("/")[1]), 
 							Integer.parseInt(listesDates_[0].split("/")[0]), 
 							Integer.parseInt(listesDates_[1]) > 1 ?  (j == 0 ? c.heureSpectacleAprem : c.heureSoir ) : c.heureSoir , 
 							Integer.parseInt(listesDates_[1]) > 1 ?  (j == 0 ? c.minuteSpectacleAprem : c.minuteSoir ) : c.minuteSoir);
-							
+
 					int numeroSemaine = t.get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
 					if (numeroSemaine==1) {
 						if (t.getMonthValue()==12) {
@@ -331,6 +337,8 @@ public class Submain_A {
 	}
 
 	private void calculTeams() {
+		logger.info("Calcul des permutations d'equipes");
+
 		c.getListePersonnes().forEach((personnage, mapPersonnes) -> {
 			Config.getDataBase().update(c.sqlQuery2(personnage.getNom()));
 
@@ -373,7 +381,6 @@ public class Submain_A {
 				Config.getDataBase().update("UPDATE LISTEEQUIPE SET OK='0' WHERE OK='1' AND (" + Config.getListePersonnes2().get(Integer.parseInt(p[0])).getPersonnage().getNom() +" ='" + Config.getListePersonnes2().get(Integer.parseInt(p[0])).getId()+"' XOR " + personne.getPersonnage().getNom() +" ='" + id +"');");
 			}
 		});
-		
 		String[] l = Config.getDataBase().select("SELECT * FROM LISTEEQUIPE WHERE OK=1;").split("\n");
 		for (String s : l) {
 
@@ -382,30 +389,15 @@ public class Submain_A {
 			for (int i = 1; i < s2.length - 1; i++) {
 				teamPourLeSpectacle.put(Config.getListePersonnes2().get(Integer.parseInt(s2[i])).getPersonnage(), Config.getListePersonnes2().get(Integer.parseInt(s2[i])));
 			}
-			
 			Config.getListeTeam().put(Integer.parseInt(s2[0]), new Team(Integer.parseInt(s2[0]),teamPourLeSpectacle));
 		}
-		
-		for (int j = 0; j < Config.getDateForcee().length; j++) {
-			Double.parseDouble(Config.getDateForcee()[j].split(";")[1]);
-		}
-		l = Config.getDataBase().select("SELECT * FROM LISTEEQUIPE WHERE id_unique in('"+""+"');").split("\n");
-		for (String s : l) {
 
-			String[] s2 = s.split("/");
-			Map<Personnage, Personne> teamPourLeSpectacle = new HashMap<>();
-			for (int i = 1; i < s2.length - 1; i++) {
-				teamPourLeSpectacle.put(Config.getListePersonnes2().get(Integer.parseInt(s2[i])).getPersonnage(), Config.getListePersonnes2().get(Integer.parseInt(s2[i])));
-			}
-			Config.getListeTeam().put(Integer.parseInt(s2[0]), new Team(Integer.parseInt(s2[0]),teamPourLeSpectacle));
-		}
-		
 		Config.getListeSemaines().forEach((numSemaine) -> {
-			Config.getSemaines().put(numSemaine, new Semaine(Config.getListeSpectacleParSemaine().get(numSemaine).size(),numSemaine));
+			c.getSemaines().put(numSemaine, new Semaine(Config.getListeSpectacleParSemaine().get(numSemaine).size(),numSemaine));
 		});
 
 		Config.getListeSemaines().forEach((numSemaine) -> {
-			Semaine sem = Config.getSemaines().get(numSemaine);
+			Semaine sem = c.getSemaines().get(numSemaine);
 			List<DisponibiliteJour> lDispos = c.getDispos().get(numSemaine);
 			Config.getListePersonnes2().forEach((id,pers) -> {
 				pers.setEstDispoCetteSemaine(true);
@@ -432,8 +424,6 @@ public class Submain_A {
 			});
 		});
 
-
-		
 		if (Boolean.parseBoolean(Config.getProp().getProperty("precalculsA_Faire"))) {
 
 			File file = new File(Config.getProp().getProperty("dossierPrecalcul"));
@@ -442,47 +432,17 @@ public class Submain_A {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
-			List<Integer> l2 = new ArrayList<>();
-			logger.error(Config.getProp().getProperty("dateForcee").trim().equals(""));
-			Arrays.asList(Config.getProp().getProperty("dateForcee").trim().replace("{", "").replace("}", "").split(","));
-			if ( ! Config.getProp().getProperty("dateForcee").trim().equals("") ) {
-				logger.error(Config.getProp().getProperty("dateForcee").trim().replace("{", "").replace("}", "").split(","));
-				String[] s_ = Config.getProp().getProperty("dateForcee").trim().replace("{", "").replace("}", "").split(",");
-				for (String string : s_) {
-					String s2 = string.split(";")[1];
-					if ( ! l2.contains(Integer.parseInt(s2)) ) {
-						if ( ! Config.getListeTeam().containsKey(Integer.parseInt(s2))) {
-							l2.add(Integer.parseInt(s2));
-						}
-					}
-				}
-			}
-			for (Integer id : l2) {
-				String[] l3 = Config.getDataBase().select("SELECT * FROM LISTEEQUIPE WHERE id_unique="+id+";").split("\n");
 
-				
-				for (String s : l3) {
 
-					String[] s2 = s.split("/");
-					Map<Personnage, Personne> teamPourLeSpectacle = new HashMap<>();
-					for (int i = 1; i < s2.length - 1; i++) {
-						teamPourLeSpectacle.put(Config.getListePersonnes2().get(Integer.parseInt(s2[i])).getPersonnage(), Config.getListePersonnes2().get(Integer.parseInt(s2[i])));
-					}
-					Config.getListeTeam().put(id, new Team(Integer.parseInt(s2[0]),teamPourLeSpectacle));
-				}
-			}
-			
 			Config.getListeTeam().forEach((idTeam,t) -> {
-			Config.getListeTeam().forEach((idTeam2,t2) -> {
-				if (idTeam!=idTeam2) {
-					eccart.setEccartTypePersistance(idTeam,idTeam2,Config.calculEccartType(idTeam, idTeam2));
-				}
+				Config.getListeTeam().forEach((idTeam2,t2) -> {
+					if (idTeam!=idTeam2) {
+						eccart .setEccartTypePersistance(idTeam,idTeam2,Config.calculEccartType(idTeam, idTeam2));
+					}
+				});
 			});
-		});
-
 		}
-		logger.info("insertion dans la table rel_team_personnes. Operation assez longue.");
+
 
 		String res = Config.getDataBase().select("SELECT * FROM listeequipe");
 		
@@ -492,9 +452,10 @@ public class Submain_A {
 				Config.getDataBase().update("INSERT INTO `rel_team_personnes` (`id_unique`, `id_team`, `id_personne`) VALUES (NULL, '"+ll[0]+"', '"+ll[i]+"');");	
 			}
 		}
-		
-		Config.getSemaines().forEach((idSemaine,sem) -> {
+
+		c.getSemaines().forEach((idSemaine,sem) -> {
 			if (sem.getTeam().size()==0) {
+//				Config.setExitAlgo(true);
 				for (String personnage : Config.getPersonnages()) {
 					Config.getListePersonnes2().forEach((id,p)->{
 						if (personnage.equals(p.getPersonnage())) {
@@ -549,9 +510,9 @@ public class Submain_A {
 		affichageTeams();
 		logger.info("Liste des semaines : "+Config.getListeSemaines());
 		Config.getListeSemaines().forEach((l) -> {
-			if (Config.getSemaines().get(l)!=null) {
+			if (c.getSemaines().get(l)!=null) {
 				logger.info("Numéro de semaine : "+l);
-				logger.info(Config.getSemaines().get(l).getTeam().size());
+				logger.info(c.getSemaines().get(l).getTeam().size());
 			}
 		});
 	}

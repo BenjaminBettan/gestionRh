@@ -33,11 +33,17 @@ public class Config {
 	private static Map<Double,  List<Spectacle>> listeSpectacleParSemaine = new HashMap<>();
 	private static int tauxMutation;	
 	private static int compt;
+	private EccartTypePersistance eccartTypePersistance = new EccartTypePersistance();
 	private static String[] personnages;
 	private static String[] dateForcee;
 	public static List<Double> debugIncompatibilitePersonne = new ArrayList<>();
-	private static Map<Double, Semaine> semaines = new HashMap<>();
+	
+	public int heureSpectacleAprem = Integer.parseInt(Config.getProp().getProperty("heureSpectacleAprem").trim().split(":")[0]);
+	public int minuteSpectacleAprem = Integer.parseInt(Config.getProp().getProperty("heureSpectacleAprem").trim().split(":")[1]);
+	public int heureSoir = Integer.parseInt(Config.getProp().getProperty("heureSpectacleSoir").trim().split(":")[0]);
+	public int minuteSoir = Integer.parseInt(Config.getProp().getProperty("heureSpectacleSoir").trim().split(":")[1]);
 
+	
 	static {
 		try {
 			PropertyConfigurator.configure("log4j.properties");
@@ -55,20 +61,16 @@ public class Config {
 	private int idTeam = 0;	
 	
 	private boolean addTeam = true;
-	private boolean phaseCreationPersonne = false;
+	private boolean test = false;
 
 	private Map<Personnage, List<Personne>> listePersonnes = new HashMap<>();
 	private Map<Double, List<DisponibiliteJour>> dispos = new HashMap<>();
-	public int heureSpectacleAprem = Integer.parseInt(Config.getProp().getProperty("heureSpectacleAprem").trim().split(":")[0]);
-	public int minuteSpectacleAprem = Integer.parseInt(Config.getProp().getProperty("heureSpectacleAprem").trim().split(":")[1]);
-	public int heureSoir = Integer.parseInt(Config.getProp().getProperty("heureSpectacleSoir").trim().split(":")[0]);
-	public int minuteSoir = Integer.parseInt(Config.getProp().getProperty("heureSpectacleSoir").trim().split(":")[1]);
-
+	private Map<Double, Semaine> semaines = new HashMap<>();
+	
 	private Personne p;
 	private Personnage personnage;
 	private CSVReader reader;
-	private EccartTypePersistance eccartTypePersistance = new EccartTypePersistance();
-
+	
 	private StringBuilder sb;
 	private String f2 = "src\\main\\resources\\dates\\";
 	private String sqlQueryDatabase = "CREATE DATABASE IF NOT EXISTS `simulation` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;\n";
@@ -229,6 +231,10 @@ public class Config {
 		return listeTeam;
 	}
 
+	public static void setListeTeam(Map<Integer, Team> listeTeam) {
+		Config.listeTeam = listeTeam;
+	}
+
 	public static Properties getProp() {
 		return prop;
 	}
@@ -253,12 +259,12 @@ public class Config {
 		this.addTeam = addTeam;
 	}
 
-	public boolean isPhaseCreationPersonne() {
-		return phaseCreationPersonne;
+	public boolean isTest() {
+		return test;
 	}
 
-	public void phaseCreationPersonne(boolean test) {
-		this.phaseCreationPersonne = test;
+	public void setTest(boolean test) {
+		this.test = test;
 	}
 
 	public Map<Personnage, List<Personne>> getListePersonnes() {
@@ -277,8 +283,12 @@ public class Config {
 		this.dispos = dispos;
 	}
 
-	public static Map<Double, Semaine> getSemaines() {
+	public Map<Double, Semaine> getSemaines() {
 		return semaines;
+	}
+
+	public void setSemaines(Map<Double, Semaine> semaines) {
+		this.semaines = semaines;
 	}
 
 	public Personne getP() {
@@ -369,14 +379,6 @@ public class Config {
 		if ( ! dateForcee[0].equals("")) {
 			Config.dateForcee = dateForcee;
 		}
-	}
-
-	public Integer getHeureSpectacleAprem() {
-		return heureSpectacleAprem;
-	}
-
-	public Integer getHeureSoir() {
-		return heureSoir;
 	}
 	
 }

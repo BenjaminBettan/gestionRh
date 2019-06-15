@@ -9,7 +9,7 @@ import com.bbe.theatre.__main.Config;
 
 public class EccartTypePersistance {
 	
-	private String path = Config.getProp().getProperty("dossierPrecalcul");
+	public String path = Config.getProp().getProperty("dossierPrecalcul");
 //	private static Logger logger = Logger.getLogger(EccartTypePersistance.class);
 	public void setEccartTypePersistance(Integer idTeam, Integer idTeam2, int calculEccartType) {
 		new File(path + idTeam + "\\"+calculEccartType+"\\").mkdirs();
@@ -22,8 +22,6 @@ public class EccartTypePersistance {
 	}
 
 	public Integer getMeilleurTeam(Integer idTeam, List<Integer> idTeams) {
-//		System.out.println("je cherche : " +idTeam);
-//		System.out.println(" je cherche : " +idTeams);
 		for (int i = 1; i <= Config.getPersonnages().length; i++) {
 			if (new File(path + idTeam + "\\"+i+"\\").exists()) {
 				List<Integer> idTeams_ = new ArrayList<>();
