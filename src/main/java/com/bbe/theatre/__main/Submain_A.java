@@ -443,13 +443,15 @@ public class Submain_A {
 			});
 		}
 
-
-		String res = Config.getDataBase().select("SELECT * FROM listeequipe");
-		
-		for (String s : res.split("\n")) {
-			String[] ll = s.split("/");
-			for (int i = 1; i < ll.length - 1; i++) {
-				Config.getDataBase().update("INSERT INTO `rel_team_personnes` (`id_unique`, `id_team`, `id_personne`) VALUES (NULL, '"+ll[0]+"', '"+ll[i]+"');");	
+		if (Boolean.parseBoolean(Config.getProp().getProperty("precalculs2A_Faire"))) {
+			logger.info("Insertion dans la base rel_team_personnes. Operation assez longue.");
+			String res = Config.getDataBase().select("SELECT * FROM listeequipe");
+			
+			for (String s : res.split("\n")) {
+				String[] ll = s.split("/");
+				for (int i = 1; i < ll.length - 1; i++) {
+					Config.getDataBase().update("INSERT INTO `rel_team_personnes` (`id_unique`, `id_team`, `id_personne`) VALUES (NULL, '"+ll[0]+"', '"+ll[i]+"');");	
+				}
 			}
 		}
 

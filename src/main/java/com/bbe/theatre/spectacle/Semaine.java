@@ -21,18 +21,20 @@ public class Semaine {
 	public void mute(){
 		//mutation
 		logger.debug("Mutation !");
-		int rand = ThreadLocalRandom.current().nextInt(0, this.getTeam().size());
+		if (this.getTeam().size()!=0) {
+			int rand = ThreadLocalRandom.current().nextInt(0, this.getTeam().size());
 
-		while (true) {
-			if (team.get(rand)==idTeam) {//on a choppé le meme, on recommence
-				rand = ThreadLocalRandom.current().nextInt(0, this.getTeam().size());
+			while (true) {
+				if (team.get(rand)==idTeam) {//on a choppé le meme, on recommence
+					rand = ThreadLocalRandom.current().nextInt(0, this.getTeam().size());
+				}
+				else {
+					break;
+				}
 			}
-			else {
-				break;
-			}
+
+			setIdTeam(team.get(rand));
 		}
-
-		setIdTeam(team.get(rand));
 	}
 
 	public Semaine(Semaine s) {

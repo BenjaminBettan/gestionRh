@@ -77,8 +77,8 @@ public class Planning {
 			
 			if ( ! semaineForcee) {
 				if (sem.getTeam().isEmpty()) {
-					logger.warn("Semaine " + sem.getNumSemaine() +" n a pas d equipe. Le programme va quitter");
-					System.exit(1);
+					logger.warn("Semaine " + sem.getNumSemaine() +" n a pas d equipe.");
+//					System.exit(1);
 				}
 				else if (sem.getTeam().size() == 1 || sem.isLocked()) {
 					premierSucces = true;
@@ -93,7 +93,7 @@ public class Planning {
 						sem.setIdTeam(sem.getTeam().get(ThreadLocalRandom.current().nextInt(0, sem.getTeam().size())));
 					}
 					else {
-						Integer idTeam = eccart .getMeilleurTeam(semaines.get(Config.getListeSemaines().get(i -1)).getIdTeam(), sem.getTeam());
+						Integer idTeam = eccart.getMeilleurTeam(semaines.get(Config.getListeSemaines().get(i -1)).getIdTeam(), sem.getTeam());
 						if (idTeam==null) {
 							logger.error("Fin du programme. Veuillez positionner la variable precalculsA_Faire du fichier global.properties à true et redemarrez le programme.");
 						}
@@ -114,6 +114,10 @@ public class Planning {
 			critereNbSpectMin = 0;
 			
 			semaines.forEach((idSem,sem)->{
+//				logger.warn(idSem);
+//				logger.warn(sem.getIdTeam());
+//				logger.warn(Config.getListeTeam().get(sem.getIdTeam()));
+//				logger.warn("------------------------------------------------------------");
 				Config.getListeTeam().get(sem.getIdTeam()).getTeamPourLeSpectacle().forEach((personnage,personne)->{
 					personne.incrementCalculNbSpectMin(sem.getNbSpectacle());
 				});
