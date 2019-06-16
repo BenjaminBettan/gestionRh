@@ -29,6 +29,10 @@ public class Planning {
 		
 	}
 	
+	@Override
+	public String toString() {
+		return "Planning [critereEccartType=" + critereEccartType + ", critereNbSpectMin=" + critereNbSpectMin + "]";
+	}
 	public Planning(){
 		super();
 	}

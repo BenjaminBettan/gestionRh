@@ -1,5 +1,6 @@
 package com.bbe.theatre.__main;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -43,7 +44,9 @@ public class Submain extends Submain_A{
 
 				if ( i % iteration == 0 ) {
 					logger.info(i + " iterations");
-
+					
+					Config.getProp().load(new FileInputStream("src\\main\\resources\\global.properties"));
+					
 					if ( i % evenementNbIteration == 0 ) {
 						if ( taillePopulation >= tailleMin ) {
 							taillePopulation = taillePopulation / onDivisePar;
@@ -71,7 +74,7 @@ public class Submain extends Submain_A{
 							logger.info("Top :");
 
 							top.forEach((p) -> {
-								logger.info(p.getValue());
+								logger.info(p);
 							});
 						}
 					}
@@ -87,7 +90,7 @@ public class Submain extends Submain_A{
 				}
 
 				if ( ! ( exit || Config.isExitAlgo() )) {
-					logger.info(plannings.get(0).getValue() + "  " + plannings.get(0).calculEccartType() + " " + plannings.get(0).calculNbSpectMin());
+					logger.info(plannings.get(0));
 
 					naissanceDeLaNouvelleGeneration(i);	
 				}
