@@ -48,7 +48,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">com.mysql.jdbc.Driver</property>
-            <property name="odaURL">jdbc:mysql://192.168.208.50/simulation</property>
+            <property name="odaURL">jdbc:mysql://localhost/simulation</property>
             <property name="odaUser">birt</property>
         </oda-data-source>
     </data-sources>
@@ -1148,6 +1148,7 @@ from indispo]]></xml-property>
                     <text-property name="displayName">indispo::dispo</text-property>
                 </structure>
             </list-property>
+            <list-property name="filter"/>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
                     <structure>
@@ -1425,7 +1426,9 @@ javaString.replace("_", "-");</expression>
                                 <property name="operator">eq</property>
                                 <expression name="expr" type="javascript">row["personnes::nom_personnage"]</expression>
                                 <simple-property-list name="value1">
-                                    <value>params["personnage_choisi"].value</value>
+                                    <value>var javaString = (new Packages.java.lang.String(params["personnage_choisi"].value));&#13;
+&#13;
+javaString.replace("_", "-");</value>
                                 </simple-property-list>
                                 <property name="updateAggregation">true</property>
                             </structure>
@@ -1545,6 +1548,16 @@ javaString.replace("_", "-");</expression>
             </row>
         </grid>
         <label id="1602"/>
+        <data id="1603">
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">personnage_choisi</property>
+                    <expression name="expression" type="javascript">params["personnage_choisi"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <property name="resultSetColumn">personnage_choisi</property>
+        </data>
     </body>
     <list-property name="images">
         <structure>

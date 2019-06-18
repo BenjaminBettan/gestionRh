@@ -51,7 +51,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">com.mysql.jdbc.Driver</property>
-            <property name="odaURL">jdbc:mysql://192.168.208.50/simulation</property>
+            <property name="odaURL">jdbc:mysql://localhost/simulation</property>
             <property name="odaUser">birt</property>
         </oda-data-source>
     </data-sources>

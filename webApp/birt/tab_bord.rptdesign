@@ -30,7 +30,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">com.mysql.jdbc.Driver</property>
-            <property name="odaURL">jdbc:mysql://192.168.208.50/simulation</property>
+            <property name="odaURL">jdbc:mysql://localhost/simulation</property>
             <property name="odaUser">birt</property>
         </oda-data-source>
     </data-sources>
@@ -1711,7 +1711,11 @@ javaString.replace("_", "-");</expression>
                                                                         </structure>
                                                                         <structure>
                                                                             <property name="name">Column Binding</property>
-                                                                            <expression name="expression" type="javascript">row["Aggregation"] +"/"+dataSetRow["nb_spect_min"]</expression>
+                                                                            <expression name="expression" type="javascript">if(row["Aggregation"] != null){&#13;
+row["Aggregation"] +"/"+dataSetRow["nb_spect_min"]&#13;
+}else{&#13;
+"0" +"/"+dataSetRow["nb_spect_min"]&#13;
+}</expression>
                                                                             <property name="dataType">string</property>
                                                                             <property name="allowExport">true</property>
                                                                         </structure>

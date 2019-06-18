@@ -233,7 +233,7 @@
                         <list-property name="action">
                             <structure>
                                 <property name="linkType">hyperlink</property>
-                                <expression name="uri" type="constant">http://192.168.208.50:8080/birt/tenor.gif</expression>
+                                <expression name="uri" type="constant">http://localhost:8080/birt/tenor.gif</expression>
                                 <property name="targetWindow">_blank</property>
                             </structure>
                         </list-property>

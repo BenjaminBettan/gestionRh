@@ -115,7 +115,7 @@ public class Submain extends Submain_A{
 			});
 		});
 
-		String[] cmd = {"cmd.exe","/c","start http://localhost:8080/birt/frameset?__report=home.rptdesign"};
+		String[] cmd = {"cmd.exe","/c","start http://localhost:8080/franglaises_planning/franglaises.html"};
 
 		Runtime.getRuntime().exec(cmd);
 
