@@ -1,0 +1,1643 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
+    <property name="author">Benjamin Bettan</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Build &lt;@BUILD@></property>
+    <text-property name="title">Planning</text-property>
+    <property name="units">in</property>
+    <method name="onPrepare"><![CDATA[
+
+]]></method>
+    <property name="iconFile">/templates/blank_report.gif</property>
+    <property name="layoutPreference">auto layout</property>
+    <property name="bidiLayoutOrientation">ltr</property>
+    <property name="imageDPI">96</property>
+    <parameters>
+        <scalar-parameter name="personne_choisi" id="1600">
+            <text-property name="promptText">Personne ?</text-property>
+            <property name="valueType">dynamic</property>
+            <property name="dataSetName">personnes</property>
+            <expression name="valueExpr" type="javascript">dataSetRow["nom_personne"]</expression>
+            <expression name="labelExpr" type="javascript">dataSetRow["nom_personne"]</expression>
+            <expression name="sortByColumn">dataSetRow["nom_personne"]</expression>
+            <property name="sortDirection">asc</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">list-box</property>
+            <property name="mustMatch">true</property>
+            <property name="fixedOrder">false</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+    </parameters>
+    <data-sources>
+        <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="12">
+            <list-property name="privateDriverProperties">
+                <ex-property>
+                    <name>metadataBidiFormatStr</name>
+                    <value>ILYNN</value>
+                </ex-property>
+                <ex-property>
+                    <name>disabledMetadataBidiFormatStr</name>
+                </ex-property>
+                <ex-property>
+                    <name>contentBidiFormatStr</name>
+                    <value>ILYNN</value>
+                </ex-property>
+                <ex-property>
+                    <name>disabledContentBidiFormatStr</name>
+                </ex-property>
+            </list-property>
+            <property name="odaDriverClass">com.mysql.jdbc.Driver</property>
+            <property name="odaURL">jdbc:mysql://192.168.208.50/simulation</property>
+            <property name="odaUser">birt</property>
+        </oda-data-source>
+    </data-sources>
+    <data-sets>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="spectacles" id="947">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">id_unique</property>
+                    <text-property name="displayName">id_unique</text-property>
+                    <text-property name="heading">id_unique</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">date_spectacle</property>
+                    <text-property name="displayName">date_spectacle</text-property>
+                    <text-property name="heading">date_spectacle</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">id_team</property>
+                    <text-property name="displayName">id_team</text-property>
+                    <text-property name="heading">id_team</text-property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">id_unique</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">date_spectacle</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">id_team</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">id_unique</property>
+                    <property name="nativeName">id_unique</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">date_spectacle</property>
+                    <property name="nativeName">date_spectacle</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">id_team</property>
+                    <property name="nativeName">id_team</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select *
+from spectacles]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <design:ResultSets derivedMetaData="true">
+    <design:resultSetDefinitions>
+      <design:resultSetColumns>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>id_unique</design:name>
+              <design:position>1</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>3</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>id_unique</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>id_unique</design:label>
+            <design:formattingHints>
+              <design:displaySize>3</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>date_spectacle</design:name>
+              <design:position>2</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>16</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>date_spectacle</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>date_spectacle</design:label>
+            <design:formattingHints>
+              <design:displaySize>16</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>id_team</design:name>
+              <design:position>3</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>5</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>id_team</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>id_team</design:label>
+            <design:formattingHints>
+              <design:displaySize>5</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+      </design:resultSetColumns>
+      <design:criteria/>
+    </design:resultSetDefinitions>
+  </design:ResultSets>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="rel_team_personne" id="948">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">id_unique</property>
+                    <text-property name="displayName">id_unique</text-property>
+                    <text-property name="heading">id_unique</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">id_team</property>
+                    <text-property name="displayName">id_team</text-property>
+                    <text-property name="heading">id_team</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">id_personne</property>
+                    <text-property name="displayName">id_personne</text-property>
+                    <text-property name="heading">id_personne</text-property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">id_unique</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">id_team</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">id_personne</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">id_unique</property>
+                    <property name="nativeName">id_unique</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">id_team</property>
+                    <property name="nativeName">id_team</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">id_personne</property>
+                    <property name="nativeName">id_personne</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select *
+from rel_team_personnes]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <design:ResultSets derivedMetaData="true">
+    <design:resultSetDefinitions>
+      <design:resultSetColumns>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>id_unique</design:name>
+              <design:position>1</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>3</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>id_unique</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>id_unique</design:label>
+            <design:formattingHints>
+              <design:displaySize>3</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>id_team</design:name>
+              <design:position>2</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>5</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>id_team</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>id_team</design:label>
+            <design:formattingHints>
+              <design:displaySize>5</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>id_personne</design:name>
+              <design:position>3</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>2</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>id_personne</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>id_personne</design:label>
+            <design:formattingHints>
+              <design:displaySize>2</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+      </design:resultSetColumns>
+      <design:criteria/>
+    </design:resultSetDefinitions>
+  </design:ResultSets>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
+        <joint-data-set name="J_spect_rel_team_personne" id="949">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">rel_team_personne::id_team</property>
+                    <property name="alias">rel_team_personne::id_team</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">rel_team_personne::id_team</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">spectacles::id_unique</property>
+                    <property name="alias">spectacles::id_unique</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">spectacles::id_unique</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">spectacles::date_spectacle</property>
+                    <property name="alias">date_spectacle</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">spectacles::date_spectacle</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">rel_team_personne::id_unique</property>
+                    <property name="alias">rel_team_personne::id_unique</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">rel_team_personne::id_unique</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">spectacles::id_team</property>
+                    <property name="alias">spectacles::id_team</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">spectacles::id_team</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">rel_team_personne::id_personne</property>
+                    <property name="alias">id_personne</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">rel_team_personne::id_personne</text-property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">spectacles::id_unique</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">date_spectacle</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">spectacles::id_team</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">rel_team_personne::id_unique</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">rel_team_personne::id_team</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">id_personne</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <simple-property-list name="dataSets">
+                <value>spectacles</value>
+                <value>rel_team_personne</value>
+            </simple-property-list>
+            <list-property name="joinConditions">
+                <structure>
+                    <property name="joinType">inner</property>
+                    <property name="joinOperator">eq</property>
+                    <property name="leftDataSet">spectacles</property>
+                    <property name="rightDataSet">rel_team_personne</property>
+                    <expression name="leftExpression">dataSetRow["id_team"]</expression>
+                    <expression name="rightExpression">dataSetRow["id_team"]</expression>
+                </structure>
+            </list-property>
+        </joint-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="personnes" id="972">
+            <property name="nullsOrdering">nulls lowest</property>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">id_unique</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">id_unique</text-property>
+                    <text-property name="heading">id_unique</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">nom_personne</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">nom_personne</text-property>
+                    <text-property name="heading">nom_personne</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">nom_personnage</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">nom_personnage</text-property>
+                    <text-property name="heading">nom_personnage</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">id_personne</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">id_personne</text-property>
+                    <text-property name="heading">id_personne</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">nb_spect_min</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">nb_spect_min</text-property>
+                    <text-property name="heading">nb_spect_min</text-property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">id_unique</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">nom_personne</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">nom_personnage</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">id_personne</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">nb_spect_min</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">id_unique</property>
+                    <property name="nativeName">id_unique</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">nom_personne</property>
+                    <property name="nativeName">nom_personne</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">nom_personnage</property>
+                    <property name="nativeName">nom_personnage</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">id_personne</property>
+                    <property name="nativeName">id_personne</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">nb_spect_min</property>
+                    <property name="nativeName">nb_spect_min</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select *
+from personnes]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <design:ResultSets derivedMetaData="true">
+    <design:resultSetDefinitions>
+      <design:resultSetColumns>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>id_unique</design:name>
+              <design:position>1</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>3</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>id_unique</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>id_unique</design:label>
+            <design:formattingHints>
+              <design:displaySize>3</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>nom_personne</design:name>
+              <design:position>2</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>20</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>nom_personne</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>nom_personne</design:label>
+            <design:formattingHints>
+              <design:displaySize>20</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>nom_personnage</design:name>
+              <design:position>3</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>20</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>nom_personnage</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>nom_personnage</design:label>
+            <design:formattingHints>
+              <design:displaySize>20</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>id_personne</design:name>
+              <design:position>4</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>3</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>id_personne</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>id_personne</design:label>
+            <design:formattingHints>
+              <design:displaySize>3</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>nb_spect_min</design:name>
+              <design:position>5</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>3</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>nb_spect_min</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>nb_spect_min</design:label>
+            <design:formattingHints>
+              <design:displaySize>3</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+      </design:resultSetColumns>
+      <design:criteria/>
+    </design:resultSetDefinitions>
+  </design:ResultSets>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
+        <joint-data-set name="J_spect_rel_team_personne_personnes" id="973">
+            <list-property name="computedColumns">
+                <structure>
+                    <property name="name">CC_row_count</property>
+                    <expression name="expression">1</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">CC</property>
+                    <expression name="expression">row["rel_team_personne::id_personne"]+row["spectacles::date_spectacle"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">J_spect_rel_team_personne::rel_team_personne::id_team</property>
+                    <property name="alias">rel_team_personne::id_team</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">J_spect_rel_team_personne::rel_team_personne::id_team</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">personnes::nom_personnage</property>
+                    <property name="alias">nom_personnage</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">personnes::nom_personnage</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">J_spect_rel_team_personne::spectacles::id_unique</property>
+                    <property name="alias">spectacles::id_unique</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">J_spect_rel_team_personne::spectacles::id_unique</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">personnes::id_unique</property>
+                    <property name="alias">id_unique</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">personnes::id_unique</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">J_spect_rel_team_personne::spectacles::date_spectacle</property>
+                    <property name="alias">spectacles::date_spectacle</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">J_spect_rel_team_personne::spectacles::date_spectacle</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">J_spect_rel_team_personne::rel_team_personne::id_personne</property>
+                    <property name="alias">rel_team_personne::id_personne</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">J_spect_rel_team_personne::rel_team_personne::id_personne</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">personnes::nb_spect_min</property>
+                    <property name="alias">nb_spect_min</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">personnes::nb_spect_min</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">J_spect_rel_team_personne::rel_team_personne::id_unique</property>
+                    <property name="alias">rel_team_personne::id_unique</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">J_spect_rel_team_personne::rel_team_personne::id_unique</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">J_spect_rel_team_personne::spectacles::id_team</property>
+                    <property name="alias">spectacles::id_team</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">J_spect_rel_team_personne::spectacles::id_team</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">personnes::nom_personne</property>
+                    <property name="alias">nom_personne</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">personnes::nom_personne</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">personnes::id_personne</property>
+                    <property name="alias">id_personne</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">personnes::id_personne</text-property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">spectacles::id_unique</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">spectacles::date_spectacle</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">spectacles::id_team</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">rel_team_personne::id_unique</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">rel_team_personne::id_team</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">rel_team_personne::id_personne</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">id_unique</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">nom_personne</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">nom_personnage</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
+                        <property name="name">id_personne</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">nb_spect_min</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">personnes::isAncien</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">CC_row_count</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
+                        <property name="name">CC</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <simple-property-list name="dataSets">
+                <value>J_spect_rel_team_personne</value>
+                <value>personnes</value>
+            </simple-property-list>
+            <list-property name="joinConditions">
+                <structure>
+                    <property name="joinType">inner</property>
+                    <property name="joinOperator">eq</property>
+                    <property name="leftDataSet">J_spect_rel_team_personne</property>
+                    <property name="rightDataSet">personnes</property>
+                    <expression name="leftExpression">dataSetRow["id_personne"]</expression>
+                    <expression name="rightExpression">dataSetRow["id_personne"]</expression>
+                </structure>
+            </list-property>
+        </joint-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="personnages" id="1441">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">nom_personnage</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">nom_personnage</text-property>
+                    <text-property name="heading">nom_personnage</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters"/>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">nom_personnage</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">nom_personnage</property>
+                    <property name="nativeName">nom_personnage</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select distinct(nom_personnage)
+from personnes]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="indispo" id="1442">
+            <list-property name="computedColumns">
+                <structure>
+                    <property name="name">CC</property>
+                    <expression name="expression">row["id_personne"]+row["date"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">id_unique</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">id_unique</text-property>
+                    <text-property name="heading">id_unique</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">id_personne</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">id_personne</text-property>
+                    <text-property name="heading">id_personne</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">date</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">date</text-property>
+                    <text-property name="heading">date</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">dispo</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">dispo</text-property>
+                    <text-property name="heading">dispo</text-property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">id_unique</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">id_personne</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">date</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">dispo</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">CC</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">id_unique</property>
+                    <property name="nativeName">id_unique</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">id_personne</property>
+                    <property name="nativeName">id_personne</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">date</property>
+                    <property name="nativeName">date</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">dispo</property>
+                    <property name="nativeName">dispo</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select *
+from indispo]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <design:ResultSets derivedMetaData="true">
+    <design:resultSetDefinitions>
+      <design:resultSetColumns>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>id_unique</design:name>
+              <design:position>1</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>3</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>id_unique</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>id_unique</design:label>
+            <design:formattingHints>
+              <design:displaySize>3</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>id_personne</design:name>
+              <design:position>2</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>3</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>id_personne</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>id_personne</design:label>
+            <design:formattingHints>
+              <design:displaySize>3</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>date</design:name>
+              <design:position>3</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>16</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>date</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>date</design:label>
+            <design:formattingHints>
+              <design:displaySize>16</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>dispo</design:name>
+              <design:position>4</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>3</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>dispo</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>dispo</design:label>
+            <design:formattingHints>
+              <design:displaySize>3</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+      </design:resultSetColumns>
+      <design:criteria/>
+    </design:resultSetDefinitions>
+  </design:ResultSets>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
+        <joint-data-set name="J_indispo" id="1474">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">indispo::date</property>
+                    <property name="alias">date</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">indispo::date</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">J_spect_rel_team_personne_personnes::personnes::id_unique</property>
+                    <property name="alias">personnes::id_unique</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">J_spect_rel_team_personne_personnes::personnes::id_unique</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">J_spect_rel_team_personne_personnes::personnes::isAncien</property>
+                    <property name="alias">personnes::isAncien</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">J_spect_rel_team_personne_personnes::personnes::isAncien</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">J_spect_rel_team_personne_personnes::personnes::id_personne</property>
+                    <property name="alias">personnes::id_personne</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">J_spect_rel_team_personne_personnes::personnes::id_personne</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">J_spect_rel_team_personne_personnes::J_spect_rel_team_personne::spectacles::id_team</property>
+                    <property name="alias">J_spect_rel_team_personne::spectacles::id_team</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">J_spect_rel_team_personne_personnes::J_spect_rel_team_personne::spectacles::id_team</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">indispo::id_unique</property>
+                    <property name="alias">id_unique</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">indispo::id_unique</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">J_spect_rel_team_personne_personnes::J_spect_rel_team_personne::rel_team_personne::id_unique</property>
+                    <property name="alias">J_spect_rel_team_personne::rel_team_personne::id_unique</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">J_spect_rel_team_personne_personnes::J_spect_rel_team_personne::rel_team_personne::id_unique</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">J_spect_rel_team_personne_personnes::CC</property>
+                    <property name="alias">J_spect_rel_team_personne_personnes::CC</property>
+                    <property name="analysis">attribute</property>
+                    <text-property name="displayName">J_spect_rel_team_personne_personnes::CC</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">J_spect_rel_team_personne_personnes::personnes::nb_spect_min</property>
+                    <property name="alias">personnes::nb_spect_min</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">J_spect_rel_team_personne_personnes::personnes::nb_spect_min</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">J_spect_rel_team_personne_personnes::personnes::nom_personne</property>
+                    <property name="alias">personnes::nom_personne</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">J_spect_rel_team_personne_personnes::personnes::nom_personne</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">J_spect_rel_team_personne_personnes::CC_row_count</property>
+                    <property name="alias">CC_row_count</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">J_spect_rel_team_personne_personnes::CC_row_count</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">J_spect_rel_team_personne_personnes::J_spect_rel_team_personne::spectacles::id_unique</property>
+                    <property name="alias">J_spect_rel_team_personne::spectacles::id_unique</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">J_spect_rel_team_personne_personnes::J_spect_rel_team_personne::spectacles::id_unique</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">J_spect_rel_team_personne_personnes::personnes::nom_personnage</property>
+                    <property name="alias">personnes::nom_personnage</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">J_spect_rel_team_personne_personnes::personnes::nom_personnage</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">J_spect_rel_team_personne_personnes::J_spect_rel_team_personne::rel_team_personne::id_team</property>
+                    <property name="alias">J_spect_rel_team_personne::rel_team_personne::id_team</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">J_spect_rel_team_personne_personnes::J_spect_rel_team_personne::rel_team_personne::id_team</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">indispo::id_personne</property>
+                    <property name="alias">id_personne</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">indispo::id_personne</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">indispo::CC</property>
+                    <property name="alias">indispo::CC</property>
+                    <property name="analysis">attribute</property>
+                    <text-property name="displayName">indispo::CC</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">J_spect_rel_team_personne_personnes::J_spect_rel_team_personne::spectacles::date_spectacle</property>
+                    <property name="alias">J_spect_rel_team_personne::spectacles::date_spectacle</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">J_spect_rel_team_personne_personnes::J_spect_rel_team_personne::spectacles::date_spectacle</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">J_spect_rel_team_personne_personnes::J_spect_rel_team_personne::rel_team_personne::id_personne</property>
+                    <property name="alias">J_spect_rel_team_personne::rel_team_personne::id_personne</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">J_spect_rel_team_personne_personnes::J_spect_rel_team_personne::rel_team_personne::id_personne</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">indispo::dispo</property>
+                    <property name="alias">dispo</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">indispo::dispo</text-property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">J_spect_rel_team_personne::spectacles::id_unique</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">J_spect_rel_team_personne::spectacles::date_spectacle</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">J_spect_rel_team_personne::spectacles::id_team</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">J_spect_rel_team_personne::rel_team_personne::id_unique</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">J_spect_rel_team_personne::rel_team_personne::id_team</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">J_spect_rel_team_personne::rel_team_personne::id_personne</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">personnes::id_unique</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">personnes::nom_personne</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">personnes::nom_personnage</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
+                        <property name="name">personnes::id_personne</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">personnes::nb_spect_min</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">personnes::isAncien</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">CC_row_count</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
+                        <property name="name">J_spect_rel_team_personne_personnes::CC</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">15</property>
+                        <property name="name">id_unique</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">16</property>
+                        <property name="name">id_personne</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">17</property>
+                        <property name="name">date</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">18</property>
+                        <property name="name">dispo</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">19</property>
+                        <property name="name">indispo::CC</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <simple-property-list name="dataSets">
+                <value>J_spect_rel_team_personne_personnes</value>
+                <value>indispo</value>
+            </simple-property-list>
+            <list-property name="joinConditions">
+                <structure>
+                    <property name="joinType">inner</property>
+                    <property name="joinOperator">eq</property>
+                    <property name="leftDataSet">J_spect_rel_team_personne_personnes</property>
+                    <property name="rightDataSet">indispo</property>
+                    <expression name="leftExpression">dataSetRow["CC"]</expression>
+                    <expression name="rightExpression">dataSetRow["CC"]</expression>
+                </structure>
+            </list-property>
+        </joint-data-set>
+    </data-sets>
+    <page-setup>
+        <simple-master-page name="Simple MasterPage" id="2">
+            <property name="type">a4</property>
+            <property name="orientation">landscape</property>
+            <property name="height">2970cm</property>
+            <property name="width">2100cm</property>
+        </simple-master-page>
+    </page-setup>
+    <body>
+        <grid id="1594">
+            <column id="1595">
+                <property name="width">5mm</property>
+            </column>
+            <column id="1596"/>
+            <row id="1597">
+                <cell id="1598"/>
+                <cell id="1599">
+                    <label id="1593"/>
+                    <table id="1475">
+                        <property name="pageBreakAfter">avoid</property>
+                        <property name="pageBreakBefore">avoid</property>
+                        <property name="pageBreakInside">avoid</property>
+                        <property name="dataSet">J_indispo</property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">J_spect_rel_team_personne::spectacles::id_unique</property>
+                                <text-property name="displayName">J_spect_rel_team_personne_personnes::J_spect_rel_team_personne::spectacles::id_unique</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["J_spect_rel_team_personne::spectacles::id_unique"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">J_spect_rel_team_personne::spectacles::date_spectacle</property>
+                                <text-property name="displayName">J_spect_rel_team_personne_personnes::J_spect_rel_team_personne::spectacles::date_spectacle</text-property>
+                                <expression name="expression" type="javascript">var javaString = (new Packages.java.lang.String(dataSetRow["J_spect_rel_team_personne::spectacles::date_spectacle"]));&#13;
+&#13;
+javaString = javaString.replace("-", "/");&#13;
+javaString.replace("T", " ");</expression>
+                                <property name="dataType">string</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">J_spect_rel_team_personne::spectacles::id_team</property>
+                                <text-property name="displayName">J_spect_rel_team_personne_personnes::J_spect_rel_team_personne::spectacles::id_team</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["J_spect_rel_team_personne::spectacles::id_team"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">J_spect_rel_team_personne::rel_team_personne::id_unique</property>
+                                <text-property name="displayName">J_spect_rel_team_personne_personnes::J_spect_rel_team_personne::rel_team_personne::id_unique</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["J_spect_rel_team_personne::rel_team_personne::id_unique"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">J_spect_rel_team_personne::rel_team_personne::id_team</property>
+                                <text-property name="displayName">J_spect_rel_team_personne_personnes::J_spect_rel_team_personne::rel_team_personne::id_team</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["J_spect_rel_team_personne::rel_team_personne::id_team"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">J_spect_rel_team_personne::rel_team_personne::id_personne</property>
+                                <text-property name="displayName">J_spect_rel_team_personne_personnes::J_spect_rel_team_personne::rel_team_personne::id_personne</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["J_spect_rel_team_personne::rel_team_personne::id_personne"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">personnes::id_unique</property>
+                                <text-property name="displayName">J_spect_rel_team_personne_personnes::personnes::id_unique</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["personnes::id_unique"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">personnes::nom_personne</property>
+                                <text-property name="displayName">J_spect_rel_team_personne_personnes::personnes::nom_personne</text-property>
+                                <expression name="expression" type="javascript">var javaString = (new Packages.java.lang.String(dataSetRow["personnes::nom_personne"]));&#13;
+&#13;
+javaString.replace("_", " ");</expression>
+                                <property name="dataType">string</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">personnes::nom_personnage</property>
+                                <text-property name="displayName">J_spect_rel_team_personne_personnes::personnes::nom_personnage</text-property>
+                                <expression name="expression" type="javascript">var javaString = (new Packages.java.lang.String(dataSetRow["personnes::nom_personnage"]));&#13;
+&#13;
+javaString.replace("_", "-");</expression>
+                                <property name="dataType">string</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">personnes::id_personne</property>
+                                <text-property name="displayName">J_spect_rel_team_personne_personnes::personnes::id_personne</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["personnes::id_personne"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">personnes::nb_spect_min</property>
+                                <text-property name="displayName">J_spect_rel_team_personne_personnes::personnes::nb_spect_min</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["personnes::nb_spect_min"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">personnes::isAncien</property>
+                                <text-property name="displayName">J_spect_rel_team_personne_personnes::personnes::isAncien</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["personnes::isAncien"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">CC_row_count</property>
+                                <text-property name="displayName">J_spect_rel_team_personne_personnes::CC_row_count</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["CC_row_count"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">J_spect_rel_team_personne_personnes::CC</property>
+                                <text-property name="displayName">J_spect_rel_team_personne_personnes::CC</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["J_spect_rel_team_personne_personnes::CC"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">id_unique</property>
+                                <text-property name="displayName">indispo::id_unique</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["id_unique"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">id_personne</property>
+                                <text-property name="displayName">indispo::id_personne</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["id_personne"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">date</property>
+                                <text-property name="displayName">indispo::date</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["date"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">dispo</property>
+                                <text-property name="displayName">indispo::dispo</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["dispo"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">indispo::CC</property>
+                                <text-property name="displayName">indispo::CC</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["indispo::CC"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="pageBreakInterval">0</property>
+                        <list-property name="sort">
+                            <structure>
+                                <expression name="key" type="javascript">row["J_spect_rel_team_personne::spectacles::date_spectacle"]</expression>
+                                <property name="direction">asc</property>
+                                <property name="strength">-1</property>
+                            </structure>
+                        </list-property>
+                        <list-property name="filter">
+                            <structure>
+                                <property name="operator">eq</property>
+                                <expression name="expr" type="javascript">row["personnes::nom_personne"]</expression>
+                                <simple-property-list name="value1">
+                                    <value>var javaString = (new Packages.java.lang.String(params["personne_choisi"].value));&#13;
+&#13;
+javaString.replace("_", " ");</value>
+                                </simple-property-list>
+                                <property name="updateAggregation">true</property>
+                            </structure>
+                        </list-property>
+                        <column id="1575">
+                            <property name="textAlign">center</property>
+                            <property name="width">3cm</property>
+                        </column>
+                        <column id="1581">
+                            <property name="width">4cm</property>
+                        </column>
+                        <column id="1582">
+                            <property name="width">4cm</property>
+                        </column>
+                        <detail>
+                            <row id="1515">
+                                <list-property name="highlightRules">
+                                    <structure>
+                                        <property name="operator">eq</property>
+                                        <property name="backgroundColor">#FF9D9D</property>
+                                        <property name="color">#000000</property>
+                                        <expression name="testExpr" type="javascript">row["dispo"]</expression>
+                                        <simple-property-list name="value1">
+                                            <value type="javascript">"0"</value>
+                                        </simple-property-list>
+                                    </structure>
+                                    <structure>
+                                        <property name="operator">eq</property>
+                                        <property name="backgroundColor">#FFFF80</property>
+                                        <property name="color">#000000</property>
+                                        <expression name="testExpr" type="javascript">row["dispo"]</expression>
+                                        <simple-property-list name="value1">
+                                            <value type="javascript">"0,5"</value>
+                                        </simple-property-list>
+                                    </structure>
+                                    <structure>
+                                        <property name="operator">eq</property>
+                                        <property name="backgroundColor">#62FF89</property>
+                                        <property name="color">#000000</property>
+                                        <expression name="testExpr" type="javascript">row["dispo"]</expression>
+                                        <simple-property-list name="value1">
+                                            <value type="javascript">"1"</value>
+                                        </simple-property-list>
+                                    </structure>
+                                </list-property>
+                                <cell id="1518">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <data id="1519">
+                                        <property name="resultSetColumn">J_spect_rel_team_personne::spectacles::date_spectacle</property>
+                                    </data>
+                                </cell>
+                                <cell id="1530">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <data id="1531">
+                                        <property name="resultSetColumn">personnes::nom_personne</property>
+                                        <list-property name="action">
+                                            <structure>
+                                                <property name="linkType">drill-through</property>
+                                                <property name="reportName">ChangementTeam.rptdesign</property>
+                                                <property name="targetWindow">_blank</property>
+                                                <property name="targetFileType">report-design</property>
+                                                <list-property name="paramBindings">
+                                                    <structure>
+                                                        <property name="paramName">Date</property>
+                                                        <simple-property-list name="expression">
+                                                            <value type="javascript">row["date"]</value>
+                                                        </simple-property-list>
+                                                    </structure>
+                                                    <structure>
+                                                        <property name="paramName">Personnage</property>
+                                                        <simple-property-list name="expression">
+                                                            <value type="javascript">row["personnes::nom_personnage"]</value>
+                                                        </simple-property-list>
+                                                    </structure>
+                                                    <structure>
+                                                        <property name="paramName">Personne</property>
+                                                        <simple-property-list name="expression">
+                                                            <value type="javascript">row["personnes::nom_personne"]</value>
+                                                        </simple-property-list>
+                                                    </structure>
+                                                </list-property>
+                                            </structure>
+                                        </list-property>
+                                    </data>
+                                </cell>
+                                <cell id="1532">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <data id="1533">
+                                        <property name="resultSetColumn">personnes::nom_personnage</property>
+                                    </data>
+                                </cell>
+                            </row>
+                        </detail>
+                    </table>
+                </cell>
+            </row>
+        </grid>
+        <label id="1602"/>
+    </body>
+    <list-property name="images">
+        <structure>
+            <property name="name">thales.png</property>
+            <property name="type">image/png</property>
+            <property name="data">
+                /9j/4AAQSkZJRgABAQEBLAEsAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsN
+                DhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQU
+                FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAAjARYDASIAAhEBAxEB/8QA
+                HwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIh
+                MUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVW
+                V1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXG
+                x8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQF
+                BgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAV
+                YnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOE
+                hYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq
+                8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDwrxDZftaeKXdtVg+Kd5u/gCXiJ/3yvy15z4p+Cfxds9Lu9X8S
+                eDPFyafap9onvdTsZ/KiX++zt92v6CeMfNxXjX7ZBx+yv8UcdDoF1z/wA19ZQzySlCEaUTvhi5OXLyxP
+                wV03TbzW9Rt9P0+2kvL66lWKC3t03vK7fdVVr1zR/gl+0B4eZf7K8HePtNZf+fSzvIv/AECuf/Zt/wCT
+                gvhv/wBh+y/9GrX9CmNvsK9rNs1ngqkacY8x14jESpS5Yn5dfsKTftGWP7QXh2y8cDx8vg1orr7YniFL
+                p7f/AFEvlbnl779lfqNjANAGPQUpwRXweKxP1qr7Tl5TyJy55cx+GP7aPxW8a3/7RvxG0afxdrbaNa6v
+                Pb2+n/2hL9mhiVvurFu21+on/BP6eW5/ZC+HUksjSyNbXO53bcx/0qfvX5J/tlru/aq+KQH/AEHJ/wD0
+                Kvr79ln/AIKNfDP4IfAXwn4K1zTfENxqmkwSrcS2NrE0Tlp5ZPl3Sr/er67McLOrgKUaEP65T1KsL4eP
+                LE/Tfr2rx/8Aa6do/wBmH4pFWZH/AOEbvfmVtuP3LV4F/wAPcfg7/wBAbxd/4A2//wAfrgvjl/wU0+Ff
+                xL+DXjPwlpWl+JodR1jSLiztnurOARLI6FV3FZvu8187Qy3FqrDmpyPOhSlzfCfEv7OnxX8b6P8AGTwD
+                Y2XjDX7SxuNdsLee0i1OdYZYmuEV0dN+1lr981/ve1fzvfAU5+OXw5/7GTTf/SqKv6IVHyAe1evxFCMK
+                sOX+tjrxsUnEcetcP8ZPihpfwY+GniHxprDN9j0i0a48leGnk6RxL/tO21R/vV3I6V+VP/BV39oYeIfF
+                2n/CbSrkPZaOyX+r7D965ZP3UX/AI33f70g/uV4OAwjxleNI5KVP2suU+WJvjt8avi18QpxpXjbxfNrO
+                uXrtb6To+s3UKbnbd5UUSy7VX/ZWtr4EftefET4TfFnw/wCINZ8Z+JvEGjWtysWp6Vquqz3UUts3yy/J
+                I+3zFX5l/wBpVr6a/wCCS/wF/tLX9b+K2qwE29gH0zSd3O6dv+PiX/gK7UH/AF0evEv+Ci3wG/4U1+0D
+                qGp2Vt5XhvxZv1Sx2D5Fl+X7RF/39bf/ALsq19xGrhKuJngOWPwnp2pyqey5T9otE1qx8QaLY6rp1zHd
+                6ffQJc21xD9yWN13Iy/VSK0zg1+fn/BKf9ooeKvBV38K9Xuh/anh9WutL3n5pbJn+ZP+2Tv/AN8yp/dr
+                9AxzxXwWKw08LXlSl0PKq0/ZS5ZGZ4hdotD1J1Yoy20rK6/w4Wv58P8AhfnxRx/yUzxr/wCFHef/AB2v
+                6EPEf/IA1T/r1l/9BNfzZ54xX03D9KnVVXnj2/U9DBQjNS5j+k3w8WfQtNZmLs1tFudj975K06zPDf8A
+                yL2lf9esX/oArTr5CW7PMYUh4FLSHoaQj8M/2sfjz8Spvj78Q9JTx94jg0mz1q6t7exttVnit4oklZVT
+                Yr7a87svg38XPiBptvrVt4Q8XeJdOvF82C+Sznuopf8AbR/4qn/atB/4aZ+KH/YxXv8A6NavtP8AZt/4
+                KSfDn4OfA7wh4M1XRtfu9T0iz8meW0gj8pn3s3y7n/2q/S5Sq4TB0pYWlzS9092pKVKMfZxPiY/svfGA
+                /wDNL/Fv/gnn/wDiK29F+DX7QnhtUXSPCfxD0nb937FbXlvs/wC+K/Qv/h7r8KP+hf8AFP8A34g/+O19
+                Gfs6/tD6F+0t4Ju/FPhyyv7HT7e/k08x6iiLI7okblhtZvl/eivMxGbY6jHmr0PdOSWJrL44nz7/AME1
+                5/jCdP8AHNt8VT4rKRvZ/wBm/wDCULPuxiXzvLaX5iPuV9unhaAPTgUp5zXxtev9YqSqcvLc4Jy55cx+
+                PP7U/wC3z8UvFHxV8SeGPCOtP4W8OaXqVxptomknbcXXlSvF5rzff+fbu2rt2rt/3q81174FftR+LGaX
+                WtA+IWsBv+f6We4+9/vPXl/xZlfS/j141a5jZJbPxNfmeH+JWW6fcv8A47X6Px/8Fg/h6iqv/CEeJiV/
+                2oP/AIuvvpwq4SlSeDoRkevKMoxj7OJ8Ef8ADGnxw/6Jh4j/APAJq29E/Zt/aT8MNv0fwf450dtu3fp5
+                ngf/AMcevt//AIfD/D//AKEbxN/31B/8XToP+CwXw7eZFl8FeJYY2b5pMwNt/wDH6xnjc0n8VAn2mI/l
+                PVf+Cfmn/EzT/grqsHxZ/t068uuS/Zv+EmlaWf7L9nt9m1n+bbv83Ge+6ivW/gf8d/Cf7Q/gaPxV4Pnn
+                utM89rWeK6gMMttcKqM0TqeNwV1Py7l54Y0V8NiKlSVWTdOx5sp3ep6YOleMftmf8mr/ABR/7AF1/wCg
+                V7OOleLftnOqfsq/FFmZUX+wLr5m/wByih/Ej6kQ+JH4pfs2f8nBfDf/ALD9n/6NWv6Fa/nq/ZvdE/aC
+                +G7Myon9v2H3/wDr4Sv6FRX0/EbTrQt/KduN/iD6Q9KWkPSvkzzz8B/2yzj9qn4on/qNz/8AoVfVP7M3
+                /BNXwb8cfgf4Y8b6n4s12xvdXillkgtFi8qMrK8fy7k/2K+Vv2y1K/tV/FEsu0HXLjn/AIFX61f8E98/
+                8MefDj0+z3P/AKVz197mOKqYfAUZUpcu3/pJ69Sco4eEonh3/Dnn4f8A/Q8+Jf8AvmD/AOIrhvjZ/wAE
+                ufBfwu+EXi/xdp3jDX7y70TTJ9Qjt544NkjRoX2ttT2r9Ns988V4/wDte5H7L/xTOeP+Ebvf/RLV83Rz
+                TGSqQvVOOOIqc3xH4e/AT/kuXw6/7GTTv/SuKv6Ih0/AV/PB8AkZ/jr8OVVWdv8AhJNO+5/19JX9D46f
+                gK9TiJ3qUjpxzvKJ5n+0P8YbD4E/CPxD40vxG7WFs32S3kbb9qum+WKLr/E+0f7u6vwasbTxD8a/ifHb
+                h31LxN4m1TaZH4aSeeX77/8AAnr69/4Kn/tD/wDCd/E21+Guk3jnR/Cz79QRfuT3zr/495S/L/vPL6Vv
+                /wDBJv4CSa9411b4qata/wDEu0dGsNHd14lupV/euv8A1zi+T/tr/s114BQy3AyxUvil/SCj+6o+0Po0
+                +L5P2cPC+jfCvwQYYIfDdtFb3eoPFuaa5dfNlbZ9352l3/8AAz/drk/jhpd3+198CvEnh260+Kfxz4bg
+                /tvRJrZdr3RRSssX+86kr/dZmT+7Xtvxl/Z41Lxl4muNe8PTWqT3m37RBdyeWpZECK6sqMfuqv5V0PwK
+                +Cc3w3mvNS1S4iutSuYhAohHyxR53MA38W75f++RXDLEYSGGjXg/3v43Pw3Bf60x4olVqyl9W5pf4eXp
+                8z8QPgz8VtX+CnxN0DxnokrLdaZcrLLDvws8H/LWJv8AZZNy1/QL4G8Y6X8QvCOkeJNGuBc6VqtrHdW0
+                3TKOuR+NfjD/AMFBvgGfgh+0Bqc1lbLB4X8S79U0zYu1I2b/AF8X/AZOf910r6U/4JN/tDfaotS+D+rz
+                GQ26Pqmhs7b9qbv9Ih/2fnbzVH+3L6V25xShjMNDG0j9yxEfa041on6M+JP+Rf1T/r1l/wDQDX82df0m
+                eIVZtD1JVXczW0uF9flNfzc3FtPZ3DQXUEltKn3oZk2uv/AWqOG9FVX+H9QwErcx/SN4c/5F/S/+vWL/
+                ANAFaVfhFb/t9/H62hihi+I94kUa7VX7Fa/d/wC/VSf8PA/2gv8AopF7/wCAdr/8arkfDuJbvzx/r5Ef
+                U6jP3ZwMUHgV+LPwZ/bb+PnjL4weCdEuPHeo6lZXmuWEF5BDYW/zQPdRLLu2xfKuwv8ANX7TdVrxcZg6
+                mCnyVDjqU5Upcsj+ff8AatOP2mPih/2MV7/6Navsn9nD/gmb8PfjV8DvCfjXVfFHimx1HWbZrieCyltR
+                Ejb2T5d0DN/D/er4+/a4s57L9pf4lfaYZLYS6/ePF5q7dyea33a3/Av7c/xo+GnhDTfC/h3xYmnaJpsX
+                lW1v/Z1u+1N2777Ju/ir7yrDEYjBUo4WfL8P5Hr1o1Jxj7M+7P8Ahzz8Lf8AodPGv/f6y/8AkWvpj9m7
+                9nPQv2ZPANx4T8O6lqWq2U+oS6g0+rNG0u50RNuY0RduIl/h71+TH/DyL9oL/oeF/wDBZa//ABqj/h5D
+                +0D/ANDwn/gstf8A41XiVcrzHER5atXm/wC3jklhq0viP3DBHWlHevhr/gmv+0T8Sfj1J44k8eau2r21
+                jHZtYOLCK3Rd/m7/AJkRd/3Fr7k/h+lfLYihLDVHTmcMo8kuU+Vvjv8A8E6/hd8fPFdx4pvJda8N69cj
+                ddXGizxKt039+WOWJ/m/3dteVn/gjz8Ph/zPPib/AL5g/wDiK+c/iX/wUZ+PHhD4jeJ9Di1ywgttP1a7
+                t4Fm0iJX8pJ3VPvL/d2/NXN/8PP/AI+9P7f0z/wUwf8AxNfVUMHmkaUfZVfd/wAR3Qp4jl92R9Xt/wAE
+                evh8vXxz4m/74g/+Ir5x/be/YZ8M/ss/DzQ/EGieItW1i41HVUsGi1FYtiJ5Ur7/AJE/2Frnh/wU++Pg
+                6a/pn/gpg/8Aia434m/tIfGX9rPTNO8MazE/iSK2vPtVta6TpS7/ADdjp/yyX+6716GHoZlSqxliKvum
+                1NVoy9+Xun3z/wAEhP8Ak3HxN/2Nlz/6R2dFdf8A8E1Pg94p+EHwAvtP8ZaTLomo6prc2qQWcxxMkDW9
+                vGnmKOUbMTfK3zetFfH4+cJYqpJPS559eadRs+uqqz28V6jW9xGk0Dx4aORQwP1BoorzjAzU8H6Dbt50
+                WiadHKjbldbSMFT6g4rcooptt7gFFFFIDndd8EeHfGcSR6/oGl63GOi6jZRzgf8Afamreg+HNK8JaHHp
+                miaba6Pptv5nk2djCsMMW5mY7UUADLEngdzRRVNvYDWrO1bRdP8AEWl3Gm6rY2+paddq8NxaXcSywzIc
+                5VkYEMD6EUUVIGbovgPwz4MhxoHhzSdEHpp1jFB/6AorpKKKbbe4HN6t4O0DxdHs1zQtM1lP7t/Zxzj/
+                AMeU1P4f8J6J4J0b+zPD2kWOh6bGZJUs9Ot0ghV2bczBFAGSeelFFDbtYDcoxRRSA5jX/Afhnx2sY8S+
+                HdJ8QC1lfyBqljFc+Vnrt3qcZ9q0tG8NaR4bhW30nS7LS4P+ednbpEv5KBRRWnM7WuPoa1Ymt+D9B8UQ
+                ywazomnarCesd7apKD+DA0UVCbWwjhX/AGa/hFdEzTfCvwTLK/3nfw7Zkt9T5dLD+zd8JLKTfb/C3wVA
+                /wDej8PWin9I6KK6ueV9zqTdz0LSfDulaDD5OmabaadF/ctIFiH5KBWlRRXK23ucpnalomn6xG8F/Y21
+                9CesdzEsin8GBritU/Z4+FeszGXUPhp4Qvpf79zoNrIfzaM0UVUJSS0ZabM0fsyfB7P/ACSjwP8A+E5Z
+                /wDxuuh0T4NeAPDTrJpHgfw5pTp91rLSbeEj6bUFFFbOcu5q2zsooI4ECRoqL6KMVLRRXNuc5lax4b0n
+                xDbtb6pplnqUDj5oruBZVP4MDXBH9m/4SakBNdfC3wXczf35fD1ox/Mx0UVtGclHRmibLul/s8fCvRp/
+                P0/4aeD7Gb/npbaDaxt+axiu0t7C10mCOCytobSFRgJDGqgfgBRRUTlJrVktmhgUUUVBJ//Z
+</property>
+        </structure>
+    </list-property>
+</report>

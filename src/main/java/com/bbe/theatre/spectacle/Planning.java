@@ -31,7 +31,7 @@ public class Planning {
 	
 	@Override
 	public String toString() {
-		return "Planning [critereEccartType=" + critereEccartType + ", critereNbSpectMin=" + critereNbSpectMin + "]";
+		return "" + getValue() + " [Ecart type = " + critereEccartType + ", Contrainte spectacle minimum echec = " + critereNbSpectMin + "]";
 	}
 	public Planning(){
 		super();

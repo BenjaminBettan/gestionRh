@@ -514,7 +514,7 @@ public class Submain_A {
 		Config.getListeSemaines().forEach((l) -> {
 			if (c.getSemaines().get(l)!=null) {
 				logger.info("Numéro de semaine : "+l);
-				logger.info(c.getSemaines().get(l).getTeam().size());
+				logger.info(c.getSemaines().get(l).getTeam().size() +" equipes dispo");
 			}
 		});
 	}

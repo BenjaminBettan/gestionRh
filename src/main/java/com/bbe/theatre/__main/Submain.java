@@ -22,14 +22,14 @@ public class Submain extends Submain_A{
 	private int taillePopulationRestante;
 	private int j;
 	private int k;
-	private final int iteration = Integer.parseInt(Config.getProp().getProperty("nbIterationControlAlgo").trim());
-	private final int tailleTop = Integer.parseInt(Config.getProp().getProperty("tailleTop").trim());
-	private final int tailleMin = Integer.parseInt(Config.getProp().getProperty("tailleMin").trim());
-	private final int onDivisePar = Integer.parseInt(Config.getProp().getProperty("onDivisePar").trim());
-	private final int evenementNbIteration = Integer.parseInt(Config.getProp().getProperty("evenementNbIteration").trim());
-	private final int conditionArret1 = Integer.parseInt(Config.getProp().getProperty("conditionArret1").trim());
-	private final int conditionArret2 = Integer.parseInt(Config.getProp().getProperty("conditionArret2").trim());
-	private final int valeurMinPourTravailler = Integer.parseInt(Config.getProp().getProperty("valeurMinPourTravailler").trim());
+	private int iteration = Integer.parseInt(Config.getProp().getProperty("nbIterationControlAlgo").trim());
+	private int tailleTop = Integer.parseInt(Config.getProp().getProperty("tailleTop").trim());
+	private int tailleMin = Integer.parseInt(Config.getProp().getProperty("tailleMin").trim());
+	private int onDivisePar = Integer.parseInt(Config.getProp().getProperty("onDivisePar").trim());
+	private int evenementNbIteration = Integer.parseInt(Config.getProp().getProperty("evenementNbIteration").trim());
+	private int conditionArret1 = Integer.parseInt(Config.getProp().getProperty("conditionArret1").trim());
+	private int conditionArret2 = Integer.parseInt(Config.getProp().getProperty("conditionArret2").trim());
+	private int valeurMinPourTravailler = Integer.parseInt(Config.getProp().getProperty("valeurMinPourTravailler").trim());
 
 	public void go() throws IOException, SQLException {
 
@@ -42,10 +42,16 @@ public class Submain extends Submain_A{
 
 			for (int i = 1; ! (exit || Config.isExitAlgo()); i++) {
 
+				Config.getProp().load(new FileInputStream("src\\main\\resources\\global.properties"));
+
 				if ( i % iteration == 0 ) {
 					logger.info(i + " iterations");
 					
-					Config.getProp().load(new FileInputStream("src\\main\\resources\\global.properties"));
+					if (valeurMinPourTravailler!=0) {
+						if ( valeurMinPourTravailler < plannings.get(0).getValue() ) {
+							exit = true;
+						}
+					}
 					
 					if ( i % evenementNbIteration == 0 ) {
 						if ( taillePopulation >= tailleMin ) {
@@ -93,12 +99,6 @@ public class Submain extends Submain_A{
 					logger.info(plannings.get(0));
 
 					naissanceDeLaNouvelleGeneration(i);	
-				}
-				
-				if (valeurMinPourTravailler!=0) {
-					if ( valeurMinPourTravailler < plannings.get(0).getValue() ) {
-						exit = true;
-					}
 				}
 			}
 		}
@@ -158,6 +158,16 @@ public class Submain extends Submain_A{
 	}
 
 	private void creationPopulationInitiale() {
+		
+		iteration = Integer.parseInt(Config.getProp().getProperty("nbIterationControlAlgo").trim());
+		tailleTop = Integer.parseInt(Config.getProp().getProperty("tailleTop").trim());
+		tailleMin = Integer.parseInt(Config.getProp().getProperty("tailleMin").trim());
+		onDivisePar = Integer.parseInt(Config.getProp().getProperty("onDivisePar").trim());
+		evenementNbIteration = Integer.parseInt(Config.getProp().getProperty("evenementNbIteration").trim());
+		conditionArret1 = Integer.parseInt(Config.getProp().getProperty("conditionArret1").trim());
+		conditionArret2 = Integer.parseInt(Config.getProp().getProperty("conditionArret2").trim());
+		valeurMinPourTravailler = Integer.parseInt(Config.getProp().getProperty("valeurMinPourTravailler").trim());
+		
 		plannings.clear();
 		k = 0;
 		taillePopulation = Integer.parseInt(Config.getProp().getProperty("taillePopulation"));
