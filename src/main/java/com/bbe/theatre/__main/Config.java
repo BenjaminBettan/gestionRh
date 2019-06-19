@@ -2,6 +2,8 @@ package com.bbe.theatre.__main;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +16,6 @@ import com.bbe.theatre.DataBase;
 import com.bbe.theatre.personne.Personnage;
 import com.bbe.theatre.personne.Personne;
 import com.bbe.theatre.spectacle.DisponibiliteJour;
-import com.bbe.theatre.spectacle.EccartTypePersistance;
 import com.bbe.theatre.spectacle.Semaine;
 import com.bbe.theatre.spectacle.Spectacle;
 import com.bbe.theatre.spectacle.Team;
@@ -33,11 +34,11 @@ public class Config {
 	private static Map<Double,  List<Spectacle>> listeSpectacleParSemaine = new HashMap<>();
 	private static int tauxMutation;	
 	private static int compt;
-	private EccartTypePersistance eccartTypePersistance = new EccartTypePersistance();
 	private static String[] personnages;
 	private static String[] dateForcee;
 	public static List<Double> debugIncompatibilitePersonne = new ArrayList<>();
-	
+	private static Map<Double, Semaine> semaines = new HashMap<>();
+
 	public int heureSpectacleAprem = Integer.parseInt(Config.getProp().getProperty("heureSpectacleAprem").trim().split(":")[0]);
 	public int minuteSpectacleAprem = Integer.parseInt(Config.getProp().getProperty("heureSpectacleAprem").trim().split(":")[1]);
 	public int heureSoir = Integer.parseInt(Config.getProp().getProperty("heureSpectacleSoir").trim().split(":")[0]);
@@ -59,17 +60,17 @@ public class Config {
 	
 	private int id = 0;
 	private int idTeam = 0;	
-	
+
 	private boolean addTeam = true;
 	private boolean test = false;
 
 	private Map<Personnage, List<Personne>> listePersonnes = new HashMap<>();
 	private Map<Double, List<DisponibiliteJour>> dispos = new HashMap<>();
-	private Map<Double, Semaine> semaines = new HashMap<>();
 	
 	private Personne p;
 	private Personnage personnage;
 	private CSVReader reader;
+	public static final NumberFormat formatter = new DecimalFormat("#0.00");
 	
 	private StringBuilder sb;
 	private String f2 = "src\\main\\resources\\dates\\";
@@ -211,14 +212,6 @@ public class Config {
 		Config.tauxMutation = tauxMutation;
 	}
 
-	public EccartTypePersistance getEccartTypePersistance() {
-		return eccartTypePersistance;
-	}
-
-	public void setEccartTypePersistance(EccartTypePersistance eccartTypePersistance_) {
-		eccartTypePersistance = eccartTypePersistance_;
-	}
-
 	public static String[] getPersonnages() {
 		return personnages;
 	}
@@ -283,12 +276,12 @@ public class Config {
 		this.dispos = dispos;
 	}
 
-	public Map<Double, Semaine> getSemaines() {
+	public static Map<Double, Semaine> getSemaines() {
 		return semaines;
 	}
 
 	public void setSemaines(Map<Double, Semaine> semaines) {
-		this.semaines = semaines;
+		Config.semaines = semaines;
 	}
 
 	public Personne getP() {
@@ -380,5 +373,18 @@ public class Config {
 			Config.dateForcee = dateForcee;
 		}
 	}
-	
+
+	public static int getNoteMaxPourFairePartieDeLaPopulationInit() {
+		try {
+			prop.load(new FileInputStream("src\\main\\resources\\global.properties"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return Integer.parseInt(Config.getProp().getProperty("noteMaxPourFairePartieDeLaPopulationInit").trim());
+	}
+
+	public NumberFormat getFormatter() {
+		return formatter;
+	}
+
 }

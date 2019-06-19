@@ -1,6 +1,5 @@
 package com.bbe.theatre.__main;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -14,14 +13,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Scanner;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import com.bbe.theatre.DataBase;
 import com.bbe.theatre._enum.DISPO;
 import com.bbe.theatre.personne.Personnage;
 import com.bbe.theatre.personne.Personne;
 import com.bbe.theatre.spectacle.DisponibiliteJour;
-import com.bbe.theatre.spectacle.EccartTypePersistance;
 import com.bbe.theatre.spectacle.Semaine;
 import com.bbe.theatre.spectacle.Spectacle;
 import com.bbe.theatre.spectacle.Team;
@@ -34,7 +31,6 @@ public class Submain_A {
 
 	protected static Logger logger = Logger.getLogger(Submain_A.class);
 	protected Config c = new Config();
-	private EccartTypePersistance eccart = new EccartTypePersistance();
 
 	protected void init() throws IOException, SQLException {
 
@@ -208,7 +204,7 @@ public class Submain_A {
 				int numeroSemaine = t.get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
 				if (numeroSemaine==1) {
 					if (t.getMonthValue()==12) {
-						t.plusYears(1);
+						t = t.plusYears(1);
 					}
 				}
 				double numSemaine = Double.parseDouble(numeroSemaine+"."+t.getYear());
@@ -296,7 +292,7 @@ public class Submain_A {
 					int numeroSemaine = t.get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
 					if (numeroSemaine==1) {
 						if (t.getMonthValue()==12) {
-							t.plusYears(1);
+							t = t.plusYears(1);
 						}
 					}
 
@@ -393,11 +389,11 @@ public class Submain_A {
 		}
 
 		Config.getListeSemaines().forEach((numSemaine) -> {
-			c.getSemaines().put(numSemaine, new Semaine(Config.getListeSpectacleParSemaine().get(numSemaine).size(),numSemaine));
+			Config.getSemaines().put(numSemaine, new Semaine(Config.getListeSpectacleParSemaine().get(numSemaine).size(),numSemaine));
 		});
 
 		Config.getListeSemaines().forEach((numSemaine) -> {
-			Semaine sem = c.getSemaines().get(numSemaine);
+			Semaine sem = Config.getSemaines().get(numSemaine);
 			List<DisponibiliteJour> lDispos = c.getDispos().get(numSemaine);
 			Config.getListePersonnes2().forEach((id,pers) -> {
 				pers.setEstDispoCetteSemaine(true);
@@ -424,27 +420,9 @@ public class Submain_A {
 			});
 		});
 
-		if (Boolean.parseBoolean(Config.getProp().getProperty("precalculsA_Faire"))) {
-
-			File file = new File(Config.getProp().getProperty("dossierPrecalcul"));
-			try {
-				FileUtils.deleteDirectory(file);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-
-			Config.getListeTeam().forEach((idTeam,t) -> {
-				Config.getListeTeam().forEach((idTeam2,t2) -> {
-					if (idTeam!=idTeam2) {
-						eccart .setEccartTypePersistance(idTeam,idTeam2,Config.calculEccartType(idTeam, idTeam2));
-					}
-				});
-			});
-		}
 
 		if (Boolean.parseBoolean(Config.getProp().getProperty("precalculs2A_Faire"))) {
-			logger.info("Insertion dans la base rel_team_personnes. Operation assez longue.");
+			logger.info("Insertion dans la table rel_team_personnes. Operation assez longue.");
 			String res = Config.getDataBase().select("SELECT * FROM listeequipe");
 			
 			for (String s : res.split("\n")) {
@@ -455,7 +433,7 @@ public class Submain_A {
 			}
 		}
 
-		c.getSemaines().forEach((idSemaine,sem) -> {
+		Config.getSemaines().forEach((idSemaine,sem) -> {
 			if (sem.getTeam().size()==0) {
 //				Config.setExitAlgo(true);
 				for (String personnage : Config.getPersonnages()) {
@@ -512,9 +490,9 @@ public class Submain_A {
 		affichageTeams();
 		logger.info("Liste des semaines : "+Config.getListeSemaines());
 		Config.getListeSemaines().forEach((l) -> {
-			if (c.getSemaines().get(l)!=null) {
+			if (Config.getSemaines().get(l)!=null) {
 				logger.info("Numéro de semaine : "+l);
-				logger.info(c.getSemaines().get(l).getTeam().size() +" equipes dispo");
+				logger.info(Config.getSemaines().get(l).getTeam().size() +" equipes dispo");
 			}
 		});
 	}

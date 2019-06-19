@@ -18,7 +18,7 @@ public class Semaine {
 		this.numSemaine = numSemaine;
 	}
 
-	public void mute(){
+	public Semaine mute(){
 		//mutation
 		logger.debug("Mutation !");
 		if (this.getTeam().size()!=0) {
@@ -34,6 +34,10 @@ public class Semaine {
 			}
 
 			setIdTeam(team.get(rand));
+			return this;
+		}
+		else {
+			return null;
 		}
 	}
 

@@ -4,19 +4,19 @@ import com.bbe.theatre.__main.Config;
 
 public enum CRITERE 
 {
-	NB_SPECTACLE_MIN(Integer.parseInt(Config.getProp().getProperty("critere_NB_SPECTACLE_MIN_Ponderation"))),
-	ECCART_TYPE(Integer.parseInt(Config.getProp().getProperty("critere_ECCART_TYPE_Ponderation"))),
+	NB_SPECTACLE_MIN(Double.parseDouble(Config.getProp().getProperty("critere_NB_SPECTACLE_MIN_Ponderation"))),
+	ECCART_TYPE(Double.parseDouble(Config.getProp().getProperty("critere_ECCART_TYPE_Ponderation"))),
 	;
 	
-	private int ponderation;
+	private double ponderation;
 	
-	CRITERE( int ponderation_)
+	CRITERE( double ponderation_)
 	{
 		this.ponderation = ponderation_;
 		
 	}
 
-	public int getPonderation() {
+	public double getPonderation() {
 		return ponderation;
 	}
 }

@@ -62,11 +62,12 @@ public class Submain extends Submain_A{
 					}
 
 					if ( j == taillePopulationRestante*plannings.get(0).getValue() ) {
-
+						logger.info("Tous les parents sont identiques");
 						if (++k==conditionArret1) {
 							logger.info("A priori on est plus très loin de la fin");
 							taillePopulationRestante = 2;
 							Config.setTauxMutation(1000);
+							logger.info("Passage du taux de mutation a 100%");
 						}
 						else if (k==conditionArret2) {
 							
@@ -97,6 +98,7 @@ public class Submain extends Submain_A{
 
 				if ( ! ( exit || Config.isExitAlgo() )) {
 					logger.info(plannings.get(0));
+					Config.setTauxMutation(Integer.parseInt(Config.getProp().getProperty("pourMilleMutation")));
 
 					naissanceDeLaNouvelleGeneration(i);	
 				}
@@ -118,7 +120,7 @@ public class Submain extends Submain_A{
 		String[] cmd = {"cmd.exe","/c","start http://localhost:8080/franglaises_planning/franglaises.html"};
 
 		Runtime.getRuntime().exec(cmd);
-
+		System.out.println("Fin du programme avec succes");
 	}
 
 	private void naissanceDeLaNouvelleGeneration(int iterationAlgoPrincipal) {
@@ -180,9 +182,22 @@ public class Submain extends Submain_A{
 			if (Config.isExitAlgo()) {
 				break;
 			}
-			Planning p = new Planning();
-			c.getSemaines().forEach((id,sem) -> {p.addSemaine(id, sem);});//on charge les equipes dispo par semaine
-			plannings.add(p.build());//on attribue au hasard une equipe par semaine
+			
+			boolean exit = false;
+			
+			for (; ! exit;) {
+				
+				Planning p = new Planning();
+				Config.getSemaines().forEach((id,sem) -> {p.addSemaine(id, sem);});//on charge les equipes dispo par semaine
+				
+				p.build();//on attribue au hasard une equipe par semaine
+				if (Config.getNoteMaxPourFairePartieDeLaPopulationInit() > p.getValue()) {
+					plannings.add(p);
+					logger.info(plannings.size() + "/"+taillePopulation+"  |   " + p);
+					exit = true;
+				}
+			}
+			
 		}
 
 		evaluationPopulation(plannings);

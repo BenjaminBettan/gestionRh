@@ -22,8 +22,6 @@ public class Planning {
 	private static int compteurPlanning = 0;
 	private List<Semaine> semainesNonLockees = new ArrayList<>();
 
-	private EccartTypePersistance eccart = new EccartTypePersistance();
-
 	{
 		idPlanning = compteurPlanning++;
 		
@@ -31,7 +29,7 @@ public class Planning {
 	
 	@Override
 	public String toString() {
-		return "" + getValue() + " [Ecart type = " + critereEccartType + ", Contrainte spectacle minimum echec = " + critereNbSpectMin + "]";
+		return "" + Config.formatter.format(getValue()) + " [Ecart type = " + critereEccartType + ", Contrainte spectacle minimum echec = " + critereNbSpectMin + "]";
 	}
 	public Planning(){
 		super();
@@ -43,16 +41,55 @@ public class Planning {
 	 */
 	public Planning(Planning p1, Planning p2){
 		super();
-		Config.getListeSemaines().forEach( 
-				idSem ->{
-					int rand = ThreadLocalRandom.current().nextInt(0, 2);//0 ou 1
+		int resteTailleBrin = Config.getListeSemaines().size() % Integer.parseInt(Config.getProp().getProperty("tailleBrin"));
+		int nbIteration = Config.getListeSemaines().size() / Integer.parseInt(Config.getProp().getProperty("tailleBrin"));
+		int tailleBrin = Integer.parseInt(Config.getProp().getProperty("tailleBrin"));
+		int position = 0;
+		List<Double> idSem;
+		
+		
+		for (int i = 0; i < nbIteration; i++) {
+			idSem = new ArrayList<>();
+			for (int j = 0; j < tailleBrin; j++) {
+				idSem.add(Config.getListeSemaines().get(position + j));
+			}
+			
+			position+=tailleBrin;
+			
+			int rand = ThreadLocalRandom.current().nextInt(0, 2);//0 ou 1
+			
+			for (Double id : idSem) {
+				if (rand==0) {
+					this.addSemaine(id, new Semaine(p1.semaines.get(id)));//le pere
+				}else {
+					this.addSemaine(id, new Semaine(p2.semaines.get(id)));//la mere
+				}				
+			}
+		}
+		
+		if (resteTailleBrin!=0) {
+			for (int i = 0; i < resteTailleBrin; i++) {
+				idSem = new ArrayList<>();
+				for (int j = 0; j < tailleBrin; j++) {
+					idSem.add(Config.getListeSemaines().get(position + j));
+				}
+				
+				position+=tailleBrin;
+				
+				int rand = ThreadLocalRandom.current().nextInt(0, 2);//0 ou 1
+				
+				for (Double id : idSem) {
 					if (rand==0) {
-						this.addSemaine(idSem, new Semaine(p1.semaines.get(idSem)));//le pere
+						this.addSemaine(id, new Semaine(p1.semaines.get(id)));//le pere
 					}else {
-						this.addSemaine(idSem, new Semaine(p2.semaines.get(idSem)));//la mere
-					}
-				});
-		this.mute();//on fait parfois une mutation (prise en compte de la proba de mutation au sein de cette methode)
+						this.addSemaine(id, new Semaine(p2.semaines.get(id)));//la mere
+					}				
+				}
+			}
+
+		}
+		
+		mute();//on fait parfois une mutation (prise en compte de la proba de mutation au sein de cette methode)
 	}
 
 	public Map<Double, Semaine> getSemaines() {
@@ -65,14 +102,12 @@ public class Planning {
 	}
 
 	public Planning build() {
-		boolean premierSucces = false;
 		for (int i = 0; i < Config.getListeSemaines().size(); i++) {
 			Semaine sem = semaines.get(Config.getListeSemaines().get(i));
 			boolean semaineForcee = false;
 			for (int j = 0; j < Config.getDateForcee().length; j++) {
 				if (sem.getNumSemaine().equals(Double.parseDouble(Config.getDateForcee()[j].split(";")[0]))) {
 					semaineForcee = true;
-					premierSucces = true;
 					sem.setLocked(true);
 					sem.setIdTeam(Integer.parseInt(Config.getDateForcee()[j].split(";")[1]));
 					break;
@@ -82,34 +117,22 @@ public class Planning {
 			if ( ! semaineForcee) {
 				if (sem.getTeam().isEmpty()) {
 					logger.warn("Semaine " + sem.getNumSemaine() +" n a pas d equipe.");
-//					System.exit(1);
 				}
 				else if (sem.getTeam().size() == 1 || sem.isLocked()) {
-					premierSucces = true;
 					sem.setIdTeam(sem.getTeam().get(0));
 					sem.setLocked(true);
 					logger.warn("Semaine " + sem.getNumSemaine() +" a une seule equipe");
 				}
 				else if (sem.getTeam().size() > 1) {
-					if (! premierSucces) {
-						premierSucces = true;
-						logger.debug("Taille suffisante 2 ou superieur, on attribue au hasard une equipe");
-						sem.setIdTeam(sem.getTeam().get(ThreadLocalRandom.current().nextInt(0, sem.getTeam().size())));
-					}
-					else {
-						Integer idTeam = eccart.getMeilleurTeam(semaines.get(Config.getListeSemaines().get(i -1)).getIdTeam(), sem.getTeam());
-						if (idTeam==null) {
-							logger.error("Fin du programme. Veuillez positionner la variable precalculsA_Faire du fichier global.properties à true et redemarrez le programme.");
-						}
-						sem.setIdTeam(idTeam);
-					}
+					logger.debug("Taille suffisante 2 ou superieur, on attribue au hasard une equipe");
+					sem.setIdTeam(sem.getTeam().get(ThreadLocalRandom.current().nextInt(0, sem.getTeam().size())));
 				}
 			}
 		}
 		return this;
 	}
 
-	public int getValue(){
+	public double getValue(){
 		return CRITERE.NB_SPECTACLE_MIN.getPonderation()*calculNbSpectMin() + CRITERE.ECCART_TYPE.getPonderation() * calculEccartType();
 	}
 	
@@ -118,10 +141,6 @@ public class Planning {
 			critereNbSpectMin = 0;
 			
 			semaines.forEach((idSem,sem)->{
-//				logger.warn(idSem);
-//				logger.warn(sem.getIdTeam());
-//				logger.warn(Config.getListeTeam().get(sem.getIdTeam()));
-//				logger.warn("------------------------------------------------------------");
 				Config.getListeTeam().get(sem.getIdTeam()).getTeamPourLeSpectacle().forEach((personnage,personne)->{
 					personne.incrementCalculNbSpectMin(sem.getNbSpectacle());
 				});
@@ -172,21 +191,30 @@ public class Planning {
 				}
 				i = 0;
 			}
+			
+			boolean exit = false;
+			while ( ! exit) {
+				//poursuite de la mutation. On recupere les semaines non lockées
 
-			//poursuite de la mutation. On recupere les semaines non lockées
+				if (i==0) {
+					i=1;
+					semaines.forEach((id,sem)-> {
+						if ( ! sem.isLocked() ) {
+							semainesNonLockees.add(sem);
+						}
+					});
+				}
 
-			if (i==0) {
-				i=1;
-				semaines.forEach((id,sem)-> {
-					if ( ! sem.isLocked() ) {
-						semainesNonLockees.add(sem);
-					}
-				});
+				rand = ThreadLocalRandom.current().nextInt(0, semainesNonLockees.size());//entre 0 et semainesNonLockees.size()
+
+				Semaine s_ = semainesNonLockees.get(rand).mute();
+				
+				if (s_!=null) {
+					exit = true;
+				}
+				
 			}
 
-			rand = ThreadLocalRandom.current().nextInt(0, semainesNonLockees.size());//entre 0 et semainesNonLockees.size()
-
-			semainesNonLockees.get(rand).mute();
 		}
 
 		return this;
