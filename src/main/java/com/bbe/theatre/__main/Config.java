@@ -58,7 +58,7 @@ public class Config {
 		}
 	}
 	
-	private int id = 0;
+	private static int id = 0;
 	private int idTeam = 0;	
 
 	private boolean addTeam = true;
@@ -348,12 +348,12 @@ public class Config {
 		this.line = line;
 	}
 
-	public int getId() {
+	public static int getId() {
 		return id;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public static void setId(int id_) {
+		id = id_;
 	}
 
 	public String[] getDoitRencontrer() {

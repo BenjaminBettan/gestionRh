@@ -148,7 +148,7 @@ public class Submain extends Submain_A{
 			}
 			Planning papa = plannings.get(idPapa);
 			Planning maman = plannings.get(idMaman);
-			Planning enfant = new Planning(papa, maman);
+			Planning enfant = new Planning(papa, maman,Integer.parseInt(Config.getProp().getProperty("tailleBrin")));
 			plannings.add(enfant);
 		}
 

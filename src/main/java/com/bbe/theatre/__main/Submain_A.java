@@ -109,25 +109,25 @@ public class Submain_A {
 
 		c.setTest(true);
 
-		for (c.setId(0); c.getId() < Integer.parseInt(Config.getProp().getProperty("effectifComediens").trim()); c.setId(c.getId() +1)) {
+		for (Config.setId(0); Config.getId() < Integer.parseInt(Config.getProp().getProperty("effectifComediens").trim()); Config.setId(Config.getId() +1)) {
 			creationPersonne();
 			chargeFichierDateDeCettePersonne();
 		}
 	}
 
 	private void creationPersonne() {
-		int idRole = Integer.parseInt(Config.getProp().getProperty(c.getId()+".role").trim());
+		int idRole = Integer.parseInt(Config.getProp().getProperty(Config.getId()+".role").trim());
 		c.getListePersonnes().forEach((personnage, map) -> {
 			if (personnage.getId()==idRole) {
 				c.setPersonnage(personnage);
-				logger.debug("Création de l'utilisateur " + c.getId());
-				c.setP(new Personne().setNbSpectacleMin(Integer.parseInt(Config.getProp().getProperty(c.getId()+".nbSpectacle").trim()))
-						.setId(c.getId()).setNomActeur(Config.getProp().getProperty(c.getId()+".nom").trim())
+				logger.debug("Création de l'utilisateur " + Config.getId());
+				c.setP(new Personne().setNbSpectacleMin(Integer.parseInt(Config.getProp().getProperty(Config.getId()+".nbSpectacle").trim()))
+						.setId(Config.getId()).setNomActeur(Config.getProp().getProperty(Config.getId()+".nom").trim())
 						.setPersonnage(personnage)
 						.setPersonnage(personnage).setPersonneAvecQuiJeDoisJouer(calculDoitRencontrer(c.getDoitRencontrer()))
 						.setPersonneAvecQuiJeNeDoisPasJouer(calculDoitRencontrer(c.getNeDoitPasRencontrer()))
-						.setAncien(new Boolean(Config.getProp().getProperty(c.getId()+".isAncien").trim())));
-				Config.getListePersonnes2().put(c.getId(), c.getP());
+						.setAncien(new Boolean(Config.getProp().getProperty(Config.getId()+".isAncien").trim())));
+				Config.getListePersonnes2().put(Config.getId(), c.getP());
 				map.add(c.getP());
 				Config.getDataBase().update("INSERT INTO `personnes` (`id_unique`, `nom_personne`,`nom_personnage`, `id_personne`, `nb_spect_min`, `isAncien`) VALUES (NULL, '"+c.getP().getNomActeur()+"', '"+c.getP().getPersonnage().getNom()+"', '"+c.getP().getId()+"', '"+c.getP().getNbSpectacleMin()+"', '"+(c.getP().isAncien() ? "1":"0")+"');");
 			}
@@ -138,7 +138,7 @@ public class Submain_A {
 		StringBuilder idDoitRencontrer = new StringBuilder();
 		for (String string : doitRencontrer) {
 			if ( ! string.equals("")) {
-				if (c.getId()==Integer.parseInt(string.trim().split(";")[0].trim())) {
+				if (Config.getId()==Integer.parseInt(string.trim().split(";")[0].trim())) {
 					idDoitRencontrer.append(string.trim().split(";")[1].trim()+",");
 				}
 			}
@@ -161,7 +161,7 @@ public class Submain_A {
 			c.setDoitRencontrer(s);
 		}
 
-		Config.setDateForcee(Config.getProp().getProperty("dateForcee").trim().replace("{", "").replace("}", "").split(","));
+		Config.setDateForcee(Config.getProp().getProperty("dateForcee").trim().replace("(", "").replace(")", "").replace("{", "").replace("}", "").split("\\|"));
 	}
 
 	private void creationPersonnages() {
@@ -245,7 +245,7 @@ public class Submain_A {
 	 */
 	private void chargeFichierDateDeCettePersonne() throws IOException {
 		c.setSb(new StringBuilder());
-		c.setReader(new CSVReader(new FileReader(c.getF2() + Integer.toString(c.getId()) + ".csv")));
+		c.setReader(new CSVReader(new FileReader(c.getF2() + Integer.toString(Config.getId()) + ".csv")));
 
 		while (true) {
 			c.setLine(c.getReader().readNext());
@@ -452,11 +452,11 @@ public class Submain_A {
 
 	private void calculDuCrossJoin() {
 		c.setSb(new StringBuilder("SELECT "));
-		c.setId(0);
+		Config.setId(0);
 		for (String s : Config.getPersonnages()) {
-			if (c.getId()==0) {
+			if (Config.getId()==0) {
 				c.getSb().append(s+".id_personne as "+s);
-				c.setId(c.getId() +1);
+				Config.setId(Config.getId() +1);
 			}else {
 				c.getSb().append(", "+s+".id_personne as "+s);
 			}
@@ -465,12 +465,12 @@ public class Submain_A {
 
 
 
-		c.setId(0);
+		Config.setId(0);
 
 		c.getListePersonnes().forEach((personnage, mapPersonnes) -> {
-			if (c.getId()==0) {
+			if (Config.getId()==0) {
 				c.getSb().append(" FROM " + personnage.getNom());	
-				c.setId(c.getId() +1);
+				Config.setId(Config.getId() +1);
 			}else {
 				c.getSb().append( " CROSS JOIN "+personnage.getNom());	
 			}

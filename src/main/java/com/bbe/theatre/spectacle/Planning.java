@@ -39,11 +39,10 @@ public class Planning {
 	 * @param p1
 	 * @param p2
 	 */
-	public Planning(Planning p1, Planning p2){
+	public Planning(Planning p1, Planning p2, int tailleBrin){
 		super();
-		int resteTailleBrin = Config.getListeSemaines().size() % Integer.parseInt(Config.getProp().getProperty("tailleBrin"));
-		int nbIteration = Config.getListeSemaines().size() / Integer.parseInt(Config.getProp().getProperty("tailleBrin"));
-		int tailleBrin = Integer.parseInt(Config.getProp().getProperty("tailleBrin"));
+		int resteTailleBrin = Config.getListeSemaines().size() % tailleBrin;
+		int nbIteration = Config.getListeSemaines().size() / tailleBrin;
 		int position = 0;
 		List<Double> idSem;
 		
@@ -108,8 +107,25 @@ public class Planning {
 			for (int j = 0; j < Config.getDateForcee().length; j++) {
 				if (sem.getNumSemaine().equals(Double.parseDouble(Config.getDateForcee()[j].split(";")[0]))) {
 					semaineForcee = true;
-					sem.setLocked(true);
-					sem.setIdTeam(Integer.parseInt(Config.getDateForcee()[j].split(";")[1]));
+					String[] equipeA_forcer = Config.getDateForcee()[j].split(";")[1].split(",");
+					Config.setId(0);
+					Config.getListeTeam().forEach((id,t)->{
+						if (Config.getId()>=0) {
+							Config.setId(0);
+							t.getTeamPourLeSpectacle().forEach((personnage, personne)->{
+								for (String e : equipeA_forcer) {
+									if (personne.getId()==Integer.parseInt(e.trim())) {
+										Config.setId(Config.getId()+1);
+									}
+								}
+								if (Config.getId()==Config.getPersonnages().length) {
+									Config.setId( - id );
+								}
+							});
+						}
+					});
+					
+					sem.setIdTeam( - Config.getId() );
 					break;
 				}
 			}
