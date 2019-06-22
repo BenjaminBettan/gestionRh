@@ -63,13 +63,13 @@ public class Submain_A {
 
 		logger.info("TEMPS DE CALCUL INIT : "+ (System.currentTimeMillis() - l) + "ms");
 
-		
-//		if (Config.isExitAlgo()) {
-//			logger.error("L'algo a plante en raison d'indisponibilite de personnes. Veuillez corriger les semaines avec 0 équipe disponible.");
-//			System.exit(1);
-//		}
-		
-		
+
+		//		if (Config.isExitAlgo()) {
+		//			logger.error("L'algo a plante en raison d'indisponibilite de personnes. Veuillez corriger les semaines avec 0 équipe disponible.");
+		//			System.exit(1);
+		//		}
+
+
 		logger.info("Entrez q sur la console Eclipse pour quitter");
 
 		Thread thread = new Thread(){
@@ -199,15 +199,17 @@ public class Submain_A {
 						Integer.parseInt(listesDates_[0].split("/")[1]), 
 						Integer.parseInt(listesDates_[0].split("/")[0]), 
 						Integer.parseInt(listesDates_[1]) > 1 ?  (j == 0 ? c.heureSpectacleAprem : c.heureSoir ) : c.heureSoir , 
-						Integer.parseInt(listesDates_[1]) > 1 ?  (j == 0 ? c.minuteSpectacleAprem : c.minuteSoir ) : c.minuteSoir);
+								Integer.parseInt(listesDates_[1]) > 1 ?  (j == 0 ? c.minuteSpectacleAprem : c.minuteSoir ) : c.minuteSoir);
 
 				int numeroSemaine = t.get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
+				double numSemaine = Double.parseDouble(numeroSemaine+"."+t.getYear());
+
 				if (numeroSemaine==1) {
 					if (t.getMonthValue()==12) {
-						t = t.plusYears(1);
+						int annee = t.plusYears(1).getYear();
+						numSemaine = Double.parseDouble(numeroSemaine+"."+annee);
 					}
 				}
-				double numSemaine = Double.parseDouble(numeroSemaine+"."+t.getYear());
 				if ( ! Config.getListeSemaines().contains(numSemaine)) {
 					Config.getListeSemaines().add(numSemaine);
 					Config.getListeSpectacleParSemaine().put(numSemaine,new ArrayList<>());
@@ -287,16 +289,17 @@ public class Submain_A {
 							Integer.parseInt(listesDates_[0].split("/")[1]), 
 							Integer.parseInt(listesDates_[0].split("/")[0]), 
 							Integer.parseInt(listesDates_[1]) > 1 ?  (j == 0 ? c.heureSpectacleAprem : c.heureSoir ) : c.heureSoir , 
-							Integer.parseInt(listesDates_[1]) > 1 ?  (j == 0 ? c.minuteSpectacleAprem : c.minuteSoir ) : c.minuteSoir);
+									Integer.parseInt(listesDates_[1]) > 1 ?  (j == 0 ? c.minuteSpectacleAprem : c.minuteSoir ) : c.minuteSoir);
 
 					int numeroSemaine = t.get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
+					double numSemaine = Double.parseDouble(numeroSemaine+"."+t.getYear());
+
 					if (numeroSemaine==1) {
 						if (t.getMonthValue()==12) {
-							t = t.plusYears(1);
+							int annee = t.plusYears(1).getYear();
+							numSemaine = Double.parseDouble(numeroSemaine+"."+annee);
 						}
 					}
-
-					double numSemaine = Double.parseDouble(numeroSemaine+"."+t.getYear());
 
 					DisponibiliteJour d;
 
@@ -312,7 +315,7 @@ public class Submain_A {
 								logger.info("Semaine "+d_.intValue()+" " + Double.valueOf(d_*10000 - d_.intValue()*10000).intValue() +"> ID PERSONNE "+c.getP().getId() + " est absent le " + t);
 							}
 						}
-						
+
 					}
 					else {
 						d = new DisponibiliteJour(c.getP(), t,c.getPersonnage(),DISPO.MOYEN_DISPO,numSemaine);
@@ -424,7 +427,7 @@ public class Submain_A {
 		if (Boolean.parseBoolean(Config.getProp().getProperty("precalculs2A_Faire"))) {
 			logger.info("Insertion dans la table rel_team_personnes. Operation assez longue.");
 			String res = Config.getDataBase().select("SELECT * FROM listeequipe");
-			
+
 			for (String s : res.split("\n")) {
 				String[] ll = s.split("/");
 				for (int i = 1; i < ll.length - 1; i++) {
@@ -435,7 +438,7 @@ public class Submain_A {
 
 		Config.getSemaines().forEach((idSemaine,sem) -> {
 			if (sem.getTeam().size()==0) {
-//				Config.setExitAlgo(true);
+				//				Config.setExitAlgo(true);
 				for (String personnage : Config.getPersonnages()) {
 					Config.getListePersonnes2().forEach((id,p)->{
 						if (personnage.equals(p.getPersonnage())) {

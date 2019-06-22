@@ -62,7 +62,7 @@ public class Submain extends Submain_A{
 					}
 
 					if ( j == taillePopulationRestante*plannings.get(0).getValue() ) {
-						logger.info("Tous les parents sont identiques");
+						logger.info("Tous les parents sont identiques " + k);
 						if (++k==conditionArret1) {
 							logger.info("A priori on est plus très loin de la fin");
 							taillePopulationRestante = 2;
@@ -113,6 +113,7 @@ public class Submain extends Submain_A{
 
 		Config.getListeSpectacleParSemaine().forEach((idSemaine,spectacles)->{
 			spectacles.forEach( s -> {
+				System.out.println(idSemaine);
 				Config.getDataBase().update("INSERT INTO `spectacles` (`id_unique`, `date_spectacle`, `id_team`) VALUES (NULL, '"+s.getIdDate()+"', '"+listeSemaines.get(idSemaine).getIdTeam()+"');");
 			});
 		});

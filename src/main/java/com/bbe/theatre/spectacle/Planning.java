@@ -29,7 +29,7 @@ public class Planning {
 	
 	@Override
 	public String toString() {
-		return "" + Config.formatter.format(getValue()) + " [Ecart type = " + critereEccartType + ", Contrainte spectacle minimum echec = " + critereNbSpectMin + "]";
+		return "" + Config.formatter.format(getValue()) + " [NbChangParSemaine = " + Config.formatter.format(Double.valueOf(Double.valueOf(critereEccartType)/Double.valueOf(semaines.size()-1))) + " | Taux de remplissage = " + Config.formatter.format(Double.valueOf(100*(Config.getPersonnages().length*semaines.size() - critereNbSpectMin)/(Config.getPersonnages().length*semaines.size()))) + "%]";
 	}
 	public Planning(){
 		super();
@@ -44,11 +44,9 @@ public class Planning {
 		int resteTailleBrin = Config.getListeSemaines().size() % tailleBrin;
 		int nbIteration = Config.getListeSemaines().size() / tailleBrin;
 		int position = 0;
-		List<Double> idSem;
-		
-		
+
 		for (int i = 0; i < nbIteration; i++) {
-			idSem = new ArrayList<>();
+			List<Double> idSem = new ArrayList<>();
 			for (int j = 0; j < tailleBrin; j++) {
 				idSem.add(Config.getListeSemaines().get(position + j));
 			}
@@ -62,18 +60,16 @@ public class Planning {
 					this.addSemaine(id, new Semaine(p1.semaines.get(id)));//le pere
 				}else {
 					this.addSemaine(id, new Semaine(p2.semaines.get(id)));//la mere
-				}				
+				}
 			}
 		}
 		
 		if (resteTailleBrin!=0) {
+			List<Double> idSem = new ArrayList<>();
 			for (int i = 0; i < resteTailleBrin; i++) {
-				idSem = new ArrayList<>();
-				for (int j = 0; j < tailleBrin; j++) {
+				for (int j = 0; j < resteTailleBrin; j++) {
 					idSem.add(Config.getListeSemaines().get(position + j));
 				}
-				
-				position+=tailleBrin;
 				
 				int rand = ThreadLocalRandom.current().nextInt(0, 2);//0 ou 1
 				
