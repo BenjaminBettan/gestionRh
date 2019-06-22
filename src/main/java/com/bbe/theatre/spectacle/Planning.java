@@ -102,6 +102,7 @@ public class Planning {
 			boolean semaineForcee = false;
 			for (int j = 0; j < Config.getDateForcee().length; j++) {
 				if (sem.getNumSemaine().equals(Double.parseDouble(Config.getDateForcee()[j].split(";")[0]))) {
+					sem.setLocked(true);
 					semaineForcee = true;
 					String[] equipeA_forcer = Config.getDateForcee()[j].split(";")[1].split(",");
 					Config.setId(0);

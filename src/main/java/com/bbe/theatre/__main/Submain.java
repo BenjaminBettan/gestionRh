@@ -113,7 +113,6 @@ public class Submain extends Submain_A{
 
 		Config.getListeSpectacleParSemaine().forEach((idSemaine,spectacles)->{
 			spectacles.forEach( s -> {
-				System.out.println(idSemaine);
 				Config.getDataBase().update("INSERT INTO `spectacles` (`id_unique`, `date_spectacle`, `id_team`) VALUES (NULL, '"+s.getIdDate()+"', '"+listeSemaines.get(idSemaine).getIdTeam()+"');");
 			});
 		});

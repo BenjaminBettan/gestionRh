@@ -63,13 +63,6 @@ public class Submain_A {
 
 		logger.info("TEMPS DE CALCUL INIT : "+ (System.currentTimeMillis() - l) + "ms");
 
-
-		//		if (Config.isExitAlgo()) {
-		//			logger.error("L'algo a plante en raison d'indisponibilite de personnes. Veuillez corriger les semaines avec 0 équipe disponible.");
-		//			System.exit(1);
-		//		}
-
-
 		logger.info("Entrez q sur la console Eclipse pour quitter");
 
 		Thread thread = new Thread(){
