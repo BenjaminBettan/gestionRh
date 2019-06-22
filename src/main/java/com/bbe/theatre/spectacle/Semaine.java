@@ -45,6 +45,7 @@ public class Semaine {
 		this.nbSpectacle = s.nbSpectacle;
 		this.numSemaine = s.numSemaine;
 		this.idTeam = s.idTeam;
+		this.locked = s.isLocked();
 		s.team.forEach((i)->{
 			this.team.add(i);
 		});
