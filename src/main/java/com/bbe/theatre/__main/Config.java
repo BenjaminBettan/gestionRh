@@ -134,6 +134,16 @@ public class Config {
 		return s;
 	}
 	
+	public String sqlQuery8(){
+		String s = "CREATE TABLE IF NOT EXISTS `rel_semaine_date` (\n"
+				+"  `id_unique` int(3) NOT NULL AUTO_INCREMENT,\n"
+				+"  `date_spectacle` varchar(16) NOT NULL,\n"
+				+"  `id_semaine` varchar(8) NOT NULL,\n"
+				+"  UNIQUE KEY `id_unique` (`id_unique`)\n"
+				+") ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;";
+		return s;
+	} 
+	
 	public String getFileName2() {
 		return "src\\main\\resources\\dates\\"+id+".csv";
 	}

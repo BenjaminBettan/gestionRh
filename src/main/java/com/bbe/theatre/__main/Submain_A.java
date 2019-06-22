@@ -93,7 +93,9 @@ public class Submain_A {
 		Config.getDataBase().update(c.sqlQuery5());
 		Config.getDataBase().update(c.sqlQuery6());
 		Config.getDataBase().update(c.sqlQuery7());
+		Config.getDataBase().update(c.sqlQuery8());
 		Config.getDataBase().update("ALTER TABLE `rel_team_personnes` ADD INDEX(`id_team`);");
+		Config.getDataBase().update("ALTER TABLE `rel_semaine_date` ADD INDEX(`id_semaine`);");
 		Config.getDataBase().update("ALTER TABLE `personnes` ADD INDEX(`id_personne`);");
 		Config.getDataBase().update("ALTER TABLE `spectacles` ADD INDEX(`date_spectacle`);");
 	}
@@ -443,7 +445,19 @@ public class Submain_A {
 				}
 			}
 		});
-
+		
+		Config.getSemaines().forEach((idSemaine,sem) -> {
+			System.out.println(idSemaine);
+			Config.getListeSpectacleParSemaine().forEach((id,spect)->{
+				if (id.equals(idSemaine)) {
+					spect.forEach((s)->{
+						Config.getDataBase().update("INSERT INTO `rel_semaine_date` (`id_unique`, `date_spectacle`, `id_semaine`) VALUES (NULL, '"+s.getIdDate()+"', '"+idSemaine+"');");
+					});
+					
+				}
+			});
+			
+			});
 	}
 
 	private void calculDuCrossJoin() {
