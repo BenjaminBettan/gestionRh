@@ -22,6 +22,7 @@ public class Submain extends Submain_A{
 	private int taillePopulationRestante;
 	private int j;
 	private int k;
+	private double l;
 	private int iteration = Integer.parseInt(Config.getProp().getProperty("nbIterationControlAlgo").trim());
 	private int tailleTop = Integer.parseInt(Config.getProp().getProperty("tailleTop").trim());
 	private int tailleMin = Integer.parseInt(Config.getProp().getProperty("tailleMin").trim());
@@ -34,16 +35,22 @@ public class Submain extends Submain_A{
 	public void go() throws IOException, SQLException {
 
 		init();
-
+		
+		Config.getDataBase().closeConnection();
+		
 		while ( ! Config.isExitAlgo()) {
 
 			creationPopulationInitiale();
 			boolean exit = false;
+			l=plannings.get(0).getValue();
 
 			for (int i = 1; ! (exit || Config.isExitAlgo()); i++) {
 
 				Config.getProp().load(new FileInputStream("src\\main\\resources\\global.properties"));
-
+				if (l!=plannings.get(0).getValue()) {
+					k=0;
+				}
+				l=plannings.get(0).getValue();
 				if ( i % iteration == 0 ) {
 					logger.info(i + " iterations");
 					
@@ -106,11 +113,13 @@ public class Submain extends Submain_A{
 		}
 
 		//on a quitté l algo
+
+		Config.getDataBase().connect();
+
 		if (top.isEmpty()) {
 			top.add(plannings.get(0));
 		}
 		Map<Double, Semaine> listeSemaines = top.get(0).getSemaines();
-
 		Config.getListeSpectacleParSemaine().forEach((idSemaine,spectacles)->{
 			spectacles.forEach( s -> {
 				Config.getDataBase().update("INSERT INTO `spectacles` (`id_unique`, `date_spectacle`, `id_team`) VALUES (NULL, '"+s.getIdDate()+"', '"+listeSemaines.get(idSemaine).getIdTeam()+"');");

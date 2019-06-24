@@ -2,7 +2,7 @@
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
     <property name="author">Benjamin Bettan</property>
     <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Build &lt;@BUILD@></property>
-    <text-property name="title">Vue compta</text-property>
+    <text-property name="title">Tableau de bord Franglaises</text-property>
     <property name="units">in</property>
     <method name="onPrepare"><![CDATA[
 
@@ -11,25 +11,6 @@
     <property name="layoutPreference">auto layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
-    <parameters>
-        <scalar-parameter name="saisie_mois" id="1646">
-            <text-property name="promptText">Selectionnez le mois</text-property>
-            <property name="valueType">dynamic</property>
-            <property name="dataSetName">Mois</property>
-            <expression name="valueExpr" type="javascript">dataSetRow["(SUBSTRING(date_spectacle, 1, 7))"]</expression>
-            <expression name="labelExpr" type="javascript">dataSetRow["CC"]</expression>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="controlType">list-box</property>
-            <property name="mustMatch">true</property>
-            <property name="fixedOrder">true</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
-    </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="12">
             <list-property name="privateDriverProperties">
@@ -49,7 +30,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">com.mysql.jdbc.Driver</property>
-            <property name="odaURL">jdbc:mysql://192.168.208.50/simulation</property>
+            <property name="odaURL">jdbc:mysql://localhost/simulation</property>
             <property name="odaUser">birt</property>
         </oda-data-source>
     </data-sources>
@@ -646,16 +627,26 @@ from personnes]]></xml-property>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="name">CC</property>
-                    <expression name="expression">row["rel_team_personne::id_personne"]+row["spectacles::date_spectacle"]</expression>
-                    <property name="dataType">string</property>
+                    <property name="name">nbSpect</property>
+                    <property name="dataType">float</property>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value">row["CC_row_count"]</expression>
+                        </structure>
+                    </list-property>
                 </structure>
                 <structure>
-                    <property name="name">CC_mois</property>
-                    <expression name="expression">var javaString = (new Packages.java.lang.String(row["spectacles::date_spectacle"]));&#13;
-&#13;
-javaString.substring(0,7);</expression>
-                    <property name="dataType">string</property>
+                    <property name="name">nbSpectAncien</property>
+                    <property name="dataType">float</property>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value">row["isAncien"]</expression>
+                        </structure>
+                    </list-property>
                 </structure>
             </list-property>
             <list-property name="columnHints">
@@ -666,10 +657,10 @@ javaString.substring(0,7);</expression>
                     <text-property name="displayName">J_spect_rel_team_personne::rel_team_personne::id_team</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">personnes::nom_personnage</property>
+                    <property name="columnName">personnes2::nom_personnage</property>
                     <property name="alias">nom_personnage</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">personnes::nom_personnage</text-property>
+                    <text-property name="displayName">personnes2::nom_personnage</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">J_spect_rel_team_personne::spectacles::id_unique</property>
@@ -678,10 +669,10 @@ javaString.substring(0,7);</expression>
                     <text-property name="displayName">J_spect_rel_team_personne::spectacles::id_unique</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">personnes::id_unique</property>
+                    <property name="columnName">personnes2::id_unique</property>
                     <property name="alias">id_unique</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">personnes::id_unique</text-property>
+                    <text-property name="displayName">personnes2::id_unique</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">J_spect_rel_team_personne::spectacles::date_spectacle</property>
@@ -696,10 +687,16 @@ javaString.substring(0,7);</expression>
                     <text-property name="displayName">J_spect_rel_team_personne::rel_team_personne::id_personne</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">personnes::nb_spect_min</property>
+                    <property name="columnName">personnes2::nb_spect_min</property>
                     <property name="alias">nb_spect_min</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">personnes::nb_spect_min</text-property>
+                    <text-property name="displayName">personnes2::nb_spect_min</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">personnes2::isAncien</property>
+                    <property name="alias">isAncien</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">personnes2::isAncien</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">J_spect_rel_team_personne::rel_team_personne::id_unique</property>
@@ -714,16 +711,16 @@ javaString.substring(0,7);</expression>
                     <text-property name="displayName">J_spect_rel_team_personne::spectacles::id_team</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">personnes::nom_personne</property>
+                    <property name="columnName">personnes2::nom_personne</property>
                     <property name="alias">nom_personne</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">personnes::nom_personne</text-property>
+                    <text-property name="displayName">personnes2::nom_personne</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">personnes::id_personne</property>
+                    <property name="columnName">personnes2::id_personne</property>
                     <property name="alias">id_personne</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">personnes::id_personne</text-property>
+                    <text-property name="displayName">personnes2::id_personne</text-property>
                 </structure>
             </list-property>
             <structure name="cachedMetaData">
@@ -785,7 +782,7 @@ javaString.substring(0,7);</expression>
                     </structure>
                     <structure>
                         <property name="position">12</property>
-                        <property name="name">personnes::isAncien</property>
+                        <property name="name">isAncien</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
@@ -795,26 +792,26 @@ javaString.substring(0,7);</expression>
                     </structure>
                     <structure>
                         <property name="position">14</property>
-                        <property name="name">CC</property>
-                        <property name="dataType">string</property>
+                        <property name="name">nbSpect</property>
+                        <property name="dataType">float</property>
                     </structure>
                     <structure>
                         <property name="position">15</property>
-                        <property name="name">CC_mois</property>
-                        <property name="dataType">string</property>
+                        <property name="name">nbSpectAncien</property>
+                        <property name="dataType">float</property>
                     </structure>
                 </list-property>
             </structure>
             <simple-property-list name="dataSets">
                 <value>J_spect_rel_team_personne</value>
-                <value>personnes</value>
+                <value>personnes2</value>
             </simple-property-list>
             <list-property name="joinConditions">
                 <structure>
                     <property name="joinType">inner</property>
                     <property name="joinOperator">eq</property>
                     <property name="leftDataSet">J_spect_rel_team_personne</property>
-                    <property name="rightDataSet">personnes</property>
+                    <property name="rightDataSet">personnes2</property>
                     <expression name="leftExpression">dataSetRow["id_personne"]</expression>
                     <expression name="rightExpression">dataSetRow["id_personne"]</expression>
                 </structure>
@@ -852,36 +849,341 @@ javaString.substring(0,7);</expression>
             <xml-property name="queryText"><![CDATA[select distinct(nom_personnage)
 from personnes]]></xml-property>
         </oda-data-set>
-        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="indispo" id="1442">
-            <list-property name="computedColumns">
-                <structure>
-                    <property name="name">CC</property>
-                    <expression name="expression">row["id_personne"]+row["date"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-            </list-property>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="personnes2" id="1468">
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">id_unique</property>
-                    <property name="analysis">measure</property>
+                    <text-property name="displayName">id_unique</text-property>
+                    <text-property name="heading">id_unique</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">nom_personne</property>
+                    <text-property name="displayName">nom_personne</text-property>
+                    <text-property name="heading">nom_personne</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">nom_personnage</property>
+                    <text-property name="displayName">nom_personnage</text-property>
+                    <text-property name="heading">nom_personnage</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">id_personne</property>
+                    <text-property name="displayName">id_personne</text-property>
+                    <text-property name="heading">id_personne</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">nb_spect_min</property>
+                    <text-property name="displayName">nb_spect_min</text-property>
+                    <text-property name="heading">nb_spect_min</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">isAncien</property>
+                    <text-property name="displayName">isAncien</text-property>
+                    <text-property name="heading">isAncien</text-property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">id_unique</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">nom_personne</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">nom_personnage</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">id_personne</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">nb_spect_min</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">isAncien</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">id_unique</property>
+                    <property name="nativeName">id_unique</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">nom_personne</property>
+                    <property name="nativeName">nom_personne</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">nom_personnage</property>
+                    <property name="nativeName">nom_personnage</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">id_personne</property>
+                    <property name="nativeName">id_personne</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">nb_spect_min</property>
+                    <property name="nativeName">nb_spect_min</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">isAncien</property>
+                    <property name="nativeName">isAncien</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select *
+from personnes
+]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <design:ResultSets derivedMetaData="true">
+    <design:resultSetDefinitions>
+      <design:resultSetColumns>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>id_unique</design:name>
+              <design:position>1</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
+            <design:precision>3</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>id_unique</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>id_unique</design:label>
+            <design:formattingHints>
+              <design:displaySize>3</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>nom_personne</design:name>
+              <design:position>2</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>20</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>nom_personne</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>nom_personne</design:label>
+            <design:formattingHints>
+              <design:displaySize>20</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>nom_personnage</design:name>
+              <design:position>3</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>20</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>nom_personnage</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>nom_personnage</design:label>
+            <design:formattingHints>
+              <design:displaySize>20</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>id_personne</design:name>
+              <design:position>4</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>3</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>id_personne</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>id_personne</design:label>
+            <design:formattingHints>
+              <design:displaySize>3</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>nb_spect_min</design:name>
+              <design:position>5</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>3</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>nb_spect_min</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>nb_spect_min</design:label>
+            <design:formattingHints>
+              <design:displaySize>3</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>isAncien</design:name>
+              <design:position>6</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>1</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>isAncien</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>isAncien</design:label>
+            <design:formattingHints>
+              <design:displaySize>1</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+      </design:resultSetColumns>
+      <design:criteria/>
+    </design:resultSetDefinitions>
+  </design:ResultSets>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="calculEquipePossibles" id="1571">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">count(*)</property>
+                    <text-property name="displayName">count(*)</text-property>
+                    <text-property name="heading">count(*)</text-property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">count(*)</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">count(*)</property>
+                    <property name="nativeName">count(*)</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select count(*)
+from listeequipe
+where ok=1]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <design:ResultSets derivedMetaData="true">
+    <design:resultSetDefinitions>
+      <design:resultSetColumns>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>count(*)</design:name>
+              <design:position>1</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+            <design:precision>21</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>count(*)</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>count(*)</design:label>
+            <design:formattingHints>
+              <design:displaySize>21</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+      </design:resultSetColumns>
+      <design:criteria/>
+    </design:resultSetDefinitions>
+  </design:ResultSets>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="indispo" id="1712">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">id_unique</property>
                     <text-property name="displayName">id_unique</text-property>
                     <text-property name="heading">id_unique</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">id_personne</property>
-                    <property name="analysis">measure</property>
                     <text-property name="displayName">id_personne</text-property>
                     <text-property name="heading">id_personne</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">date</property>
-                    <property name="analysis">dimension</property>
                     <text-property name="displayName">date</text-property>
                     <text-property name="heading">date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">dispo</property>
-                    <property name="analysis">dimension</property>
                     <text-property name="displayName">dispo</text-property>
                     <text-property name="heading">dispo</text-property>
                 </structure>
@@ -906,11 +1208,6 @@ from personnes]]></xml-property>
                     <structure>
                         <property name="position">4</property>
                         <property name="name">dispo</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">5</property>
-                        <property name="name">CC</property>
                         <property name="dataType">string</property>
                     </structure>
                 </list-property>
@@ -1044,11 +1341,36 @@ from indispo]]></xml-property>
   </design:ResultSets>
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
-        <joint-data-set name="J_indispo" id="1474">
+        <joint-data-set name="j_indispo_personnes" id="1713">
             <list-property name="computedColumns">
                 <structure>
-                    <property name="name">CC</property>
-                    <expression name="expression">1</expression>
+                    <property name="name">CC_dispoFaible</property>
+                    <expression name="expression">if(row["dispo"]=="0,5"){&#13;
+1&#13;
+}&#13;
+else{&#13;
+0&#13;
+}</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">CC_dispoForte</property>
+                    <expression name="expression">if(row["dispo"]=="1"){&#13;
+1&#13;
+}&#13;
+else{&#13;
+0&#13;
+}</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">CC_absent</property>
+                    <expression name="expression">if(row["dispo"]=="0"){&#13;
+1&#13;
+}&#13;
+else{&#13;
+0&#13;
+}</expression>
                     <property name="dataType">integer</property>
                 </structure>
             </list-property>
@@ -1060,106 +1382,46 @@ from indispo]]></xml-property>
                     <text-property name="displayName">indispo::date</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">J_spect_rel_team_personne_personnes::personnes::id_unique</property>
+                    <property name="columnName">personnes::id_unique</property>
                     <property name="alias">personnes::id_unique</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">J_spect_rel_team_personne_personnes::personnes::id_unique</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">J_spect_rel_team_personne_personnes::personnes::isAncien</property>
-                    <property name="alias">personnes::isAncien</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">J_spect_rel_team_personne_personnes::personnes::isAncien</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">J_spect_rel_team_personne_personnes::personnes::id_personne</property>
-                    <property name="alias">personnes::id_personne</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">J_spect_rel_team_personne_personnes::personnes::id_personne</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">J_spect_rel_team_personne_personnes::J_spect_rel_team_personne::spectacles::id_team</property>
-                    <property name="alias">J_spect_rel_team_personne::spectacles::id_team</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">J_spect_rel_team_personne_personnes::J_spect_rel_team_personne::spectacles::id_team</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">indispo::id_unique</property>
-                    <property name="alias">id_unique</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">indispo::id_unique</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">J_spect_rel_team_personne_personnes::J_spect_rel_team_personne::rel_team_personne::id_unique</property>
-                    <property name="alias">J_spect_rel_team_personne::rel_team_personne::id_unique</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">J_spect_rel_team_personne_personnes::J_spect_rel_team_personne::rel_team_personne::id_unique</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">J_spect_rel_team_personne_personnes::CC</property>
-                    <property name="alias">J_spect_rel_team_personne_personnes::CC</property>
-                    <property name="analysis">attribute</property>
-                    <text-property name="displayName">J_spect_rel_team_personne_personnes::CC</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">J_spect_rel_team_personne_personnes::personnes::nb_spect_min</property>
-                    <property name="alias">personnes::nb_spect_min</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">J_spect_rel_team_personne_personnes::personnes::nb_spect_min</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">J_spect_rel_team_personne_personnes::personnes::nom_personne</property>
-                    <property name="alias">personnes::nom_personne</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">J_spect_rel_team_personne_personnes::personnes::nom_personne</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">J_spect_rel_team_personne_personnes::CC_row_count</property>
-                    <property name="alias">CC_row_count</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">J_spect_rel_team_personne_personnes::CC_row_count</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">J_spect_rel_team_personne_personnes::J_spect_rel_team_personne::spectacles::id_unique</property>
-                    <property name="alias">J_spect_rel_team_personne::spectacles::id_unique</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">J_spect_rel_team_personne_personnes::J_spect_rel_team_personne::spectacles::id_unique</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">J_spect_rel_team_personne_personnes::personnes::nom_personnage</property>
-                    <property name="alias">personnes::nom_personnage</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">J_spect_rel_team_personne_personnes::personnes::nom_personnage</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">J_spect_rel_team_personne_personnes::J_spect_rel_team_personne::rel_team_personne::id_team</property>
-                    <property name="alias">J_spect_rel_team_personne::rel_team_personne::id_team</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">J_spect_rel_team_personne_personnes::J_spect_rel_team_personne::rel_team_personne::id_team</text-property>
+                    <text-property name="displayName">personnes::id_unique</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">indispo::id_personne</property>
-                    <property name="alias">id_personne</property>
+                    <property name="alias">indispo::id_personne</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">indispo::id_personne</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">indispo::CC</property>
-                    <property name="alias">indispo::CC</property>
-                    <property name="analysis">attribute</property>
-                    <text-property name="displayName">indispo::CC</text-property>
+                    <property name="columnName">indispo::id_unique</property>
+                    <property name="alias">indispo::id_unique</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">indispo::id_unique</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">J_spect_rel_team_personne_personnes::J_spect_rel_team_personne::spectacles::date_spectacle</property>
-                    <property name="alias">J_spect_rel_team_personne::spectacles::date_spectacle</property>
+                    <property name="columnName">personnes::nom_personnage</property>
+                    <property name="alias">nom_personnage</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">J_spect_rel_team_personne_personnes::J_spect_rel_team_personne::spectacles::date_spectacle</text-property>
+                    <text-property name="displayName">personnes::nom_personnage</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">J_spect_rel_team_personne_personnes::J_spect_rel_team_personne::rel_team_personne::id_personne</property>
-                    <property name="alias">J_spect_rel_team_personne::rel_team_personne::id_personne</property>
+                    <property name="columnName">personnes::id_personne</property>
+                    <property name="alias">personnes::id_personne</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">J_spect_rel_team_personne_personnes::J_spect_rel_team_personne::rel_team_personne::id_personne</text-property>
+                    <text-property name="displayName">personnes::id_personne</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">personnes::nb_spect_min</property>
+                    <property name="alias">nb_spect_min</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">personnes::nb_spect_min</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">personnes::nom_personne</property>
+                    <property name="alias">nom_personne</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">personnes::nom_personne</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">indispo::dispo</property>
@@ -1172,198 +1434,86 @@ from indispo]]></xml-property>
                 <list-property name="resultSet">
                     <structure>
                         <property name="position">1</property>
-                        <property name="name">J_spect_rel_team_personne::spectacles::id_unique</property>
+                        <property name="name">indispo::id_unique</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">2</property>
-                        <property name="name">J_spect_rel_team_personne::spectacles::date_spectacle</property>
-                        <property name="dataType">string</property>
+                        <property name="name">indispo::id_personne</property>
+                        <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
-                        <property name="name">J_spect_rel_team_personne::spectacles::id_team</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">4</property>
-                        <property name="name">J_spect_rel_team_personne::rel_team_personne::id_unique</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">5</property>
-                        <property name="name">J_spect_rel_team_personne::rel_team_personne::id_team</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">6</property>
-                        <property name="name">J_spect_rel_team_personne::rel_team_personne::id_personne</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">7</property>
-                        <property name="name">personnes::id_unique</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">8</property>
-                        <property name="name">personnes::nom_personne</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">9</property>
-                        <property name="name">personnes::nom_personnage</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">10</property>
-                        <property name="name">personnes::id_personne</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">11</property>
-                        <property name="name">personnes::nb_spect_min</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">12</property>
-                        <property name="name">personnes::isAncien</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">13</property>
-                        <property name="name">CC_row_count</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">14</property>
-                        <property name="name">J_spect_rel_team_personne_personnes::CC</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">15</property>
-                        <property name="name">id_unique</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">16</property>
-                        <property name="name">id_personne</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">17</property>
                         <property name="name">date</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">18</property>
+                        <property name="position">4</property>
                         <property name="name">dispo</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">19</property>
-                        <property name="name">indispo::CC</property>
+                        <property name="position">5</property>
+                        <property name="name">personnes::id_unique</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">nom_personne</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">20</property>
-                        <property name="name">CC</property>
+                        <property name="position">7</property>
+                        <property name="name">nom_personnage</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">personnes::id_personne</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">nb_spect_min</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
+                        <property name="name">personnes::isAncien</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">CC_dispoFaible</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">CC_dispoForte</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">CC_absent</property>
                         <property name="dataType">integer</property>
                     </structure>
                 </list-property>
             </structure>
             <simple-property-list name="dataSets">
-                <value>J_spect_rel_team_personne_personnes</value>
                 <value>indispo</value>
+                <value>personnes</value>
             </simple-property-list>
             <list-property name="joinConditions">
                 <structure>
                     <property name="joinType">inner</property>
                     <property name="joinOperator">eq</property>
-                    <property name="leftDataSet">J_spect_rel_team_personne_personnes</property>
-                    <property name="rightDataSet">indispo</property>
-                    <expression name="leftExpression">dataSetRow["CC"]</expression>
-                    <expression name="rightExpression">dataSetRow["CC"]</expression>
+                    <property name="leftDataSet">indispo</property>
+                    <property name="rightDataSet">personnes</property>
+                    <expression name="leftExpression">dataSetRow["id_personne"]</expression>
+                    <expression name="rightExpression">dataSetRow["id_personne"]</expression>
                 </structure>
             </list-property>
         </joint-data-set>
-        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="Mois" id="1594">
-            <list-property name="computedColumns">
-                <structure>
-                    <property name="name">CC</property>
-                    <expression name="expression">var javaString = (new Packages.java.lang.String(row["(SUBSTRING(date_spectacle, 1, 7))"]));&#13;
-&#13;
-javaString.replace("-", "/");</expression>
-                    <property name="dataType">string</property>
-                </structure>
-            </list-property>
-            <list-property name="columnHints">
-                <structure>
-                    <property name="columnName">(SUBSTRING(date_spectacle, 1, 7))</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">(SUBSTRING(date_spectacle, 1, 7))</text-property>
-                    <text-property name="heading">(SUBSTRING(date_spectacle, 1, 7))</text-property>
-                </structure>
-            </list-property>
-            <structure name="cachedMetaData">
-                <list-property name="resultSet">
-                    <structure>
-                        <property name="position">1</property>
-                        <property name="name">(SUBSTRING(date_spectacle, 1, 7))</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">2</property>
-                        <property name="name">CC</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                </list-property>
-            </structure>
-            <property name="dataSource">Data Source</property>
-            <list-property name="resultSet">
-                <structure>
-                    <property name="position">1</property>
-                    <property name="name">(SUBSTRING(date_spectacle, 1, 7))</property>
-                    <property name="nativeName">(SUBSTRING(date_spectacle, 1, 7))</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-            </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT distinct(SUBSTRING(date_spectacle, 1, 7)) FROM spectacles
-]]></xml-property>
-            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
-  <Version>2.0</Version>
-  <design:ResultSets derivedMetaData="true">
-    <design:resultSetDefinitions>
-      <design:resultSetColumns>
-        <design:resultColumnDefinitions>
-          <design:attributes>
-            <design:identifier>
-              <design:name>(SUBSTRING(date_spectacle, 1, 7))</design:name>
-              <design:position>1</design:position>
-            </design:identifier>
-            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
-            <design:precision>7</design:precision>
-            <design:scale>0</design:scale>
-            <design:nullability>Nullable</design:nullability>
-            <design:uiHints>
-              <design:displayName>(SUBSTRING(date_spectacle, 1, 7))</design:displayName>
-            </design:uiHints>
-          </design:attributes>
-          <design:usageHints>
-            <design:label>(SUBSTRING(date_spectacle, 1, 7))</design:label>
-            <design:formattingHints>
-              <design:displaySize>7</design:displaySize>
-            </design:formattingHints>
-          </design:usageHints>
-        </design:resultColumnDefinitions>
-      </design:resultSetColumns>
-      <design:criteria/>
-    </design:resultSetDefinitions>
-  </design:ResultSets>
-</model:DesignValues>]]></xml-property>
-        </oda-data-set>
     </data-sets>
     <page-setup>
         <simple-master-page name="Simple MasterPage" id="2">
@@ -1374,79 +1524,52 @@ javaString.replace("-", "/");</expression>
         </simple-master-page>
     </page-setup>
     <body>
-        <grid id="1786">
-            <column id="1787">
+        <grid id="1821">
+            <column id="1822">
                 <property name="width">5mm</property>
             </column>
-            <column id="1788"/>
-            <row id="1789">
-                <cell id="1790"/>
-                <cell id="1791">
-                    <label id="1593"/>
-                    <data id="1647">
-                        <property name="fontSize">24pt</property>
+            <column id="1823"/>
+            <row id="1824">
+                <cell id="1825"/>
+                <cell id="1826">
+                    <label id="1804"/>
+                    <label id="1805">
                         <property name="fontWeight">bold</property>
+                        <text-property name="text">Saisie utilisateur dans les fichiers Excel :</text-property>
+                    </label>
+                    <label id="1811"/>
+                    <table id="1714">
+                        <property name="textAlign">center</property>
+                        <property name="dataSet">j_indispo_personnes</property>
                         <list-property name="boundDataColumns">
                             <structure>
-                                <property name="name">saisie_mois</property>
-                                <expression name="expression" type="javascript">params["saisie_mois"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="resultSetColumn">saisie_mois</property>
-                    </data>
-                    <label id="1648"/>
-                    <table id="1649">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <property name="dataSet">J_spect_rel_team_personne_personnes</property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">spectacles::id_unique</property>
-                                <text-property name="displayName">J_spect_rel_team_personne::spectacles::id_unique</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["spectacles::id_unique"]</expression>
+                                <property name="name">indispo::id_unique</property>
+                                <text-property name="displayName">indispo::id_unique</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["indispo::id_unique"]</expression>
                                 <property name="dataType">integer</property>
                             </structure>
                             <structure>
-                                <property name="name">spectacles::date_spectacle</property>
-                                <text-property name="displayName">J_spect_rel_team_personne::spectacles::date_spectacle</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["spectacles::date_spectacle"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">spectacles::id_team</property>
-                                <text-property name="displayName">J_spect_rel_team_personne::spectacles::id_team</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["spectacles::id_team"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">rel_team_personne::id_unique</property>
-                                <text-property name="displayName">J_spect_rel_team_personne::rel_team_personne::id_unique</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["rel_team_personne::id_unique"]</expression>
+                                <property name="name">indispo::id_personne</property>
+                                <text-property name="displayName">indispo::id_personne</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["indispo::id_personne"]</expression>
                                 <property name="dataType">integer</property>
                             </structure>
                             <structure>
-                                <property name="name">rel_team_personne::id_team</property>
-                                <text-property name="displayName">J_spect_rel_team_personne::rel_team_personne::id_team</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["rel_team_personne::id_team"]</expression>
+                                <property name="name">date</property>
+                                <text-property name="displayName">indispo::date</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["date"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
-                                <property name="name">rel_team_personne::id_personne</property>
-                                <text-property name="displayName">J_spect_rel_team_personne::rel_team_personne::id_personne</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["rel_team_personne::id_personne"]</expression>
+                                <property name="name">dispo</property>
+                                <text-property name="displayName">indispo::dispo</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["dispo"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
-                                <property name="name">id_unique</property>
+                                <property name="name">personnes::id_unique</property>
                                 <text-property name="displayName">personnes::id_unique</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["id_unique"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["personnes::id_unique"]</expression>
                                 <property name="dataType">integer</property>
                             </structure>
                             <structure>
@@ -1465,9 +1588,9 @@ javaString.replace("_", " ");</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
-                                <property name="name">id_personne</property>
+                                <property name="name">personnes::id_personne</property>
                                 <text-property name="displayName">personnes::id_personne</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["id_personne"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["personnes::id_personne"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -1483,19 +1606,7 @@ javaString.replace("_", " ");</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
-                                <property name="name">CC_row_count</property>
-                                <text-property name="displayName">CC_row_count</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["CC_row_count"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">CC</property>
-                                <text-property name="displayName">CC</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["CC"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Aggregation</property>
+                                <property name="name">dispoFaible</property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
                                     <value>personne</value>
@@ -1504,55 +1615,66 @@ javaString.replace("_", " ");</expression>
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">dataSetRow["CC_row_count"]</expression>
+                                        <expression name="value" type="javascript">dataSetRow["CC_dispoFaible"]</expression>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
-                                <property name="name">CC_mois</property>
-                                <text-property name="displayName">CC_mois</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["CC_mois"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <list-property name="sort">
-                            <structure>
-                                <expression name="key" type="javascript">row["spectacles::date_spectacle"]</expression>
-                                <property name="direction">asc</property>
-                                <property name="strength">-1</property>
-                            </structure>
-                        </list-property>
-                        <list-property name="filter">
-                            <structure>
-                                <property name="operator">eq</property>
-                                <expression name="expr" type="javascript">row["CC_mois"]</expression>
-                                <simple-property-list name="value1">
-                                    <value>params["saisie_mois"].value</value>
+                                <property name="name">aggAbsent</property>
+                                <property name="dataType">float</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>personne</value>
                                 </simple-property-list>
-                                <property name="updateAggregation">true</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">dataSetRow["CC_absent"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">aggPresent</property>
+                                <property name="dataType">float</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>personne</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">dataSetRow["CC_dispoForte"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Verif</property>
+                                <expression name="expression" type="javascript">row["aggPresent"] + row["aggAbsent"] + row["dispoFaible"]</expression>
+                                <property name="dataType">string</property>
+                                <property name="allowExport">true</property>
                             </structure>
                         </list-property>
-                        <column id="1723">
-                            <property name="width">8cm</property>
+                        <column id="1773">
+                            <property name="width">4cm</property>
                         </column>
-                        <column id="1724">
-                            <property name="textAlign">center</property>
-                            <property name="width">1cm</property>
+                        <column id="1776">
+                            <property name="width">4cm</property>
                         </column>
-                        <group id="1737">
-                            <property name="groupName">personne</property>
-                            <expression name="keyExpr" type="javascript">row["nom_personne"]</expression>
-                            <structure name="toc">
-                                <expression name="expressionValue" type="javascript">row["nom_personne"]</expression>
-                            </structure>
-                            <property name="repeatHeader">false</property>
-                            <property name="hideDetail">false</property>
-                            <property name="pageBreakAfter">avoid</property>
-                            <property name="pageBreakBefore">avoid</property>
-                            <property name="pageBreakInside">avoid</property>
-                            <header>
-                                <row id="1738">
+                        <column id="1777">
+                            <property name="width">4cm</property>
+                        </column>
+                        <column id="1808">
+                            <property name="width">4cm</property>
+                        </column>
+                        <column id="1816">
+                            <property name="width">6cm</property>
+                        </column>
+                        <header>
+                            <row id="1715">
+                                <cell id="1726">
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
                                     <property name="borderLeftStyle">solid</property>
@@ -1561,7 +1683,74 @@ javaString.replace("_", " ");</expression>
                                     <property name="borderRightWidth">thin</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <cell id="1739">
+                                    <label id="1727">
+                                        <text-property name="text"></text-property>
+                                    </label>
+                                </cell>
+                                <cell id="1732">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <label id="1809">
+                                        <text-property name="text">Somme dispo</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="1734">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <label id="1733">
+                                        <text-property name="text">Somme dispo faible</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="1806">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <label id="1735">
+                                        <text-property name="text">Somme absent</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="1814">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <label id="1817">
+                                        <text-property name="text">Somme pour vérifier la saisie</text-property>
+                                    </label>
+                                </cell>
+                            </row>
+                        </header>
+                        <group id="1778">
+                            <property name="groupName">personne</property>
+                            <expression name="keyExpr" type="javascript">row["nom_personne"]</expression>
+                            <structure name="toc">
+                                <expression name="expressionValue" type="javascript">row["nom_personne"]</expression>
+                            </structure>
+                            <property name="hideDetail">false</property>
+                            <header>
+                                <row id="1779">
+                                    <cell id="1785">
                                         <property name="borderBottomStyle">solid</property>
                                         <property name="borderBottomWidth">thin</property>
                                         <property name="borderLeftStyle">solid</property>
@@ -1570,19 +1759,68 @@ javaString.replace("_", " ");</expression>
                                         <property name="borderRightWidth">thin</property>
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
-                                        <data id="1768">
+                                        <data id="1801">
+                                            <property name="fontWeight">bold</property>
                                             <property name="resultSetColumn">nom_personne</property>
                                         </data>
                                     </cell>
-                                    <cell id="1740">
-                                        <data id="1775">
-                                            <property name="resultSetColumn">Aggregation</property>
+                                    <cell id="1788">
+                                        <property name="borderBottomStyle">solid</property>
+                                        <property name="borderBottomWidth">thin</property>
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                        <property name="borderTopStyle">solid</property>
+                                        <property name="borderTopWidth">thin</property>
+                                        <data id="1810">
+                                            <property name="resultSetColumn">aggPresent</property>
+                                        </data>
+                                    </cell>
+                                    <cell id="1789">
+                                        <property name="borderBottomStyle">solid</property>
+                                        <property name="borderBottomWidth">thin</property>
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                        <property name="borderTopStyle">solid</property>
+                                        <property name="borderTopWidth">thin</property>
+                                        <data id="1802">
+                                            <property name="resultSetColumn">dispoFaible</property>
+                                        </data>
+                                    </cell>
+                                    <cell id="1807">
+                                        <property name="borderBottomStyle">solid</property>
+                                        <property name="borderBottomWidth">thin</property>
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                        <property name="borderTopStyle">solid</property>
+                                        <property name="borderTopWidth">thin</property>
+                                        <data id="1803">
+                                            <property name="resultSetColumn">aggAbsent</property>
+                                        </data>
+                                    </cell>
+                                    <cell id="1815">
+                                        <property name="borderBottomStyle">solid</property>
+                                        <property name="borderBottomWidth">thin</property>
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                        <property name="borderTopStyle">solid</property>
+                                        <property name="borderTopWidth">thin</property>
+                                        <data id="1818">
+                                            <property name="resultSetColumn">Verif</property>
                                         </data>
                                     </cell>
                                 </row>
                             </header>
                         </group>
                     </table>
+                    <label id="1812"/>
                 </cell>
             </row>
         </grid>

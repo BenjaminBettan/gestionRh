@@ -70,7 +70,7 @@ public class Submain_A {
 				String userInput = "";
 				while ( ! userInput.toUpperCase().equals("Q")) {
 					Scanner reader = new Scanner(System.in);  // Reading from System.in
-					System.out.println("Entrez q pour quitter et validez ensuite");
+					System.out.println("\nMerci de quitter le logiciel wamp (bouton vert en bas à droite).\n\nEntrez q pour quitter et validez ensuite");
 					userInput = reader.next();
 					reader.close();
 				}
@@ -186,7 +186,6 @@ public class Submain_A {
 
 		for (String l : listeDates) {
 			String[] listesDates_ = l.split(";");
-
 			for (int j = 0; j < Integer.parseInt(listesDates_[1]); j++) {
 
 				LocalDateTime t = LocalDateTime.of(
@@ -419,7 +418,7 @@ public class Submain_A {
 		});
 
 
-		if (Boolean.parseBoolean(Config.getProp().getProperty("precalculs2A_Faire"))) {
+		if (Boolean.parseBoolean(Config.getProp().getProperty("precalculsA_Faire"))) {
 			logger.info("Insertion dans la table rel_team_personnes. Operation assez longue.");
 			String res = Config.getDataBase().select("SELECT * FROM listeequipe");
 
@@ -447,7 +446,6 @@ public class Submain_A {
 		});
 		
 		Config.getSemaines().forEach((idSemaine,sem) -> {
-			System.out.println(idSemaine);
 			Config.getListeSpectacleParSemaine().forEach((id,spect)->{
 				if (id.equals(idSemaine)) {
 					spect.forEach((s)->{

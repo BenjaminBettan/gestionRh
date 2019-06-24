@@ -1438,6 +1438,11 @@ javaString.replace("_", "-");</expression>
                                 <property name="direction">asc</property>
                                 <property name="strength">-1</property>
                             </structure>
+                            <structure>
+                                <expression name="key" type="javascript">row["personnes::nom_personnage"]</expression>
+                                <property name="direction">asc</property>
+                                <property name="strength">-1</property>
+                            </structure>
                         </list-property>
                         <list-property name="filter">
                             <structure>

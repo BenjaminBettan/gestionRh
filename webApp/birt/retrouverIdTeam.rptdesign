@@ -47,13 +47,62 @@
         </scalar-parameter>
         <scalar-parameter name="nbPersonnages" id="1476">
             <property name="hidden">false</property>
-            <property name="valueType">dynamic</property>
-            <property name="dataSetName">nbPersonnage</property>
-            <expression name="valueExpr" type="javascript">dataSetRow["count"]</expression>
-            <expression name="labelExpr" type="javascript">dataSetRow["count"]</expression>
+            <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <list-property name="selectionList"/>
+            <simple-property-list name="defaultValue">
+                <value type="constant">13</value>
+            </simple-property-list>
+            <list-property name="selectionList">
+                <structure>
+                    <property name="value">2</property>
+                </structure>
+                <structure>
+                    <property name="value">3</property>
+                </structure>
+                <structure>
+                    <property name="value">4</property>
+                </structure>
+                <structure>
+                    <property name="value">5</property>
+                </structure>
+                <structure>
+                    <property name="value">6</property>
+                </structure>
+                <structure>
+                    <property name="value">7</property>
+                </structure>
+                <structure>
+                    <property name="value">8</property>
+                </structure>
+                <structure>
+                    <property name="value">9</property>
+                </structure>
+                <structure>
+                    <property name="value">10</property>
+                </structure>
+                <structure>
+                    <property name="value">11</property>
+                </structure>
+                <structure>
+                    <property name="value">12</property>
+                </structure>
+                <structure>
+                    <property name="value">13</property>
+                </structure>
+                <structure>
+                    <property name="value">14</property>
+                </structure>
+                <structure>
+                    <property name="value">15</property>
+                </structure>
+                <structure>
+                    <property name="value">16</property>
+                </structure>
+                <structure>
+                    <property name="value">17</property>
+                </structure>
+            </list-property>
             <property name="paramType">simple</property>
             <property name="controlType">list-box</property>
             <property name="mustMatch">true</property>

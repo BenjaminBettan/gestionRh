@@ -100,9 +100,10 @@ public class DataBase {
 			} 
 			catch (Exception e) 
 			{
+
 				logger.warn(e.getMessage());
-				e.printStackTrace();
-				System.out.println("Veuillez redemarer les services - le bouton vert (sauf si vous l avez deja fait)");
+				System.out.println("Veuillez redemarer les services - le bouton vert (sauf si vous l avez deja fait). Programme en pause 30 secondes.");
+
 				try {
 					Thread.sleep(30_000);
 				} catch (InterruptedException e1) {

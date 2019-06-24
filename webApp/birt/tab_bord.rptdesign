@@ -1548,6 +1548,18 @@ else{&#13;
                                 </list-property>
                                 <property name="allowExport">true</property>
                             </structure>
+                            <structure>
+                                <property name="name">vue_semaine</property>
+                                <expression name="expression" type="javascript">"Vue Semaine"</expression>
+                                <property name="dataType">string</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Verification entree Excel</property>
+                                <expression name="expression" type="javascript">"Vue vérification entrée Excel"</expression>
+                                <property name="dataType">string</property>
+                                <property name="allowExport">true</property>
+                            </structure>
                         </list-property>
                         <column id="1463"/>
                         <column id="1464"/>
@@ -1807,7 +1819,31 @@ javaString.replace("_", " ");</expression>
                                     </detail>
                                 </table>
                             </cell>
-                            <cell id="1467"/>
+                            <cell id="1467">
+                                <data id="1827">
+                                    <property name="resultSetColumn">vue_semaine</property>
+                                    <list-property name="action">
+                                        <structure>
+                                            <property name="linkType">drill-through</property>
+                                            <property name="reportName">planning_semaine.rptdesign</property>
+                                            <property name="targetWindow">_blank</property>
+                                            <property name="targetFileType">report-design</property>
+                                        </structure>
+                                    </list-property>
+                                </data>
+                                <label id="1828"/>
+                                <data id="1829">
+                                    <property name="resultSetColumn">Verification entree Excel</property>
+                                    <list-property name="action">
+                                        <structure>
+                                            <property name="linkType">drill-through</property>
+                                            <property name="reportName">verif_excel.rptdesign</property>
+                                            <property name="targetWindow">_blank</property>
+                                            <property name="targetFileType">report-design</property>
+                                        </structure>
+                                    </list-property>
+                                </data>
+                            </cell>
                         </row>
                     </grid>
                     <label id="1676"/>
@@ -1853,295 +1889,6 @@ javaString.replace("_", " ");</expression>
                         </detail>
                     </table>
                     <label id="1804"/>
-                    <label id="1805">
-                        <property name="fontWeight">bold</property>
-                        <text-property name="text">Saisie utilisateur dans les fichiers Excel :</text-property>
-                    </label>
-                    <label id="1811"/>
-                    <table id="1714">
-                        <property name="textAlign">center</property>
-                        <property name="dataSet">j_indispo_personnes</property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">indispo::id_unique</property>
-                                <text-property name="displayName">indispo::id_unique</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["indispo::id_unique"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">indispo::id_personne</property>
-                                <text-property name="displayName">indispo::id_personne</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["indispo::id_personne"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">date</property>
-                                <text-property name="displayName">indispo::date</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["date"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">dispo</property>
-                                <text-property name="displayName">indispo::dispo</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["dispo"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">personnes::id_unique</property>
-                                <text-property name="displayName">personnes::id_unique</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["personnes::id_unique"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">nom_personne</property>
-                                <text-property name="displayName">personnes::nom_personne</text-property>
-                                <expression name="expression" type="javascript">var javaString = (new Packages.java.lang.String(dataSetRow["nom_personne"]));&#13;
-&#13;
-javaString.replace("_", " ");</expression>
-                                <property name="dataType">string</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">nom_personnage</property>
-                                <text-property name="displayName">personnes::nom_personnage</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["nom_personnage"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">personnes::id_personne</property>
-                                <text-property name="displayName">personnes::id_personne</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["personnes::id_personne"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">nb_spect_min</property>
-                                <text-property name="displayName">personnes::nb_spect_min</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["nb_spect_min"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">personnes::isAncien</property>
-                                <text-property name="displayName">personnes::isAncien</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["personnes::isAncien"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">dispoFaible</property>
-                                <property name="dataType">float</property>
-                                <simple-property-list name="aggregateOn">
-                                    <value>personne</value>
-                                </simple-property-list>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">dataSetRow["CC_dispoFaible"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">aggAbsent</property>
-                                <property name="dataType">float</property>
-                                <simple-property-list name="aggregateOn">
-                                    <value>personne</value>
-                                </simple-property-list>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">dataSetRow["CC_absent"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">aggPresent</property>
-                                <property name="dataType">float</property>
-                                <simple-property-list name="aggregateOn">
-                                    <value>personne</value>
-                                </simple-property-list>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">dataSetRow["CC_dispoForte"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Verif</property>
-                                <expression name="expression" type="javascript">row["aggPresent"] + row["aggAbsent"] + row["dispoFaible"]</expression>
-                                <property name="dataType">string</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                        </list-property>
-                        <column id="1773">
-                            <property name="width">4cm</property>
-                        </column>
-                        <column id="1776">
-                            <property name="width">4cm</property>
-                        </column>
-                        <column id="1777">
-                            <property name="width">4cm</property>
-                        </column>
-                        <column id="1808">
-                            <property name="width">4cm</property>
-                        </column>
-                        <column id="1816">
-                            <property name="width">6cm</property>
-                        </column>
-                        <header>
-                            <row id="1715">
-                                <cell id="1726">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <label id="1727">
-                                        <text-property name="text"></text-property>
-                                    </label>
-                                </cell>
-                                <cell id="1732">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <label id="1809">
-                                        <text-property name="text">Somme dispo</text-property>
-                                    </label>
-                                </cell>
-                                <cell id="1734">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <label id="1733">
-                                        <text-property name="text">Somme dispo faible</text-property>
-                                    </label>
-                                </cell>
-                                <cell id="1806">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <label id="1735">
-                                        <text-property name="text">Somme absent</text-property>
-                                    </label>
-                                </cell>
-                                <cell id="1814">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <label id="1817">
-                                        <text-property name="text">Somme pour vérifier la saisie</text-property>
-                                    </label>
-                                </cell>
-                            </row>
-                        </header>
-                        <group id="1778">
-                            <property name="groupName">personne</property>
-                            <expression name="keyExpr" type="javascript">row["nom_personne"]</expression>
-                            <structure name="toc">
-                                <expression name="expressionValue" type="javascript">row["nom_personne"]</expression>
-                            </structure>
-                            <property name="hideDetail">false</property>
-                            <header>
-                                <row id="1779">
-                                    <cell id="1785">
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
-                                        <property name="borderLeftStyle">solid</property>
-                                        <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
-                                        <data id="1801">
-                                            <property name="fontWeight">bold</property>
-                                            <property name="resultSetColumn">nom_personne</property>
-                                        </data>
-                                    </cell>
-                                    <cell id="1788">
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
-                                        <property name="borderLeftStyle">solid</property>
-                                        <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
-                                        <data id="1810">
-                                            <property name="resultSetColumn">aggPresent</property>
-                                        </data>
-                                    </cell>
-                                    <cell id="1789">
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
-                                        <property name="borderLeftStyle">solid</property>
-                                        <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
-                                        <data id="1802">
-                                            <property name="resultSetColumn">dispoFaible</property>
-                                        </data>
-                                    </cell>
-                                    <cell id="1807">
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
-                                        <property name="borderLeftStyle">solid</property>
-                                        <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
-                                        <data id="1803">
-                                            <property name="resultSetColumn">aggAbsent</property>
-                                        </data>
-                                    </cell>
-                                    <cell id="1815">
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
-                                        <property name="borderLeftStyle">solid</property>
-                                        <property name="borderLeftWidth">thin</property>
-                                        <property name="borderRightStyle">solid</property>
-                                        <property name="borderRightWidth">thin</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
-                                        <data id="1818">
-                                            <property name="resultSetColumn">Verif</property>
-                                        </data>
-                                    </cell>
-                                </row>
-                            </header>
-                        </group>
-                    </table>
-                    <label id="1812"/>
-                    <label id="1813"/>
                 </cell>
             </row>
         </grid>

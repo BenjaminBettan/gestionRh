@@ -1438,9 +1438,7 @@ javaString.replace("T", " ");</expression>
                                                     <property name="resultSetColumn">nom_personne</property>
                                                     <list-property name="action">
                                                         <structure>
-                                                            <property name="linkType">hyperlink</property>
-                                                            <expression name="uri" type="javascript">"http://localhost:8080/gestionRhRest/franglaises/"+params["Date"].value+"/"+row["id_personne"]</expression>
-                                                            <property name="targetWindow">_blank</property>
+                                                            <property name="linkType">none</property>
                                                         </structure>
                                                     </list-property>
                                                 </data>
@@ -1616,7 +1614,7 @@ javaString.replace("_", " ");</expression>
                                         <list-property name="action">
                                             <structure>
                                                 <property name="linkType">hyperlink</property>
-                                                <expression name="uri" type="javascript">"http://localhost:8080/gestionRhRest/franglaises/"+params["Date"].value+"/"+row["id_personne"]</expression>
+                                                <expression name="uri" type="javascript">"http://localhost:8080/franglaises_appli_rest/franglaises_chang_perso/"+row["id_personne"] +"/"+params["Date"].value</expression>
                                                 <property name="targetWindow">_blank</property>
                                             </structure>
                                         </list-property>
@@ -1635,7 +1633,7 @@ javaString.replace("_", " ");</expression>
                                         <list-property name="action">
                                             <structure>
                                                 <property name="linkType">hyperlink</property>
-                                                <expression name="uri" type="javascript">"http://localhost:8080/gestionRhRest/franglaises/"+params["Date"].value+"/"+row["id_personne"]+"/1"</expression>
+                                                <expression name="uri" type="javascript">"http://localhost:8080/franglaises_appli_rest/franglaises_chang_perso_f/"+row["id_personne"] +"/"+params["Date"].value</expression>
                                                 <property name="targetWindow">_blank</property>
                                             </structure>
                                         </list-property>
