@@ -453,7 +453,7 @@ from rel_team_personnes]]></xml-property>
                     <structure>
                         <property name="position">4</property>
                         <property name="name">id_personne</property>
-                        <property name="dataType">string</property>
+                        <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">5</property>
@@ -489,7 +489,7 @@ from rel_team_personnes]]></xml-property>
                     <property name="position">4</property>
                     <property name="name">id_personne</property>
                     <property name="nativeName">id_personne</property>
-                    <property name="dataType">string</property>
+                    <property name="dataType">integer</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
